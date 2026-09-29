@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cosmos Tour | Turismo Espacial de Lujo</title>
+    <meta name="description" content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional." />
+    <meta property="og:title" content="Cosmos Tour | Turismo Espacial de Lujo" />
+    <meta property="og:description" content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts Tipografía de Lujo y Aeroespacial -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Enlace a estilos nativos CSS -->
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- Lienzo 3D Nativo del Cosmos y Planetas -->
+    <canvas id="universe-canvas" aria-label="Lienzo 3D interactivo del cosmos"></canvas>
+
+    <!-- Top Bar Navigation (Contrato de 3 Zonas) -->
+    <header class="top-nav">
+      <div class="nav-container">
+        <!-- Zona 1: Marca única en texto -->
+        <a href="#despegue" class="brand-wordmark">COSMOS TOUR</a>
+
+        <!-- Zona 2: Enlaces de navegación semánticos -->
+        <nav>
+          <ul class="nav-links">
+            <li><a href="#despegue" class="nav-link active">El Despegue</a></li>
+            <li><a href="#destinos" class="nav-link">Destinos</a></li>
+            <li><a href="#vuelo" class="nav-link">Experiencia de Vuelo</a></li>
+            <li><a href="#servicios" class="nav-link">Suites & Lujo</a></li>
+            <li><a href="#tripulacion" class="nav-link">Tripulación</a></li>
+          </ul>
+        </nav>
+
+        <!-- Zona 3: Acciones primarias -->
+        <div class="nav-actions">
+          <button id="audio-toggle" class="btn-icon" aria-label="Alternar atmósfera acústica espacial">
+            <span class="audio-dot">♫</span>
+            <span class="audio-label">AUDIO OFF</span>
+          </button>
+          <a href="#tripulacion" class="btn-primary">Reservar Misión</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenedor Semántico Principal -->
+    <main class="main-wrapper">
+      <!-- ====================================================================
+           SECCIÓN A: EL DESPEGUE (Bienvenida & Explorador Planetario)
+           ==================================================================== -->
+      <section id="despegue" class="section-despegue">
+        <div class="container">
+          <!-- Barra superior de telemetría de vuelo y selector planetario -->
+          <div class="hero-telemetry-top">
+            <div class="flight-status">
+              <span class="status-dot"></span>
+              <span>SISTEMA DE VUELO: NOMINAL</span>
+              <span style="color: var(--color-text-dim)">/</span>
+              <span>ORBITAL CLASS 1</span>
+            </div>
+
+            <!-- Selector de Planeta Interactivo -->
+            <div class="segmented-control" role="group" aria-label="Seleccionar cuerpo celeste">
+              <button class="segmented-btn active" data-planet-target="earth">Tierra</button>
+              <button class="segmented-btn" data-planet-target="mars">Marte</button>
+            </div>
+          </div>
+
+          <!-- Bloque Central Narrativo -->
+          <div class="hero-content">
+            <div class="unboxed-kicker">
+              <span>Expediciones Civiles Privadas</span>
+              <span aria-hidden="true">·</span>
+              <span>Certificación Cis-Lunar</span>
+              <span aria-hidden="true">·</span>
+              <span>Gravedad Cero Exclusiva</span>
+            </div>
+
+            <h1 class="hero-title">La Frontera Definitiva del Lujo</h1>
+
+            <p class="hero-description">
+              Cosmos Tour redefine los límites de la experiencia humana. Cruceros astronómicos privados,
+              suites de ingravidez con ventanales de cuarzo de zafiro y expediciones personalizadas a la Luna, Marte y la órbita terrestre.
+            </p>
+
+            <div class="hero-actions">
+              <button id="btn-initiate-launch" class="btn-primary" style="padding: 0.85rem 2rem;">
+                Iniciar Despegue
+              </button>
+              <a href="#destinos" class="btn-secondary">
+                Explorar Destinos
+              </a>
+            </div>
+          </div>
+
+          <!-- HUD Inferior con Métricas e Indicador de Despegue -->
+          <div class="hero-telemetry-bottom">
+            <div class="hud-hint">
+              <span style="color: var(--color-cyan)">●</span>
+              <span>Arrastra para rotar · Rueda para zoom orbital</span>
+            </div>
+
+            <div class="hud-metrics">
+              <div class="metric-item">
+                <span class="metric-label">Altitud Orbital</span>
+                <span class="metric-value">420.5 <span class="metric-unit">KM</span></span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Velocidad Relativa</span>
+                <span class="metric-value">7.66 <span class="metric-unit">KM/S</span></span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Período de Órbita</span>
+                <span class="metric-value">92.68 <span class="metric-unit">MIN</span></span>
+              </div>
+            </div>
+
+            <a href="#destinos" class="scroll-indicator">
+              <span>Descender al Cosmos</span>
+              <span>↓</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN B: CATÁLOGO DE DESTINOS (La Exploración & Salto Warp)
+           ==================================================================== -->
+      <section id="destinos" class="section-destinos">
+        <div class="container">
+          <header class="section-header">
+            <div>
+              <div class="section-kicker">Catálogo de Expediciones · Temporada 2026-2027</div>
+              <h2 class="section-title">Rutas Exclusivas del Cosmos</h2>
+            </div>
+            <p class="section-intro">
+              Cada destino cuenta con rigurosos protocolos aeroespaciales y comodidades concebidas para el descanso y la contemplación estelar.
+            </p>
+          </header>
+
+          <div class="destinations-grid">
+            <!-- Tarjeta 1: La Luna -->
+            <article class="destination-card">
+              <div>
+                <div class="dest-meta-top">
+                  <span>384,400 KM</span>
+                  <span class="dest-meta-duration">6 Días Terrestres</span>
+                </div>
+                <h3 class="dest-title">La Luna</h3>
+                <div class="dest-subtitle">Expedición Cis-Lunar Artemisa Prime</div>
+                <p class="dest-desc">
+                  Aterrizaje en el Cráter Shackleton con pernocta en suites presurizadas de titanio translúcido. Experimente caminatas lunares con vista perpetua a la Tierra.
+                </p>
+                <ul class="dest-highlights">
+                  <li>Almuerzo privado en el borde del Polo Sur Lunar</li>
+                  <li>Paseo extravehicular (EVA) en baja gravedad con traje a medida</li>
+                </ul>
+              </div>
+              <div class="dest-footer">
+                <div class="dest-price-row">
+                  <span class="dest-price-label">Inversión por plaza</span>
+                  <span class="dest-price-val">$1,250,000 USD</span>
+                </div>
+                <div class="dest-actions">
+                  <button class="btn-secondary btn-warp-action" data-dest="luna">Salto Warp</button>
+                  <button class="btn-primary btn-book-dest" data-dest-name="La Luna">Reservar</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Tarjeta 2: Marte -->
+            <article class="destination-card">
+              <div>
+                <div class="dest-meta-top">
+                  <span>225,000,000 KM</span>
+                  <span class="dest-meta-duration">180 Días de Travesía</span>
+                </div>
+                <h3 class="dest-title">Marte</h3>
+                <div class="dest-subtitle">Odisea Valles Marineris & Oasis Rojo</div>
+                <p class="dest-desc">
+                  La expedición cumbre de la civilización humana. Cruce el espacio interplanetario a bordo de nuestro crucero de ultra-lujo y explore cañones titánicos.
+                </p>
+                <ul class="dest-highlights">
+                  <li>Travesía en crucero con anillo de gravedad centrífuga 1g</li>
+                  <li>Alojamiento en el primer Domo Biosférico Geodésico</li>
+                </ul>
+              </div>
+              <div class="dest-footer">
+                <div class="dest-price-row">
+                  <span class="dest-price-label">Inversión por plaza</span>
+                  <span class="dest-price-val">$4,800,000 USD</span>
+                </div>
+                <div class="dest-actions">
+                  <button class="btn-secondary btn-warp-action" data-dest="marte">Salto Warp</button>
+                  <button class="btn-primary btn-book-dest" data-dest-name="Marte">Reservar</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Tarjeta 3: EEI -->
+            <article class="destination-card">
+              <div>
+                <div class="dest-meta-top">
+                  <span>408 KM (Órbita Baja)</span>
+                  <span class="dest-meta-duration">10 Días en Órbita</span>
+                </div>
+                <h3 class="dest-title">Estación Espacial</h3>
+                <div class="dest-subtitle">Residencia Apex Cupola</div>
+                <p class="dest-desc">
+                  Flote en gravedad cero absoluta mientras contempla 16 amaneceres y atardeceres cada 24 horas con el mirador Cupola reservado en exclusividad.
+                </p>
+                <ul class="dest-highlights">
+                  <li>16 amaneceres diarios observando auroras polares</li>
+                  <li>Entrenamiento acrobático y meditación en microgravedad</li>
+                </ul>
+              </div>
+              <div class="dest-footer">
+                <div class="dest-price-row">
+                  <span class="dest-price-label">Inversión por plaza</span>
+                  <span class="dest-price-val">$750,000 USD</span>
+                </div>
+                <div class="dest-actions">
+                  <button class="btn-secondary btn-warp-action" data-dest="iss">Salto Warp</button>
+                  <button class="btn-primary btn-book-dest" data-dest-name="Estación Espacial Internacional">Reservar</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN C: SIMULACIÓN DE LA EXPERIENCIA DE VUELO (El Viaje)
+           ==================================================================== -->
+      <section id="vuelo" class="section-vuelo">
+        <div class="container">
+          <header style="text-align: center; max-width: 720px; margin: 0 auto;">
+            <div class="section-kicker">Simulador Sensorial · Protocolo de Travesía</div>
+            <h2 class="section-title">La Experiencia de Vuelo</h2>
+            <p class="section-intro" style="margin: 0.75rem auto 0;">
+              Desde la potencia física de la ignición hasta el silencio absoluto de la microgravedad y la vista panorámica estelar.
+            </p>
+          </header>
+
+          <!-- Pestañas de las 3 Fases de Vuelo -->
+          <div class="flight-tabs">
+            <button class="flight-tab-btn active" data-stage="lanzamiento">1. El Lanzamiento</button>
+            <button class="flight-tab-btn" data-stage="gravedad_cero">2. Gravedad Cero</button>
+            <button class="flight-tab-btn" data-stage="ventana">3. El Mirador Estelar</button>
+          </div>
+
+          <!-- Panel 1: Fase de Lanzamiento -->
+          <div id="stage-lanzamiento" class="flight-stage-panel active">
+            <div class="launch-layout">
+              <div>
+                <div class="throttle-bar-container">
+                  <div class="throttle-bar-label">
+                    <span>EMPUJE DE PROPULSORES DE PLASMA</span>
+                    <span style="color: var(--color-gold);">POTENCIA DINÁMICA</span>
+                  </div>
+                  <div class="throttle-track">
+                    <div id="throttle-fill" class="throttle-fill"></div>
+                  </div>
+                </div>
+
+                <div class="launch-gauges">
+                  <div class="gauge-box">
+                    <div class="gauge-title">Velocímetro</div>
+                    <div id="gauge-mach" class="gauge-val">Mach 1.0</div>
+                  </div>
+                  <div class="gauge-box">
+                    <div class="gauge-title">Altitud</div>
+                    <div id="gauge-alt" class="gauge-val" style="color: var(--color-cyan);">12.4 KM</div>
+                  </div>
+                  <div class="gauge-box">
+                    <div class="gauge-title">Fuerza G</div>
+                    <div id="gauge-g" class="gauge-val" style="color: var(--color-gold);">1.00 G</div>
+                  </div>
+                  <div class="gauge-box">
+                    <div class="gauge-title">Tiempo T+</div>
+                    <div id="gauge-time" class="gauge-val">0.0 S</div>
+                  </div>
+                </div>
+
+                <p style="font-size: 0.85rem; color: var(--color-text-muted); font-weight: 300;">
+                  Nuestros asientos presurizados de fibra de carbono absorben la mayor parte de la vibración mecánica,
+                  garantizando un ascenso seguro y confortable hacia la órbita.
+                </p>
+              </div>
+
+              <!-- Estación de Ignición -->
+              <div class="ignition-station">
+                <div class="flame-icon">🚀</div>
+                <h4 style="color: #ffffff; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  Palanca de Propulsión
+                </h4>
+                <p style="font-size: 0.75rem; color: var(--color-text-dim); margin-bottom: 1.5rem;">
+                  Pulse para experimentar la aceleración y vibración visual controlada.
+                </p>
+                <button id="btn-ignition-toggle" class="btn-ignition">Iniciar Secuencia</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 2: Fase de Gravedad Cero -->
+          <div id="stage-gravedad_cero" class="flight-stage-panel">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.25rem; color: #ffffff; text-transform: uppercase;">
+                Cámara de Microgravedad (0.0001g)
+              </h3>
+              <span class="telemetry-text" style="font-size: 0.72rem; color: var(--color-text-dim);">
+                Haz clic sobre los objetos para impulsarlos
+              </span>
+            </div>
+
+            <div id="zero-g-arena" class="zero-g-arena">
+              <!-- Elementos de lujo flotantes con física inercial -->
+              <div id="zg-item-1" class="zero-g-item">
+                <span class="zero-g-emoji">🍸</span>
+                <span class="zero-g-label">Copa Molecular</span>
+              </div>
+              <div id="zg-item-2" class="zero-g-item">
+                <span class="zero-g-emoji">🎖️</span>
+                <span class="zero-g-label">Insignia Cosmos</span>
+              </div>
+              <div id="zg-item-3" class="zero-g-item">
+                <span class="zero-g-emoji">🪐</span>
+                <span class="zero-g-label">Esfera Cuántica</span>
+              </div>
+              <div id="zg-item-4" class="zero-g-item">
+                <span class="zero-g-emoji">⏱️</span>
+                <span class="zero-g-label">Cronómetro Titanio</span>
+              </div>
+              <div id="zg-item-5" class="zero-g-item">
+                <span class="zero-g-emoji">🌸</span>
+                <span class="zero-g-label">Flor Hidropónica</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 3: Fase La Ventana (El Mirador) -->
+          <div id="stage-ventana" class="flight-stage-panel">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.25rem; color: #ffffff; text-transform: uppercase;">
+                Ventanal Elíptico de Cuarzo de Zafiro
+              </h3>
+              <span class="telemetry-text" style="font-size: 0.72rem; color: var(--color-text-dim);">
+                Mueve el cursor para explorar el campo celeste
+              </span>
+            </div>
+
+            <div id="cupola-window" class="cupola-window">
+              <div id="cupola-sky" class="cupola-sky">
+                <!-- Curvatura del planeta Tierra -->
+                <div class="earth-horizon-arc"></div>
+
+                <!-- Puntos de Interés Estelares (POIs) -->
+                <div class="poi-marker" data-poi="Nebulosa de Orión (M42) - 1,344 años luz" style="top: 25%; left: 30%;">
+                  <span>★</span>
+                  <span>Nebulosa de Orión (M42)</span>
+                </div>
+
+                <div class="poi-marker" data-poi="Cúmulo de las Pléyades - 444 años luz" style="top: 35%; right: 28%;">
+                  <span>✦</span>
+                  <span>Cúmulo de las Pléyades</span>
+                </div>
+
+                <div class="poi-marker" data-poi="Aurora Australis Terrestre - 110 km altitud" style="bottom: 25%; right: 35%;">
+                  <span>❇</span>
+                  <span>Aurora Australis Terrestre</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN D: PAQUETES DE LUJO Y SERVICIOS A BORDO
+           ==================================================================== -->
+      <section id="servicios" class="section-servicios">
+        <div class="container">
+          <header class="section-header">
+            <div>
+              <div class="section-kicker">Hospitalidad Sin Fronteras Gravitacionales</div>
+              <h2 class="section-title">Paquetes de Lujo & Vida a Bordo</h2>
+            </div>
+
+            <!-- Filtros de categoría -->
+            <div class="amenity-filters">
+              <button class="amenity-filter-btn active" data-filter="all">Todo</button>
+              <button class="amenity-filter-btn" data-filter="suites">Suites</button>
+              <button class="amenity-filter-btn" data-filter="gastronomia">Gastronomía</button>
+              <button class="amenity-filter-btn" data-filter="observatorio">Mirador</button>
+              <button class="amenity-filter-btn" data-filter="academia">Academia</button>
+            </div>
+          </header>
+
+          <div class="amenities-grid">
+            <!-- Servicio 1: Suites -->
+            <article class="amenity-card" data-category="suites">
+              <div class="amenity-img-wrapper">
+                <img src="./images/luxury_suite.jpg" alt="Suite de Lujo Presurizada" class="amenity-img" />
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>COSMOS TOUR EXCLUSIVE</span>
+                  <span style="color: var(--color-gold);">CLASE SUPERIOR</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Suites Presurizadas "Celestial Sovereign"</h3>
+                  <div class="amenity-subtitle">Titanio pulido y descanso ingrávido</div>
+                  <p class="amenity-desc">
+                    Espacios habitacionales privados presurizados a 1 ATM con control acústico cuántico, aislamiento térmico multiespectral y camas ergonómicas que recrean el descanso más placentero sin puntos de presión.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-suites">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-suites" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Volumen Habitable</span>
+                        <span class="spec-val">42 m³</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Presión Interior</span>
+                        <span class="spec-val">101.3 kPa (1 ATM)</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Nivel Acústico</span>
+                        <span class="spec-val">&lt; 38 dB</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Blindaje Radiación</span>
+                        <span class="spec-val">Polietileno Ultra-Alto Peso</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Servicio 2: Gastronomía -->
+            <article class="amenity-card" data-category="gastronomia">
+              <div class="amenity-img-wrapper">
+                <img src="./images/space_gastronomy.jpg" alt="Alta Cocina Espacial" class="amenity-img" />
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>3 ESTRELLAS MICHELIN</span>
+                  <span style="color: var(--color-gold);">MARIDAJE CÓSMICO</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Alta Cocina Molecular en Microgravedad</h3>
+                  <div class="amenity-subtitle">Menús gastronómicos adaptados a 0g</div>
+                  <p class="amenity-desc">
+                    En microgravedad, el paladar humano experimenta cambios sensoriales sutiles. Nuestros chefs consultores han formulado una sinfonía culinaria con esferificaciones de caldos cósmicos y copas de tensión capilar.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-gastronomia">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-gastronomia" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Servicio</span>
+                        <span class="spec-val">En suite o salón</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Vajilla</span>
+                        <span class="spec-val">Titanio anodizado</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Conservación</span>
+                        <span class="spec-val">Criopreservación de vapor</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Nutrición</span>
+                        <span class="spec-val">Calibración biométrica</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Servicio 3: Observatorio -->
+            <article class="amenity-card" data-category="observatorio">
+              <div class="amenity-img-wrapper">
+                <img src="./images/panoramic_cupola.jpg" alt="Cupola de Observación" class="amenity-img" />
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>VISTA 360° CONTINUA</span>
+                  <span style="color: var(--color-gold);">ZAFIRO SINTÉTICO</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Cupola Panorámica 360° & Club Privado</h3>
+                  <div class="amenity-subtitle">El salón social más exclusivo del universo</div>
+                  <p class="amenity-desc">
+                    El centro de encuentro del crucero: una monumental cúpula de observación con vistas ininterrumpidas a la curvatura planetaria, nebulosas distantes y auroras polares, equipada con telescopio espectral.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-observatorio">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-observatorio" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Ángulo de Visión</span>
+                        <span class="spec-val">360° continuo</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Capacidad</span>
+                        <span class="spec-val">Máx. 8 tripulantes</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Óptica</span>
+                        <span class="spec-val">Multicapa atérmica</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Filtro Radiación</span>
+                        <span class="spec-val">99.98% de bloqueo</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Servicio 4: Academia y Trajes -->
+            <article class="amenity-card" data-category="academia">
+              <div class="amenity-img-wrapper">
+                <img src="./images/earth_orbit.jpg" alt="Entrenamiento Espacial" class="amenity-img" />
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>PREPARACIÓN VIP</span>
+                  <span style="color: var(--color-gold);">SASTRERÍA BALÍSTICA</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Academia & Trajes de Alta Costura Espacial</h3>
+                  <div class="amenity-subtitle">Instrucción civil y trajes a medida</div>
+                  <p class="amenity-desc">
+                    Antes del despegue, los pasajeros completan 3 días de inmersión en nuestro centro privado. Trajes presurizados confeccionados a medida que combinan seguridad balística con ergonomía de alta sastrería.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-academia">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-academia" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Duración Pre-Vuelo</span>
+                        <span class="spec-val">3 a 5 días</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Material Traje</span>
+                        <span class="spec-val">Kevlar & Fibra Nomex</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Instructores</span>
+                        <span class="spec-val">Veteranos ESA / NASA</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Acompañantes</span>
+                        <span class="spec-val">Hasta 2 en base</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- Tabla Comparativa de Paquetes -->
+          <div class="comparison-container">
+            <h3 style="font-size: 1.3rem; text-align: center; text-transform: uppercase; color: #ffffff; margin-bottom: 1.5rem;">
+              Matriz Comparativa de Paquetes de Viaje
+            </h3>
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Beneficio / Servicio</th>
+                  <th style="color: #ffffff;">Órbita Apex (EEI)</th>
+                  <th style="color: var(--color-gold);">Odisea Artemisa (Luna)</th>
+                  <th style="color: #f97316;">Sovereign (Marte)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Tipo de Alojamiento</td>
+                  <td>Pod Privado con Ventana</td>
+                  <td style="color: var(--color-gold-light);">Suite Cis-Lunar 42 m³</td>
+                  <td>Stateroom con Domo Biosférico</td>
+                </tr>
+                <tr>
+                  <td>Paseo Extravehicular (EVA)</td>
+                  <td>Simulación Virtual 8K</td>
+                  <td style="color: var(--color-gold-light);">EVA Real en Superficie Lunar</td>
+                  <td>Múltiples Salidas en Cañones</td>
+                </tr>
+                <tr>
+                  <td>Gastronomía Personalizada</td>
+                  <td>Menú 3 Estrellas Michelin</td>
+                  <td style="color: var(--color-gold-light);">Chef Personal + Cava</td>
+                  <td>Laboratorio Culinario & Huerta</td>
+                </tr>
+                <tr>
+                  <td>Enlace con la Tierra</td>
+                  <td>Láser 10 Gbps</td>
+                  <td style="color: var(--color-gold-light);">Enlace Cuántico Continuo</td>
+                  <td>Retransmisión Holográfica</td>
+                </tr>
+                <tr>
+                  <td>Traje Confeccionado</td>
+                  <td>Presión Ligero</td>
+                  <td style="color: var(--color-gold-light);">Superficie Lunar a Medida</td>
+                  <td>Armadura Térmica Blindada</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN E: RESERVA Y CONTACTO (La Hoja de Registro de Tripulación)
+           ==================================================================== -->
+      <section id="tripulacion" class="section-tripulacion">
+        <div class="container">
+          <header style="text-align: center; max-width: 700px; margin: 0 auto 3rem;">
+            <div class="section-kicker">Despacho Aeroespacial Privado · Manifiesto de Vuelo</div>
+            <h2 class="section-title">Hoja de Registro de Tripulación</h2>
+            <p class="section-intro" style="margin: 0.75rem auto 0;">
+              Formalice su ingreso en el selecto padrón de exploradores. Tras validar sus datos, se activará el escaneo biométrico preliminar de autorización.
+            </p>
+          </header>
+
+          <div class="manifest-card">
+            <!-- Sello Superior de Acreditación -->
+            <div class="manifest-top-seal">
+              <div class="manifest-seal-text">
+                COSMOS TOUR CREW ACCREDITATION · PROTOCOLO AST-2026
+              </div>
+              <div class="telemetry-text" style="font-size: 0.72rem;">
+                ESTADO: <span id="manifest-seal-status" style="color: var(--color-gold); font-weight: 700;">○ PENDIENTE DE ESCANEO</span>
+              </div>
+            </div>
+
+            <!-- Caja de Escaneo Biométrico Láser -->
+            <div id="biometric-scanner-box" class="biometric-scanner-box">
+              <div class="scan-fingerprint-icon">⚡</div>
+              <div class="telemetry-text" style="color: var(--color-gold); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;">
+                ESCANEO BIOMÉTRICO LÁSER & APERTURA DE EXPEDIENTE AEROESPACIAL
+              </div>
+              <div class="scan-progress-track">
+                <div id="scan-progress-bar" class="scan-progress-bar"></div>
+              </div>
+              <div id="scan-progress-text" class="telemetry-text" style="font-size: 0.7rem; color: var(--color-text-dim);">
+                Iniciando validación...
+              </div>
+            </div>
+
+            <!-- Tarjeta de Embarque Generada -->
+            <div id="boarding-pass-result" class="boarding-pass-result">
+              <div class="pass-header">
+                <div>
+                  <div class="telemetry-text" style="color: var(--color-gold); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.3rem;">
+                    TARJETA OFICIAL DE EMBARQUE ESPACIAL
+                  </div>
+                  <h3 id="pass-name" style="font-size: 1.8rem; color: #ffffff; text-transform: uppercase;">
+                    Nombre del Pasajero
+                  </h3>
+                  <div id="pass-role-country" class="telemetry-text" style="color: var(--color-cyan); font-size: 0.75rem;">
+                    Comandante Civil · España
+                  </div>
+                </div>
+                <div style="text-align: right;" class="telemetry-text">
+                  <div style="font-size: 0.65rem; color: var(--color-text-dim);">CÓDIGO DE MISIÓN</div>
+                  <div id="pass-mission-code" style="font-size: 1.25rem; font-weight: 700; color: var(--color-gold);">
+                    CT-2026-LUN-842
+                  </div>
+                  <div style="font-size: 0.65rem; color: #34d399; margin-top: 0.2rem;">● BIO-CLEARED</div>
+                </div>
+              </div>
+
+              <div class="pass-details-grid">
+                <div>
+                  <span style="color: var(--color-text-dim); display: block; font-size: 0.65rem;">DESTINO</span>
+                  <span id="pass-dest" style="color: #ffffff; font-weight: 600;">La Luna</span>
+                </div>
+                <div>
+                  <span style="color: var(--color-text-dim); display: block; font-size: 0.65rem;">ASIENTO ASIGNADO</span>
+                  <span id="pass-seat" style="color: var(--color-gold); font-weight: 600;">ORBITAL-04A</span>
+                </div>
+                <div>
+                  <span style="color: var(--color-text-dim); display: block; font-size: 0.65rem;">CATEGORÍA DE SUITE</span>
+                  <span id="pass-suite" style="color: #ffffff;">Celestial Sovereign Suite</span>
+                </div>
+                <div>
+                  <span style="color: var(--color-text-dim); display: block; font-size: 0.65rem;">VENTANA DE DESPEGUE</span>
+                  <span id="pass-window" style="color: #ffffff;">Noviembre 2026</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: gap;">
+                <button id="btn-modify-manifest" class="btn-secondary" style="font-size: 0.7rem;">
+                  Modificar Registro
+                </button>
+                <button id="btn-print-pass" class="btn-primary" style="font-size: 0.7rem;">
+                  Imprimir / Descargar Credencial
+                </button>
+              </div>
+            </div>
+
+            <!-- Formulario de Manifiesto -->
+            <form id="manifest-form">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="manifest-name">Nombre Completo del Astronauta *</label>
+                  <input type="text" id="manifest-name" class="form-input" required placeholder="Ej. Helena Valenzuela Ruiz" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-email">Correo Electrónico Confidencial *</label>
+                  <input type="email" id="manifest-email" class="form-input" required placeholder="h.valenzuela@cosmos-private.com" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-passport">Número de Pasaporte Internacional *</label>
+                  <input type="text" id="manifest-passport" class="form-input" required placeholder="P-89240177A" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-destination">Expedición Seleccionada</label>
+                  <select id="manifest-destination" class="form-select">
+                    <option value="La Luna">La Luna (Expedición Cis-Lunar Artemisa)</option>
+                    <option value="Marte">Marte (Odisea Valles Marineris)</option>
+                    <option value="Estación Espacial Internacional">Estación Espacial Internacional (Apex Cupola)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-suite">Categoría de Suite a Bordo</label>
+                  <select id="manifest-suite" class="form-select">
+                    <option value="Celestial Sovereign Suite">Celestial Sovereign Suite (42 m³)</option>
+                    <option value="Mirador Cupola Stateroom">Mirador Cupola Stateroom (35 m³)</option>
+                    <option value="Pod Privado de Ingravidez">Pod Privado de Ingravidez (24 m³)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-window">Ventana Temporal de Despegue</label>
+                  <select id="manifest-window" class="form-select">
+                    <option value="Octubre 2026">Octubre 2026</option>
+                    <option value="Noviembre 2026">Noviembre 2026</option>
+                    <option value="Marzo 2027">Marzo 2027</option>
+                    <option value="Junio 2027">Junio 2027</option>
+                  </select>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label" for="manifest-role">Rol en el Manifiesto de Vuelo</label>
+                  <select id="manifest-role" class="form-select">
+                    <option value="Comandante Civil de Travesía">Comandante Civil de Travesía</option>
+                    <option value="Especialista de Observación Astronómica">Especialista de Observación Astronómica</option>
+                    <option value="Pasajero de Placer & Bienestar">Pasajero de Placer & Bienestar</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <span class="telemetry-text" style="font-size: 0.72rem; color: var(--color-text-dim);">
+                  El envío activará el escaneo biométrico seguro de tolerancia de vuelo.
+                </span>
+                <button type="submit" class="btn-primary" style="padding: 0.85rem 2rem;">
+                  Validar y Emitir Credencial
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal Dossier de Navegación Interplanetaria (Salto Warp) -->
+    <div id="dossier-modal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal-box">
+        <button id="modal-close-btn" class="modal-close-btn" aria-label="Cerrar expediente">✕</button>
+
+        <div style="margin-bottom: 1.5rem;">
+          <div class="telemetry-text" style="color: var(--color-gold); font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.4rem;">
+            EXPEDIENTE DE NAVEGACIÓN · DESPEGUE: <span id="modal-departure">Noviembre 2026</span>
+          </div>
+          <h3 id="modal-title" style="font-size: 2.2rem; color: #ffffff; text-transform: uppercase;">
+            Destino
+          </h3>
+          <div id="modal-subtitle" class="telemetry-text" style="color: var(--color-cyan); font-size: 0.75rem; text-transform: uppercase;">
+            Subtítulo
+          </div>
+        </div>
+
+        <!-- Telemetría en el Modal -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; background: rgba(0, 0, 0, 0.5); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: 1.5rem;" class="telemetry-text">
+          <div>
+            <span style="font-size: 0.62rem; color: var(--color-text-dim); display: block;">DISTANCIA</span>
+            <span id="modal-dist" style="font-size: 0.85rem; color: #ffffff; font-weight: 700;">-</span>
+          </div>
+          <div>
+            <span style="font-size: 0.62rem; color: var(--color-text-dim); display: block;">DURACIÓN</span>
+            <span id="modal-duration" style="font-size: 0.85rem; color: #ffffff; font-weight: 700;">-</span>
+          </div>
+          <div>
+            <span style="font-size: 0.62rem; color: var(--color-text-dim); display: block;">GRAVEDAD</span>
+            <span id="modal-gravity" style="font-size: 0.85rem; color: var(--color-gold); font-weight: 700;">-</span>
+          </div>
+          <div>
+            <span style="font-size: 0.62rem; color: var(--color-text-dim); display: block;">TEMPERATURA</span>
+            <span id="modal-temp" style="font-size: 0.85rem; color: #ffffff; font-weight: 700;">-</span>
+          </div>
+        </div>
+
+        <!-- Listas de Experiencias y Servicios -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-gold); margin-bottom: 0.75rem;" class="telemetry-text">
+            Experiencias y Misiones en Destino
+          </h4>
+          <ul id="modal-highlights" class="dest-highlights"></ul>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+          <h4 style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-gold); margin-bottom: 0.75rem;" class="telemetry-text">
+            Servicios Exclusivos a Bordo
+          </h4>
+          <ul id="modal-luxuries" class="dest-highlights"></ul>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
+          <div>
+            <span style="font-size: 0.65rem; color: var(--color-text-dim);" class="telemetry-text">TARIFA ALL-INCLUSIVE</span>
+            <div id="modal-price" style="font-size: 1.4rem; color: var(--color-gold); font-weight: 700;" class="telemetry-text">$0</div>
+          </div>
+          <button class="btn-primary btn-book-dest" style="padding: 0.75rem 1.8rem;">
+            Seleccionar Este Destino
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Aeroespacial -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <span class="brand-wordmark" style="font-size: 1.25rem; display: block; margin-bottom: 1rem;">
+              COSMOS TOUR
+            </span>
+            <p style="font-size: 0.82rem; font-weight: 300; max-width: 420px; line-height: 1.6;">
+              Agencia pionera de turismo espacial de alto lujo y expediciones orbitales privadas.
+              Transformamos la exploración cósmica en una obra de arte viviente.
+            </p>
+            <div class="telemetry-text" style="font-size: 0.68rem; color: var(--color-text-dim); margin-top: 1rem;">
+              SEDE: ZÚRICH · BASES DE DESPEGUE: CABO CAÑAVERAL / GUAYANA
+            </div>
+          </div>
+
+          <div>
+            <div class="section-kicker" style="font-size: 0.72rem; margin-bottom: 1rem;">Expediciones Activas</div>
+            <ul class="footer-links">
+              <li><a href="#destinos">Órbita Baja Terrestre (EEI)</a></li>
+              <li><a href="#destinos">Expedición Cis-Lunar (La Luna)</a></li>
+              <li><a href="#destinos">Odisea Valles Marineris (Marte)</a></li>
+              <li><a href="#vuelo">Simulador de Gravedad Cero</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="section-kicker" style="font-size: 0.72rem; margin-bottom: 1rem;">Protocolos & Certificación</div>
+            <ul class="footer-links">
+              <li><span>Cumplimiento FAA Commercial Spaceflight</span></li>
+              <li><span>Estándar ISO 24638 Espacio Civil</span></li>
+              <li><span>Seguro Interplanetario Lloyd's</span></li>
+              <li><span>Certificación Aeromédica Clase 1</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div>
+            © 2026 Cosmos Tour S.A. Todos los derechos reservados.
+          </div>
+          <div style="display: flex; gap: 1.5rem;">
+            <span>Privacidad Confidencial</span>
+            <span aria-hidden="true">·</span>
+            <span>Términos de Manifiesto</span>
+            <span aria-hidden="true">·</span>
+            <span>Atención al Tripulante 24/7</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Enlace a script nativo Vanilla JavaScript -->
+    <script src="./script.js"></script>
+  </body>
+</html>
