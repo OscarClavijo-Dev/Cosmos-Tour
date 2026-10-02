@@ -856,7 +856,14 @@ function initThemeToggle() {
 
     const callToAction = DOM.navActions.querySelector('a.btn-primary');
     DOM.navActions.insertBefore(button, callToAction);
-    button.addEventListener('click', toggleTheme);
+  }
+
+  /* El botón se sirve estático en el HTML (evita CLS): aquí solo se conecta
+     el evento, tanto si vino del markup como si hubo que crearlo. */
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle && !themeToggle.dataset.bound) {
+    themeToggle.dataset.bound = '1';
+    themeToggle.addEventListener('click', toggleTheme);
   }
 
   const storedTheme = readStorage(THEME_STORAGE_KEY);

@@ -19,6 +19,25 @@
          (--font-main: Space Grotesk / --font-mono: IBM Plex Mono) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- === OPTIMIZACIÓN 1.1: PRELOAD DE RECURSOS CRÍTICOS (LCP/FCP) === -->
+    <!-- Imagen LCP: imagesrcset/imagesizes deben coincidir EXACTAMENTE con el
+         <source> de <picture> para que el navegador elija el mismo candidato. -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      imagesrcset="./assets/imagenes/hero-universo-640.webp 640w, ./assets/imagenes/hero-universo-960.webp 960w, ./assets/imagenes/hero-universo-1280.webp 1280w, ./assets/imagenes/hero-universo-1920.webp 1920w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
+    <!-- JS con defer: el preload scanner lo descubre sin bloquear el HTML -->
+    <link rel="preload" href="script.js" as="script" />
+    <!-- Fuentes woff2 exactas que usa Google Fonts (evita el swap tardío = CLS).
+         crossorigin es obligatorio: las fuentes se solicitan en modo CORS. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q131nj-o.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3pQPwlBFgsAXHNk.woff2" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS crítico above-the-fold: render-blocking mínimo (~11KB inline) -->
@@ -30,7 +49,11 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.25);--btn-primary-shadow-hover: 0 16px 32px rgba(3, 105, 161, 0.42),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);--btn-secondary-bg: linear-gradient(135deg, #b45309 0%, #92400e 100%);--btn-secondary-fg: #ffffff;--btn-secondary-shadow: 0 10px 24px rgba(146, 64, 14, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.25);--btn-secondary-shadow-hover: 0 16px 32px rgba(146, 64, 14, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35)}.nav-actions .btn-primary{padding:0.62rem 1.4rem;font-size:0.8125rem;border-radius:999px}</style>
+    inset 0 1px 0 rgba(255, 255, 255, 0.35)}.nav-actions .btn-primary{padding:0.62rem 1.4rem;font-size:0.8125rem;border-radius:999px}/* [CRÍTICO] Lockup de marca: debe pintarse en el primer render para que la
+   medición temprana de --nav-h (script tras </header>) coincida con la altura
+   final de la cabecera y no produzca layout shift (CLS). */.brand-emblem{display:block;flex:0 0 auto;color:var(--text-pure);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1)}.brand-emblem svg{display:block;width:30px;height:30px}.emblem-orbit{fill:none;stroke:currentColor;stroke-width:2;opacity:0.5;transition:opacity 0.35s ease}.emblem-core{fill:var(--color-neon-cyan);animation:cosmos-pulse 2.8s ease-in-out infinite}.emblem-sat{fill:currentColor;filter:drop-shadow(0 0 5px currentColor)}.brand-text{display:flex;flex-direction:column;gap:0.3rem}.brand-name{display:flex;align-items:baseline;gap:0.4em;font-family:var(--font-main);font-size:0.98rem;font-weight:700;line-height:1;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap}.brand-name-tail{font-family:var(--font-mono);font-size:0.86em;font-weight:500;letter-spacing:0.2em;color:var(--color-neon-cyan);transition:text-shadow 0.3s ease}.brand-tag{display:none;font-family:var(--font-mono);font-size:0.56rem;line-height:1;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}.nav-links{list-style:none}.nav-links .nav-link{font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap}.scroll-progress{position:absolute;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--color-neon-cyan),var(--color-gold));transition:width 0.15s linear;z-index:10}@media (min-width:768px){.brand-tag{display:block}.brand-emblem svg{width:34px;height:34px}.brand-name{font-size:1.06rem;letter-spacing:0.14em}}@media (min-width:1200px){.brand-emblem svg{width:36px;height:36px}.brand-name{font-size:1.12rem;letter-spacing:0.16em}.brand-tag{font-size:0.6rem;letter-spacing:0.34em}}/* [CRÍTICO] Botón de tema en cabecera: estático en el HTML y este bloque
+   evita que su tamaño cambie al aplicarse styles.css (wrap del nav-container). */
+.btn-icon{display:inline-flex;align-items:center;gap:0.45rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;padding:0.5rem 0.85rem;border-radius:999px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease,background-color 0.25s ease}.btn-icon:hover{border-color:var(--color-neon-cyan);color:var(--text-pure)}@media (max-width:480px){.btn-icon .theme-label{display:none}}</style>
 
     <!-- Hoja completa: carga asíncrona (no bloquea el primer pintado) -->
     <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -133,11 +156,51 @@
         </nav>
 
         <!-- Zona 3: Acciones primarias -->
+        <!-- El botón de tema se sirve en HTML estático (antes: inyectado por
+             script.js tras el parseo) para que la cabecera tenga su geometría
+             definitiva en el primer pintado y no genere CLS. -->
         <div class="nav-actions">
+          <button
+            type="button"
+            id="theme-toggle"
+            class="btn-icon theme-toggle"
+            aria-label="Cambiar a tema claro"
+            aria-pressed="false"
+          >
+            <span class="theme-icon" aria-hidden="true">🌙</span>
+            <span class="theme-label">MODO OSCURO</span>
+          </button>
           <a href="#registro" class="btn-primary">Reservar Misión</a>
         </div>
       </div>
     </header>
+
+    <!-- [PERF/CLS] Mide --nav-h ANTES del primer pintado. Sin este script el
+         padding de .main-wrapper cambiaba de 84px a la altura real (p.ej. 129px
+         en móvil) cuando script.js corría tras el FCP: ese salto aportaba
+         0.274 del CLS total. Se duplica aquí deliberadamente (inline, síncrono)
+         porque script.js se carga con defer y llegaría tarde. -->
+    <script>
+      (function () {
+        var h = document.querySelector('.top-nav');
+        if (!h) return;
+        var cs = getComputedStyle(h);
+        var root = getComputedStyle(document.documentElement);
+        var padRaw = (root.getPropertyValue('--nav-pad-y') || '1.1rem').trim();
+        var padNum = parseFloat(padRaw);
+        if (!padNum) return;
+        var fontPx = parseFloat(root.fontSize) || 16;
+        var padPx = padRaw.indexOf('rem') > -1 ? padNum * fontPx : padNum;
+        var curPad = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+        var content = h.getBoundingClientRect().height - curPad;
+        if (content > 0) {
+          document.documentElement.style.setProperty(
+            '--nav-h',
+            Math.ceil(content + padPx * 2) + 'px'
+          );
+        }
+      })();
+    </script>
 
     <!-- Contenedor Semántico Principal -->
     <main class="main-wrapper">
@@ -147,16 +210,22 @@
       <section id="hero" class="section-despegue" aria-labelledby="hero-title">
         <!-- [AJUSTE HERO] Imagen demo del universo de fondo (NASA) + velo degradado para
              legibilidad del texto sobre la fotografía -->
-        <img
-          class="hero-universe-bg"
-          src="./assets/imagenes/hero-universo.jpg"
-          alt="Universo profundo con la Vía Láctea y campos de estrellas"
-          
-          width="1920"
-          height="1080"
-          fetchpriority="high"
-          decoding="async"
-        />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="./assets/imagenes/hero-universo-640.webp 640w, ./assets/imagenes/hero-universo-960.webp 960w, ./assets/imagenes/hero-universo-1280.webp 1280w, ./assets/imagenes/hero-universo-1920.webp 1920w"
+            sizes="100vw"
+          />
+          <img
+            class="hero-universe-bg"
+            src="./assets/imagenes/hero-universo.jpg"
+            alt="Universo profundo con la Vía Láctea y campos de estrellas"
+            width="1920"
+            height="1160"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
         <div class="hero-universe-veil" aria-hidden="true"></div>
         <div class="container">
           <!-- Barra superior de telemetría de vuelo -->
@@ -201,23 +270,38 @@
                  sincroniza el HUD del canvas y abre la ficha emergente del cuerpo celeste -->
             <div class="planet-picker" role="group" aria-label="Explorar cuerpos celestes">
               <button class="planet-btn segmented-btn active" data-planet-target="earth" data-planet-info="tierra">
-                <img src="./assets/imagenes/planeta-tierra.jpg" alt="Planeta Tierra visto desde el espacio" width="72" height="72" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/planeta-tierra-160.webp 160w" sizes="72px" />
+                  <img src="./assets/imagenes/planeta-tierra.jpg" alt="Planeta Tierra visto desde el espacio" width="72" height="72" loading="lazy" decoding="async" />
+                </picture>
                 <span class="planet-btn-name">Tierra</span>
               </button>
               <button class="planet-btn segmented-btn" data-planet-target="mars" data-planet-info="marte">
-                <img src="./assets/imagenes/planeta-marte.jpg" alt="Planeta Marte visto desde el espacio" width="72" height="72" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/planeta-marte-326.webp 326w" sizes="72px" />
+                  <img src="./assets/imagenes/planeta-marte.jpg" alt="Planeta Marte visto desde el espacio" width="72" height="72" loading="lazy" decoding="async" />
+                </picture>
                 <span class="planet-btn-name">Marte</span>
               </button>
               <button class="planet-btn segmented-btn" data-planet-target="luna" data-planet-info="luna">
-                <img src="./assets/imagenes/planeta-luna.jpg" alt="La Luna con su cara visible desde el espacio" width="72" height="72" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/planeta-luna-229.webp 229w" sizes="72px" />
+                  <img src="./assets/imagenes/planeta-luna.jpg" alt="La Luna con su cara visible desde el espacio" width="72" height="72" loading="lazy" decoding="async" />
+                </picture>
                 <span class="planet-btn-name">La Luna</span>
               </button>
               <button class="planet-btn segmented-btn" data-planet-target="jupiter" data-planet-info="jupiter">
-                <img src="./assets/imagenes/planeta-jupiter.jpg" alt="Planeta Júpiter con sus bandas de nubes" width="72" height="72" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/planeta-jupiter-480.webp 480w" sizes="72px" />
+                  <img src="./assets/imagenes/planeta-jupiter.jpg" alt="Planeta Júpiter con sus bandas de nubes" width="72" height="72" loading="lazy" decoding="async" />
+                </picture>
                 <span class="planet-btn-name">Júpiter</span>
               </button>
               <button class="planet-btn segmented-btn" data-planet-target="saturno" data-planet-info="saturno">
-                <img src="./assets/imagenes/planeta-saturno.jpg" alt="Planeta Saturno con sus anillos" width="72" height="72" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/planeta-saturno-352.webp 352w" sizes="72px" />
+                  <img src="./assets/imagenes/planeta-saturno.jpg" alt="Planeta Saturno con sus anillos" width="72" height="72" loading="lazy" decoding="async" />
+                </picture>
                 <span class="planet-btn-name">Saturno</span>
               </button>
             </div>
@@ -530,7 +614,10 @@
             <!-- Servicio 1: Suites -->
             <article class="amenity-card" data-category="suites">
               <div class="amenity-img-wrapper">
-                <img src="./assets/imagenes/amenity-suite.jpg" alt="Suite de Lujo Presurizada" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-suite-640.webp 640w, ./assets/imagenes/amenity-suite-1280.webp 1280w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-suite.jpg" alt="Suite de Lujo Presurizada" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>COSMOS TOUR EXCLUSIVE</span>
@@ -577,7 +664,10 @@
             <!-- Servicio 2: Gastronomía -->
             <article class="amenity-card" data-category="gastronomia">
               <div class="amenity-img-wrapper">
-                <img src="./assets/imagenes/amenity-gastronomia.jpg" alt="Alta Cocina Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-gastronomia-640.webp 640w, ./assets/imagenes/amenity-gastronomia-1280.webp 1280w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-gastronomia.jpg" alt="Alta Cocina Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>3 ESTRELLAS MICHELIN</span>
@@ -624,7 +714,10 @@
             <!-- Servicio 3: Observatorio -->
             <article class="amenity-card" data-category="observatorio">
               <div class="amenity-img-wrapper">
-                <img src="./assets/imagenes/amenity-cupola.jpg" alt="Cupola de Observación" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-cupola-640.webp 640w, ./assets/imagenes/amenity-cupola-1279.webp 1279w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-cupola.jpg" alt="Cupola de Observación" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>VISTA 360° CONTINUA</span>
@@ -671,7 +764,10 @@
             <!-- Servicio 4: Academia y Trajes -->
             <article class="amenity-card" data-category="academia">
               <div class="amenity-img-wrapper">
-                <img src="./assets/imagenes/amenity-academia.jpg" alt="Entrenamiento Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-academia-640.webp 640w, ./assets/imagenes/amenity-academia-1280.webp 1280w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-academia.jpg" alt="Entrenamiento Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>PREPARACIÓN VIP</span>
@@ -1094,7 +1190,10 @@
       <div class="modal-box planet-box">
         <button id="planet-modal-close" class="modal-close-btn" aria-label="Cerrar ficha planetaria">✕</button>
         <div class="planet-visual">
-          <img id="planet-modal-img" src="./assets/imagenes/planeta-tierra.jpg" alt="Imagen real del cuerpo celeste seleccionado (NASA)" width="640" height="360" decoding="async" />
+          <!-- Sin src inicial: script.js asigna la imagen al abrir la ficha.
+               Evita descargar 239KB en la carga (el overlay está en el
+               viewport aunque esté oculto, así que loading="lazy" no basta). -->
+          <img id="planet-modal-img" alt="Imagen real del cuerpo celeste seleccionado (NASA)" width="640" height="360" decoding="async" />
         </div>
         <div class="modal-block">
           <div class="telemetry-text modal-kicker">FICHA CELESTE · CATÁLOGO COSMOS TOUR</div>
@@ -1137,7 +1236,8 @@
       <div class="modal-box poi-box">
         <button id="poi-modal-close" class="modal-close-btn" aria-label="Cerrar ficha celeste">✕</button>
         <div class="poi-visual">
-          <img id="poi-modal-img" src="./assets/imagenes/nebulosa-orion.jpg" alt="Imagen del punto de interés celeste (NASA)" width="640" height="360" loading="lazy" decoding="async" />
+          <!-- Sin src inicial: se asigna al abrir la ficha (ahorra 65KB). -->
+          <img id="poi-modal-img" alt="Imagen del punto de interés celeste (NASA)" width="640" height="360" decoding="async" />
         </div>
         <div class="modal-block">
           <div class="telemetry-text modal-kicker">ARCHIVO CELESTE · MIRADOR ESTELAR</div>
