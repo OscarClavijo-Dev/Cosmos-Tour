@@ -1725,6 +1725,8 @@ p {
    PIE DE PÁGINA (FOOTER)
    ========================================================================== */
 .site-footer {
+  position: relative;
+  z-index: 1;
   background-color: var(--color-space-darker);
   border-top: 1px solid var(--border-subtle);
   padding: 3rem 0;
@@ -4199,6 +4201,16 @@ section {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.7rem;
+}
+.footer-project {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.footer-year {
+  font-family: var(--font-mono);
 }
 .footer-legal-row a {
   color: var(--text-dim);
