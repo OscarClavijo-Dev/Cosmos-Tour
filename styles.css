@@ -1664,7 +1664,8 @@ p {
 .manifest-card {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  /* [AJUSTE RESPONSIVE] Bloques del formulario/formulario más compactos */
+  gap: 1.25rem;
 }
 .manifest-header {
   display: flex;
@@ -2238,28 +2239,65 @@ textarea:focus-visible,
   --color-gold-light: #fbbf24;
 }
 
-/* --- 2. TEMA CLARO (F5): redefinición de la paleta completa --------------- */
+/* --- 2. TEMA CLARO (F5): paleta "AMANECER ORBITAL" -------------------------
+   Temática espacial en modo claro: cielo de altura al amanecer (azul cielo
+   claro), textos en azul noche y acentos cian/azul profundo + oro de sala de
+   control. Todos los valores mantienen contraste AA (>= 4.5:1). */
 :root[data-theme="light"] {
-  --color-space-deep: #f8fafc;
+  --color-space-deep: #eef3fa;
   --color-space-surface: #ffffff;
   --color-space-card: #ffffff;
-  --color-space-darker: #e2e8f0;
-  --color-space-overlay: rgba(248, 250, 252, 0.95);
-  --border-subtle: #cbd5e1;
-  --border-light: #94a3b8;
-  --text-pure: #0f172a;
-  --text-main: #1e293b;
-  --text-muted: #475569;
+  --color-space-darker: #dfe8f4;
+  --color-space-overlay: rgba(255, 255, 255, 0.96);
+  --border-subtle: #c9d8ea;
+  --border-light: #9db4cd;
+  --border-active: #0369a1;
+  --border-gold: rgba(180, 83, 9, 0.55);
+  --text-pure: #0a1a2f;
+  --text-main: #22364d;
+  --text-muted: #46617f;
   --text-dim: #5b6b80;
-  --color-neon-cyan: #0e7490;
+  --color-neon-cyan: #0369a1;
+  --color-neon-cyan-glow: rgba(3, 105, 161, 0.25);
+  --color-blue: #1d4ed8;
+  --color-blue-glow: rgba(29, 78, 216, 0.22);
   --color-gold: #b45309;
-  --color-gold-light: #92400e;
-  --bg-primary: #f8fafc;
-  --text-primary: #0f172a;
-  --color-cyan: #0e7490;
-  --color-border: #cbd5e1;
-  --color-text-muted: #475569;
+  --color-gold-glow: rgba(180, 83, 9, 0.25);
+  --color-emerald: #047857;
+  --color-rose: #be123c;
+  --bg-primary: #eef3fa;
+  --text-primary: #0a1a2f;
+  --color-cyan: #0369a1;
+  --color-border: #c9d8ea;
+  --color-text-muted: #46617f;
   --color-text-dim: #5b6b80;
+  --color-gold-light: #92400e;
+}
+
+/* --- 2b. TEMA CLARO: overrides de componentes con valores oscuros fijos -----
+   [AJUSTE MODO CLARO] Estos componentes usaban negro/azul profundo fijo en el
+   código y rompían el modo claro (texto ilegible sobre fondos oscuros). */
+:root[data-theme="light"] #universe-canvas {
+  opacity: 0.14;
+}
+:root[data-theme="light"] .ignition-station {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(180, 83, 9, 0.45);
+}
+:root[data-theme="light"] .gauge-box {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--border-subtle);
+}
+:root[data-theme="light"] .zero-g-arena {
+  background: radial-gradient(circle at 50% 30%, rgba(3, 105, 161, 0.1), transparent 60%),
+    var(--color-space-darker);
+}
+:root[data-theme="light"] .segmented-control {
+  background: rgba(10, 26, 47, 0.06);
+}
+:root[data-theme="light"] .biometric-scanner-box,
+:root[data-theme="light"] .boarding-pass-result {
+  background: rgba(10, 14, 39, 0.94);
 }
 
 /* Transición suave entre temas (0.3s) */
@@ -2298,7 +2336,9 @@ body {
 }
 section {
   position: relative;
-  padding: 5.5rem 0;
+  /* [AJUSTE RESPONSIVE] Espaciado vertical entre secciones reducido de 5.5rem a 4rem
+     para que el contenido se vea más pegado al grid (menos huecos entre secciones) */
+  padding: 4rem 0;
   scroll-margin-top: 96px;
 }
 .section-despegue {
@@ -2314,7 +2354,8 @@ section {
   align-items: flex-end;
   gap: 2rem;
   flex-wrap: wrap;
-  margin-bottom: 2.5rem;
+  /* [AJUSTE RESPONSIVE] Menos aire entre el encabezado y su grid de contenido */
+  margin-bottom: 2rem;
 }
 .section-kicker {
   font-family: var(--font-mono);
@@ -2425,7 +2466,8 @@ section {
   flex-wrap: wrap;
 }
 .hero-telemetry-bottom {
-  margin-top: 3rem;
+  /* [AJUSTE RESPONSIVE] Menos aire dentro del hero */
+  margin-top: 2rem;
   border-top: 1px solid var(--border-subtle);
   padding-top: 1.25rem;
 }
@@ -3275,7 +3317,8 @@ section {
     font-size: 1.2rem;
   }
   section {
-    padding: 4rem 0;
+    /* [AJUSTE RESPONSIVE] Móvil/tablet: secciones aún más compactas */
+    padding: 3rem 0;
   }
 }
 @media (max-width: 480px) {
@@ -3631,4 +3674,559 @@ section {
 .footer-legal-row {
   display: flex;
   gap: 1.5rem;
+}
+
+
+/* ==========================================================================
+   15. AJUSTES DE DISEÑO (landing): HERO, PLANETAS, CARDS, MATRIZ Y FOOTER
+   ========================================================================== */
+
+/* --- 15.1 HERO con imagen demo del universo -------------------------------- */
+/* [AJUSTE HERO] Imagen de fondo real (NASA) cubriendo toda la sección hero */
+.hero-universe-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+/* Velo degradado para legibilidad del texto sobre la fotografía */
+.hero-universe-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(3, 7, 18, 0.86) 0%,
+    rgba(3, 7, 18, 0.55) 42%,
+    rgba(3, 7, 18, 0.9) 100%
+  );
+}
+.section-despegue > .container {
+  position: relative;
+  z-index: 2;
+}
+/* [AJUSTE MODO CLARO] El hero es una "ventana al espacio": dentro de la sección
+   se redefinen las variables a la versión clara sobre fondo oscuro para que el
+   contenido mantenga contraste AAA sobre la fotografía en ambos temas. */
+:root[data-theme="light"] .section-despegue {
+  --text-pure: #f8fafc;
+  --text-main: #e6edf7;
+  --text-muted: #b9c6da;
+  --text-dim: #93a4bd;
+  --color-neon-cyan: #38bdf8;
+  --color-neon-cyan-glow: rgba(56, 189, 248, 0.3);
+  --color-gold: #fbbf24;
+  --color-gold-glow: rgba(251, 191, 36, 0.3);
+  --border-subtle: rgba(255, 255, 255, 0.22);
+  --border-light: rgba(255, 255, 255, 0.45);
+  --color-space-card: rgba(6, 12, 28, 0.55);
+  --color-space-darker: rgba(6, 12, 28, 0.72);
+}
+
+/* --- 15.2 Selector de planetas con IMÁGENES REALES ------------------------ */
+/* [AJUSTE HERO] Fila de botones-imagen de cuerpos celestes (Tierra, Marte,
+   Luna, Júpiter, Saturno): hover con elevación y estado activo con glow */
+.planet-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+.planet-btn.segmented-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 76px;
+  padding: 0.55rem 0.5rem 0.45rem;
+  background: rgba(3, 7, 18, 0.55);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease,
+    background-color 0.3s ease, color 0.3s ease;
+}
+.planet-btn.segmented-btn img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  transition: transform 0.35s ease, border-color 0.35s ease;
+}
+.planet-btn-name {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+.planet-btn.segmented-btn:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-light);
+  color: var(--text-pure);
+  background: rgba(6, 182, 212, 0.14);
+}
+.planet-btn.segmented-btn:hover img {
+  transform: scale(1.09);
+  border-color: var(--color-neon-cyan);
+}
+.planet-btn.segmented-btn.active {
+  border-color: var(--color-neon-cyan);
+  color: var(--text-pure);
+  background: rgba(6, 182, 212, 0.16);
+  box-shadow: 0 0 20px var(--color-neon-cyan-glow);
+}
+.planet-btn.segmented-btn.active img {
+  border-color: var(--color-neon-cyan);
+  transform: scale(1.06);
+}
+
+/* --- 15.3 Ficha emergente de planetas ------------------------------------- */
+.planet-box {
+  width: min(620px, 100%);
+  color: #dbe4f5;
+}
+.planet-visual {
+  margin: -2rem -2rem 1.25rem;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow: hidden;
+  background: #04060f;
+}
+.planet-visual img {
+  display: block;
+  width: 100%;
+  height: clamp(170px, 32vw, 250px);
+  object-fit: cover;
+  object-position: center;
+}
+.planet-box .modal-title {
+  color: #ffffff;
+}
+.planet-box .modal-kicker {
+  color: #f59e0b;
+}
+.planet-box .modal-subtitle {
+  color: #9fb2cc;
+}
+.planet-box .modal-metric-label {
+  color: #9fb2cc;
+}
+.planet-box .modal-fare-label {
+  color: #9fb2cc;
+}
+.planet-desc {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: #cfdaf0;
+}
+
+/* --- 15.4 Mirador estelar: POIs como botones + ficha celeste -------------- */
+/* [AJUSTE MIRADOR] Los POIs ahora son botones accesibles con estado hover */
+.poi-marker {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--radius-md);
+  transition: transform 0.3s ease, background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.poi-marker:hover,
+.poi-marker:focus-visible {
+  transform: scale(1.07);
+  background: rgba(6, 182, 212, 0.16);
+  box-shadow: 0 0 18px rgba(6, 182, 212, 0.35);
+}
+.poi-box {
+  width: min(600px, 100%);
+  color: #dbe4f5;
+}
+.poi-visual {
+  margin: -2rem -2rem 1.25rem;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow: hidden;
+  background: #04060f;
+}
+.poi-visual img {
+  display: block;
+  width: 100%;
+  height: clamp(180px, 34vw, 270px);
+  object-fit: cover;
+}
+.poi-box .modal-title {
+  color: #ffffff;
+}
+.poi-box .modal-kicker {
+  color: #f59e0b;
+}
+.poi-box .modal-subtitle {
+  color: #9fb2cc;
+}
+.poi-box .modal-fare-label {
+  color: #9fb2cc;
+}
+.poi-story {
+  margin-top: 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #cfdaf0;
+}
+
+/* --- 15.5 Cards de "Rutas Exclusivas del Cosmos" (.dest-*) ---------------- */
+/* [AJUSTE CARDS] Estilos completos que faltaban para las tarjetas de destino
+   + efectos de transición al pasar el mouse (elevación, glow y color). */
+.destination-card > div:first-child {
+  padding: 1.35rem 1.35rem 0.5rem;
+}
+.dest-meta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.7rem;
+}
+.dest-meta-duration {
+  color: var(--color-neon-cyan);
+}
+  .dest-title {
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  line-height: 1.15;
+  margin-bottom: 0.3rem;
+  transition: color 0.3s ease;
+}
+.dest-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+  margin-bottom: 0.8rem;
+}
+.dest-desc {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin-bottom: 0.9rem;
+}
+.dest-footer {
+  margin-top: auto;
+  padding: 1rem 1.35rem 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  background: var(--color-space-darker);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.dest-price-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.dest-price-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.dest-price-val {
+  font-family: var(--font-mono);
+  font-size: clamp(1.15rem, 2.6vw, 1.4rem);
+  font-weight: 700;
+  color: var(--color-gold);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+.dest-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+.dest-actions .btn-secondary,
+.dest-actions .btn-primary {
+  flex: 1;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+/* Transiciones de hover de la card completa */
+.destination-card {
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.3, 1),
+    border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.destination-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--color-neon-cyan);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.4),
+    0 0 26px var(--color-neon-cyan-glow);
+}
+.destination-card:hover .dest-title {
+  color: var(--color-neon-cyan);
+}
+.destination-card:hover .dest-price-val {
+  text-shadow: 0 0 18px var(--color-gold-glow);
+}
+.destination-card:hover .dest-footer {
+  background: rgba(6, 182, 212, 0.08);
+  border-color: var(--color-neon-cyan);
+}
+.destination-card .dest-highlights li {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+.destination-card:hover .dest-highlights li {
+  transform: translateX(4px);
+}
+.destination-card .dest-highlights li::marker {
+  color: var(--color-neon-cyan);
+}
+
+/* --- 15.6 Matriz comparativa interactiva y con respiro --------------------- */
+/* [AJUSTE MATRIZ] Contenedor amplio, filas alternas, hover por fila, resalte
+   de columna por JS (.col-hot), scroll horizontal con primera columna fija en
+   móviles y nota al pie. */
+.comparison-container {
+  margin-top: 3rem;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--color-space-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+.comparison-title {
+  margin-bottom: 1.4rem;
+}
+.comparison-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+}
+.comparison-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
+}
+.comparison-table thead th {
+  background: var(--color-space-darker);
+  color: var(--text-pure);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 1rem 1.15rem;
+  border-bottom: 2px solid var(--border-light);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.comparison-table thead th:first-child {
+  border-top-left-radius: var(--radius-md);
+}
+.comparison-table thead th:last-child {
+  border-top-right-radius: var(--radius-md);
+}
+.comparison-table tbody td {
+  padding: 0.95rem 1.15rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  vertical-align: top;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.comparison-table tbody td:first-child {
+  font-weight: 600;
+  color: var(--text-pure);
+}
+.comparison-table tbody tr:nth-child(even) td {
+  background: rgba(148, 163, 184, 0.08);
+}
+.comparison-table tbody tr {
+  transition: background-color 0.25s ease;
+}
+.comparison-table tbody tr:hover td {
+  background: rgba(6, 182, 212, 0.1);
+}
+/* Resalte de columna activa (añade/quita script.js) */
+.comparison-table thead th.col-hot {
+  background: rgba(6, 182, 212, 0.22);
+  color: var(--color-neon-cyan);
+}
+.comparison-table tbody td.col-hot {
+  background: rgba(6, 182, 212, 0.12);
+}
+.comparison-hl {
+  color: var(--color-neon-cyan);
+  font-weight: 600;
+}
+.comparison-footnote {
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+/* --- 15.7 Footer compacto con 4 columnas, redes y legal -------------------- */
+/* [AJUSTE FOOTER] Rejilla de columnas + redes sociales + barra legal compacta */
+.site-footer {
+  /* [AJUSTE FOOTER] Padding reducido (3rem -> 2.25rem) para un pie más pequeño */
+  padding: 2.25rem 0 1.1rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  padding-bottom: 1.5rem;
+}
+.footer-brand-mark {
+  display: inline-block;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+}
+.footer-about {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-top: 0.6rem;
+  max-width: 340px;
+}
+.footer-kicker {
+  margin-bottom: 0.8rem;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.footer-links li {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.25s ease, padding-left 0.25s ease;
+}
+.footer-links a:hover {
+  color: var(--color-neon-cyan);
+  padding-left: 4px;
+}
+.footer-socials {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.footer-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 50%;
+  color: var(--text-muted);
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.footer-social-link:hover {
+  color: var(--color-neon-cyan);
+  border-color: var(--color-neon-cyan);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px var(--color-neon-cyan-glow);
+}
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.footer-legal-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+}
+.footer-legal-row a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.footer-legal-row a:hover {
+  color: var(--color-neon-cyan);
+  text-decoration: underline;
+}
+
+/* --- 15.8 Responsivo: tablet, desktop y celulares -------------------------- */
+/* [AJUSTE RESPONSIVE] Tablet >= 768px */
+@media (min-width: 768px) {
+  .destinations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+/* [AJUSTE RESPONSIVE] Desktop >= 1200px */
+@media (min-width: 1200px) {
+  .destinations-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .footer-grid {
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  }
+}
+/* [AJUSTE RESPONSIVE] Celulares <= 767px */
+@media (max-width: 767px) {
+  .planet-picker {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.45rem;
+    scrollbar-width: thin;
+  }
+  .planet-btn.segmented-btn {
+    min-width: 68px;
+    flex: 0 0 auto;
+  }
+  .dest-actions {
+    flex-direction: column;
+  }
+  .comparison-table tbody td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--color-space-card);
+    box-shadow: 1px 0 0 var(--border-subtle);
+  }
+  .comparison-table tbody tr:nth-child(even) td:first-child {
+    background: var(--color-space-card);
+  }
+}
+@media (max-width: 480px) {
+  .form-grid {
+    /* [AJUSTE RESPONSIVE] Formulario de una sola columna en celulares */
+    grid-template-columns: 1fr;
+  }
+  .planet-btn.segmented-btn {
+    min-width: 62px;
+    padding: 0.45rem 0.4rem 0.4rem;
+  }
+  .planet-btn.segmented-btn img {
+    width: 48px;
+    height: 48px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

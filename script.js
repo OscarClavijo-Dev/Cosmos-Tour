@@ -826,7 +826,8 @@ function initPlanetSelector() {
       button.classList.add('active');
 
       const planet = button.dataset.planetTarget || 'earth';
-      const planetLabel = planet === 'mars' ? 'Marte' : 'Tierra';
+      const planetLabels = { earth: 'Tierra', mars: 'Marte', luna: 'La Luna', jupiter: 'Júpiter', saturno: 'Saturno' };
+      const planetLabel = planetLabels[planet] || planet;
 
       if (DOM.canvas) {
         DOM.canvas.dataset.planet = planet;
@@ -1793,6 +1794,240 @@ function initBoardingPassFlow() {
  * @param {Function} initializer - Función a ejecutar.
  * @returns {void}
  */
+/* ====================== 16. FICHAS EMERGENTES Y MATRIZ ==================== */
+
+/**
+ * Datos de las fichas celestes que abren los botones .planet-btn del hero.
+ * Claves: tierra | marte | luna | jupiter | saturno.
+ */
+const PLANET_FICHAS = {
+  tierra: {
+    name: 'La Tierra',
+    sub: 'PLANETA DE ORIGEN · ÓRBITA DE SALIDA',
+    img: './assets/imagenes/planeta-tierra.jpg',
+    dist: '0 km',
+    diam: '12,742 km',
+    grav: '1.00 g',
+    temp: '+15 °C',
+    viaje: 'Punto de partida',
+    desc: 'El único planeta conocido con vida. Desde 400 km de altitud, su curvatura azul y las auroras polares se despliegan en el ventanal: el mejor recordatorio de por qué valió la pena partir.'
+  },
+  marte: {
+    name: 'Marte',
+    sub: 'ODISEA VALLES MARINERIS · MISIÓN CT-2026-MAR',
+    img: './assets/imagenes/planeta-marte.jpg',
+    dist: '225 M km',
+    diam: '6,779 km',
+    grav: '0.38 g',
+    temp: '-63 °C',
+    viaje: '180 días',
+    desc: 'El destino cumbre de la civilización humana: cañones de 4,000 km, el Monte Olimpo —el más alto del sistema solar— y el primer domo biosférico geodésico reservado para nuestros tripulantes.'
+  },
+  luna: {
+    name: 'La Luna',
+    sub: 'EXPEDICIÓN CIS-LUNAR ARTEMISA PRIME',
+    img: './assets/imagenes/planeta-luna.jpg',
+    dist: '384,400 km',
+    diam: '3,474 km',
+    grav: '0.16 g',
+    temp: '-20 °C',
+    viaje: '3 días',
+    desc: 'Aterrizaje en el Cráter Shackleton con pernocta en suites presurizadas de titanio. Caminatas lunares con vista perpetua a la Tierra y almuerzo privado en el borde del Polo Sur.'
+  },
+  jupiter: {
+    name: 'Júpiter',
+    sub: 'OBSERVATORIO JOVIANO · PRÓXIMA TEMPORADA',
+    img: './assets/imagenes/planeta-jupiter.jpg',
+    dist: '628 M km',
+    diam: '139,820 km',
+    grav: '2.40 g',
+    temp: '-108 °C',
+    viaje: 'Próximamente',
+    desc: 'El gigante gasoso con la Gran Mancha Roja, un huracán mayor que la Tierra. Nuestro programa de reconocimiento joviano abrirá reservas tras consolidar la ruta cis-joviana.'
+  },
+  saturno: {
+    name: 'Saturno',
+    sub: 'VIDRIERAS DE LOS ANILLOS · PRÓXIMA TEMPORADA',
+    img: './assets/imagenes/planeta-saturno.jpg',
+    dist: '1.4 B km',
+    diam: '116,460 km',
+    grav: '1.04 g',
+    temp: '-139 °C',
+    viaje: 'Próximamente',
+    desc: 'Sus anillos de hielo se extienden 280,000 km. El programa de cruceros al sistema saturniano está en fase de certificación para vuelos de ultra-larga travesía.'
+  }
+};
+
+let fichaPlanetaAbierta = false;
+let fichaPoiAbierta = false;
+
+/**
+ * Rellena y abre la ficha emergente del cuerpo celeste seleccionado.
+ * @param {string} key - Clave de PLANET_FICHAS.
+ * @returns {void}
+ */
+function openPlanetFicha(key) {
+  const data = PLANET_FICHAS[key];
+  const modal = document.getElementById('planet-modal');
+  if (!data || !modal) {
+    return;
+  }
+  document.getElementById('planet-modal-img').src = data.img;
+  document.getElementById('planet-modal-img').alt = `Imagen real de ${data.name} (NASA)`;
+  document.getElementById('planet-modal-title').textContent = data.name;
+  document.getElementById('planet-modal-sub').textContent = data.sub;
+  document.getElementById('planet-modal-dist').textContent = data.dist;
+  document.getElementById('planet-modal-diam').textContent = data.diam;
+  document.getElementById('planet-modal-grav').textContent = data.grav;
+  document.getElementById('planet-modal-temp').textContent = data.temp;
+  document.getElementById('planet-modal-viaje').textContent = data.viaje;
+  document.getElementById('planet-modal-desc').textContent = data.desc;
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  fichaPlanetaAbierta = true;
+  const close = document.getElementById('planet-modal-close');
+  if (close) {
+    close.focus();
+  }
+}
+
+/**
+ * Cierra la ficha emergente de planetas.
+ * @returns {void}
+ */
+function closePlanetFicha() {
+  const modal = document.getElementById('planet-modal');
+  if (!modal) {
+    return;
+  }
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden', 'true');
+  fichaPlanetaAbierta = false;
+  if (!fichaPoiAbierta) {
+    document.body.style.overflow = '';
+  }
+}
+
+/**
+ * Inicializa la apertura/cierre de la ficha planetaria desde .planet-btn,
+ * el botón ✕, el clic fuera de la caja, Escape y el CTA interno.
+ * @returns {void}
+ */
+function initPlanetFichas() {
+  const modal = document.getElementById('planet-modal');
+  if (!modal) {
+    return;
+  }
+  document.querySelectorAll('.planet-btn[data-planet-info]').forEach((button) => {
+    button.addEventListener('click', () => openPlanetFicha(button.dataset.planetInfo));
+  });
+  const closeBtn = document.getElementById('planet-modal-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closePlanetFicha);
+  }
+  const cta = document.getElementById('planet-modal-cta');
+  if (cta) {
+    cta.addEventListener('click', closePlanetFicha);
+  }
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closePlanetFicha();
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && fichaPlanetaAbierta) {
+      closePlanetFicha();
+    }
+  });
+}
+
+/**
+ * Inicializa la ficha celeste del Mirador Estelar: cada .poi-marker abre un
+ * pop-up con su imagen real (NASA) y su historia breve (atributos data-poi-*).
+ * @returns {void}
+ */
+function initPoiFichas() {
+  const modal = document.getElementById('poi-modal');
+  if (!modal) {
+    return;
+  }
+  document.querySelectorAll('.poi-marker[data-poi-img]').forEach((marker) => {
+    marker.addEventListener('click', () => {
+      const img = document.getElementById('poi-modal-img');
+      img.src = marker.dataset.poiImg;
+      img.alt = `Imagen real: ${marker.dataset.poiTitle || marker.dataset.poi} (NASA)`;
+      document.getElementById('poi-modal-title').textContent = marker.dataset.poiTitle || marker.dataset.poi;
+      document.getElementById('poi-modal-meta').textContent = marker.dataset.poiMeta || '';
+      document.getElementById('poi-modal-story').textContent = marker.dataset.poiStory || '';
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      fichaPoiAbierta = true;
+      const close = document.getElementById('poi-modal-close');
+      if (close) {
+        close.focus();
+      }
+    });
+  });
+  const closeBtn = document.getElementById('poi-modal-close');
+  const doneBtn = document.getElementById('poi-modal-done');
+  const closePoi = () => {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    fichaPoiAbierta = false;
+    if (!fichaPlanetaAbierta) {
+      document.body.style.overflow = '';
+    }
+  };
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closePoi);
+  }
+  if (doneBtn) {
+    doneBtn.addEventListener('click', closePoi);
+  }
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closePoi();
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && fichaPoiAbierta) {
+      closePoi();
+    }
+  });
+}
+
+/**
+ * Matriz comparativa interactiva: al pasar el mouse por una celda se resalta
+ * toda su columna (clase .col-hot); al salir de la tabla se limpia.
+ * @returns {void}
+ */
+function initComparisonHighlight() {
+  const table = document.querySelector('.comparison-table');
+  if (!table) {
+    return;
+  }
+  const clear = () => {
+    table.querySelectorAll('.col-hot').forEach((cell) => cell.classList.remove('col-hot'));
+  };
+  table.addEventListener('mouseover', (event) => {
+    const cell = event.target.closest('td, th');
+    if (!cell || !table.contains(cell)) {
+      return;
+    }
+    const idx = cell.cellIndex;
+    clear();
+    table.querySelectorAll('tr').forEach((row) => {
+      const target = row.cells[idx];
+      if (target) {
+        target.classList.add('col-hot');
+      }
+    });
+  });
+  table.addEventListener('mouseleave', clear);
+}
+
 function safeInit(label, initializer) {
   try {
     initializer();
@@ -1830,6 +2065,9 @@ function init() {
   safeInit('simulación de lanzamiento', initLaunchSimulation);
   safeInit('modal dossier', initModalDossier);
   safeInit('boarding pass', initBoardingPassFlow);
+  safeInit('fichas de planetas', initPlanetFichas);
+  safeInit('fichas del mirador estelar', initPoiFichas);
+  safeInit('matriz comparativa interactiva', initComparisonHighlight);
 }
 
 /* Con defer el DOM ya está parseado (readyState "interactive"): se inicializa

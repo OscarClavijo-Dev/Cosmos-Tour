@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS crítico above-the-fold: render-blocking mínimo (~11KB inline) -->
-    <style>:root{--color-space-deep: #030712;--color-space-surface: #0b1120;--color-space-card: #0f172a;--color-space-darker: #02040a;--color-space-overlay: rgba(3, 7, 18, 0.92);--color-neon-cyan: #06b6d4;--color-neon-cyan-glow: rgba(6, 182, 212, 0.35);--color-blue: #3b82f6;--color-blue-glow: rgba(59, 130, 246, 0.35);--color-gold: #f59e0b;--color-gold-glow: rgba(245, 158, 11, 0.35);--color-emerald: #10b981;--color-rose: #f43f5e;--border-subtle: #1e293b;--border-light: #334155;--border-active: #06b6d4;--border-gold: rgba(245, 158, 11, 0.6);--font-main: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;--font-body: 'Plus Jakarta Sans', var(--font-main);--font-mono: 'IBM Plex Mono', 'Space Mono', monospace;--text-pure: #ffffff;--text-main: #f8fafc;--text-muted: #94a3b8;--text-dim: #7d8ba1;--radius-sm: 4px;--radius-md: 8px;--radius-lg: 12px;--radius-xl: 16px;--transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);--transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{font-family:var(--font-main);background-color:var(--color-space-deep);color:var(--text-main);scroll-behavior:smooth;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}h1,h2,h3,h4,.brand-title,.section-title,.card-title,.pkg-title{font-family:var(--font-main);font-weight:700;letter-spacing:-0.025em;color:var(--text-pure);text-wrap:balance}p{color:var(--text-muted);line-height:1.6}.btn-primary{background-color:var(--color-neon-cyan);color:#020617;border-color:var(--color-neon-cyan);box-shadow:0 2px 8px rgba(6,182,212,0.2)}.btn-primary:hover{background-color:#22d3ee;border-color:#22d3ee;box-shadow:0 0 18px var(--color-neon-cyan-glow);transform:translateY(-1px)}.btn-secondary{background-color:var(--color-gold);color:#020617;border-color:var(--color-gold)}.btn-secondary:hover{background-color:#fbbf24;border-color:#fbbf24;box-shadow:0 0 16px var(--color-gold-glow);transform:translateY(-1px)}.nav-link{font-size:0.875rem;font-weight:500;color:var(--text-muted);text-decoration:none;white-space:nowrap;transition:color var(--transition-fast)}.nav-link:hover{color:var(--text-pure);text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--color-neon-cyan)}.indicator-dot.active{background-color:var(--color-neon-cyan);box-shadow:0 0 8px var(--color-neon-cyan)}.hero-content{display:flex;flex-direction:column}.hero-title{font-size:clamp(1.5rem,5vw,2rem);line-height:1.1;letter-spacing:-0.035em;margin-bottom:1.25rem}.phase-btn.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.filter-tab.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.dossier-btn.active{background-color:rgba(6,182,212,0.15);border-color:var(--color-neon-cyan);color:var(--color-neon-cyan);font-weight:700}.btn-toggle-view.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.stage-select-btn.active{border-color:var(--color-neon-cyan);background-color:rgba(15,23,42,0.95);box-shadow:inset 0 0 12px rgba(6,182,212,0.15)}.opt-filter-btn.active{border-color:var(--color-neon-cyan);background-color:rgba(6,182,212,0.15);color:var(--color-neon-cyan);font-weight:700}.light-tab.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.service-nav-btn.active{background-color:#1e293b;color:var(--text-pure);font-weight:600}.btn-pax.active{background-color:var(--color-neon-cyan);border-color:var(--color-neon-cyan);color:#020617;font-weight:700}body{overflow-x:hidden}img{max-width:100%;height:auto}.hero-title{font-size:clamp(1.5rem,5vw,2rem)}.brand-title,.brand-wordmark{font-size:1.1rem}.nav-links{display:none}.audio-label{display:none}@media (min-width:480px){.hero-title{font-size:1.75rem}.brand-title,.brand-wordmark{font-size:1.35rem}.nav-links{display:flex;flex-direction:column;align-items:flex-start;position:absolute;top:100%;left:0;right:0;gap:0.75rem;padding:1rem 1.25rem;background-color:var(--color-space-darker);border-bottom:1px solid var(--border-subtle);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity 0.25s ease,transform 0.25s ease,visibility 0.25s ease}.top-nav:hover .nav-links,.top-nav:focus-within .nav-links{opacity:1;visibility:visible;transform:translateY(0)}.audio-label{display:inline}}@media (min-width:768px){.nav-links{display:flex;flex-direction:row;align-items:center;position:static;gap:1.4rem;padding:0;background:none;border-bottom:none;opacity:1;visibility:visible;transform:none;transition:none}.hero-title{font-size:2rem}}@media (min-width:1200px){.hero-title{font-size:3.15rem}}@media (prefers-reduced-motion:reduce){*,::before,::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--color-neon-cyan);outline-offset:3px}.skip-link{position:absolute;left:-9999px;top:0;background:var(--color-space-darker);color:var(--text-main);padding:0.75rem 1.25rem;z-index:1000}.skip-link:focus{left:1rem;top:1rem}:root{--bg-primary: var(--color-space-deep);--text-primary: var(--text-main);--color-cyan: var(--color-neon-cyan);--color-border: var(--border-subtle);--color-text-muted: var(--text-muted);--color-text-dim: var(--text-dim);--color-gold-light: #fbbf24}:root[data-theme="light"]{--color-space-deep: #f8fafc;--color-space-surface: #ffffff;--color-space-card: #ffffff;--color-space-darker: #e2e8f0;--color-space-overlay: rgba(248, 250, 252, 0.95);--border-subtle: #cbd5e1;--border-light: #94a3b8;--text-pure: #0f172a;--text-main: #1e293b;--text-muted: #475569;--text-dim: #5b6b80;--color-neon-cyan: #0e7490;--color-gold: #b45309;--color-gold-light: #92400e;--bg-primary: #f8fafc;--text-primary: #0f172a;--color-cyan: #0e7490;--color-border: #cbd5e1;--color-text-muted: #475569;--color-text-dim: #5b6b80}html,body{transition:background-color 0.3s ease,color 0.3s ease}#universe-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background:radial-gradient(circle at 30% 20%,rgba(59,130,246,0.08),transparent 45%),#030712}.main-wrapper{position:relative;z-index:1;padding-top:84px}.container{width:min(1200px,92%);margin:0 auto}section{position:relative;padding:5.5rem 0;scroll-margin-top:96px}.section-despegue{min-height:calc(100vh - 84px);display:flex;align-items:center;padding-top:2rem;padding-bottom:3rem}.top-nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:1.1rem 0;background:transparent;transition:background-color 0.3s ease,padding 0.3s ease,box-shadow 0.3s ease}.top-nav.header-sticky{padding:0.6rem 0;background:rgba(10,14,39,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.45)}:root[data-theme="light"] .top-nav.header-sticky{background:rgba(255,255,255,0.95);box-shadow:0 10px 30px rgba(15,23,42,0.12)}.nav-container{width:min(1200px,92%);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1.25rem;flex-wrap:wrap}.nav-links{align-items:center;gap:1.4rem;list-style:none}.nav-links .nav-link{font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap}.nav-actions{display:flex;align-items:center;gap:0.5rem}.btn-icon{display:inline-flex;align-items:center;gap:0.45rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;padding:0.5rem 0.85rem;border-radius:999px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease,background-color 0.25s ease}.btn-icon:hover{border-color:var(--color-neon-cyan);color:var(--text-pure)}.audio-dot{color:var(--color-neon-cyan)}.hero-telemetry-top,.hero-telemetry-bottom{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}.hero-telemetry-bottom{margin-top:3rem;border-top:1px solid var(--border-subtle);padding-top:1.25rem}.flight-status{display:flex;align-items:center;gap:0.6rem;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}.status-dot{width:0.55rem;height:0.55rem;border-radius:50%;background:#34d399;box-shadow:0 0 10px rgba(52,211,153,0.8);animation:cosmos-pulse 2s infinite}@keyframes cosmos-pulse{0%,100%{opacity:1}50%{opacity:0.35}}.hud-hint{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--text-dim)}.hud-metrics{display:flex;gap:2.5rem;flex-wrap:wrap}.metric-item{display:flex;flex-direction:column;gap:0.2rem}.metric-label{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim)}.metric-value{font-family:var(--font-mono);font-size:clamp(1.15rem,3vw,1.5rem);font-weight:700;color:var(--text-pure)}.metric-unit{font-size:0.75rem;color:var(--color-neon-cyan);margin-left:0.2rem}.scroll-indicator{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-gold);text-decoration:none}.unboxed-kicker{display:flex;gap:0.75rem;flex-wrap:wrap;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.25rem}.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem}.hero-description{max-width:640px;margin-top:1rem}.segmented-control{display:inline-flex;border:1px solid var(--border-subtle);border-radius:999px;padding:0.25rem;background:rgba(0,0,0,0.35)}.segmented-btn{background:transparent;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 1.1rem;border-radius:999px;cursor:pointer;transition:background-color 0.25s ease,color 0.25s ease}.segmented-btn.active{background:var(--color-neon-cyan);color:#030712;font-weight:700}.amenity-filter-btn.active{background:rgba(6,182,212,0.12);border-color:var(--color-neon-cyan);color:var(--color-neon-cyan)}.flight-tab-btn.active{background:rgba(245,158,11,0.12);border-color:var(--color-gold);color:var(--color-gold)}.flight-stage-panel.active{display:block;animation:cosmos-panel-in 0.4s ease}@keyframes cosmos-panel-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes cosmos-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}}@media (max-width:767px){.hud-metrics{gap:1.25rem}.metric-value{font-size:1.2rem}section{padding:4rem 0}}@media (max-width:480px){.btn-icon .theme-label{display:none}}.flight-status-sep{color:var(--color-text-dim)}.btn-cta-lg{padding:0.85rem 2rem}.hud-hint-dot{color:var(--color-cyan)}</style>
+    <style>:root{--color-space-deep: #030712;--color-space-surface: #0b1120;--color-space-card: #0f172a;--color-space-darker: #02040a;--color-space-overlay: rgba(3, 7, 18, 0.92);--color-neon-cyan: #06b6d4;--color-neon-cyan-glow: rgba(6, 182, 212, 0.35);--color-blue: #3b82f6;--color-blue-glow: rgba(59, 130, 246, 0.35);--color-gold: #f59e0b;--color-gold-glow: rgba(245, 158, 11, 0.35);--color-emerald: #10b981;--color-rose: #f43f5e;--border-subtle: #1e293b;--border-light: #334155;--border-active: #06b6d4;--border-gold: rgba(245, 158, 11, 0.6);--font-main: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;--font-body: 'Plus Jakarta Sans', var(--font-main);--font-mono: 'IBM Plex Mono', 'Space Mono', monospace;--text-pure: #ffffff;--text-main: #f8fafc;--text-muted: #94a3b8;--text-dim: #7d8ba1;--radius-sm: 4px;--radius-md: 8px;--radius-lg: 12px;--radius-xl: 16px;--transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);--transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{font-family:var(--font-main);background-color:var(--color-space-deep);color:var(--text-main);scroll-behavior:smooth;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}h1,h2,h3,h4,.brand-title,.section-title,.card-title,.pkg-title{font-family:var(--font-main);font-weight:700;letter-spacing:-0.025em;color:var(--text-pure);text-wrap:balance}p{color:var(--text-muted);line-height:1.6}.btn-primary{background-color:var(--color-neon-cyan);color:#020617;border-color:var(--color-neon-cyan);box-shadow:0 2px 8px rgba(6,182,212,0.2)}.btn-primary:hover{background-color:#22d3ee;border-color:#22d3ee;box-shadow:0 0 18px var(--color-neon-cyan-glow);transform:translateY(-1px)}.btn-secondary{background-color:var(--color-gold);color:#020617;border-color:var(--color-gold)}.btn-secondary:hover{background-color:#fbbf24;border-color:#fbbf24;box-shadow:0 0 16px var(--color-gold-glow);transform:translateY(-1px)}.nav-link{font-size:0.875rem;font-weight:500;color:var(--text-muted);text-decoration:none;white-space:nowrap;transition:color var(--transition-fast)}.nav-link:hover{color:var(--text-pure);text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--color-neon-cyan)}.indicator-dot.active{background-color:var(--color-neon-cyan);box-shadow:0 0 8px var(--color-neon-cyan)}.hero-content{display:flex;flex-direction:column}.hero-title{font-size:clamp(1.5rem,5vw,2rem);line-height:1.1;letter-spacing:-0.035em;margin-bottom:1.25rem}.phase-btn.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.filter-tab.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.dossier-btn.active{background-color:rgba(6,182,212,0.15);border-color:var(--color-neon-cyan);color:var(--color-neon-cyan);font-weight:700}.btn-toggle-view.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.stage-select-btn.active{border-color:var(--color-neon-cyan);background-color:rgba(15,23,42,0.95);box-shadow:inset 0 0 12px rgba(6,182,212,0.15)}.opt-filter-btn.active{border-color:var(--color-neon-cyan);background-color:rgba(6,182,212,0.15);color:var(--color-neon-cyan);font-weight:700}.light-tab.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.service-nav-btn.active{background-color:#1e293b;color:var(--text-pure);font-weight:600}.btn-pax.active{background-color:var(--color-neon-cyan);border-color:var(--color-neon-cyan);color:#020617;font-weight:700}body{overflow-x:hidden}img{max-width:100%;height:auto}.hero-title{font-size:clamp(1.5rem,5vw,2rem)}.brand-title,.brand-wordmark{font-size:1.1rem}.nav-links{display:none}.audio-label{display:none}@media (min-width:480px){.hero-title{font-size:1.75rem}.brand-title,.brand-wordmark{font-size:1.35rem}.nav-links{display:flex;flex-direction:column;align-items:flex-start;position:absolute;top:100%;left:0;right:0;gap:0.75rem;padding:1rem 1.25rem;background-color:var(--color-space-darker);border-bottom:1px solid var(--border-subtle);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity 0.25s ease,transform 0.25s ease,visibility 0.25s ease}.top-nav:hover .nav-links,.top-nav:focus-within .nav-links{opacity:1;visibility:visible;transform:translateY(0)}.audio-label{display:inline}}@media (min-width:768px){.nav-links{display:flex;flex-direction:row;align-items:center;position:static;gap:1.4rem;padding:0;background:none;border-bottom:none;opacity:1;visibility:visible;transform:none;transition:none}.hero-title{font-size:2rem}}@media (min-width:1200px){.hero-title{font-size:3.15rem}}@media (prefers-reduced-motion:reduce){*,::before,::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--color-neon-cyan);outline-offset:3px}.skip-link{position:absolute;left:-9999px;top:0;background:var(--color-space-darker);color:var(--text-main);padding:0.75rem 1.25rem;z-index:1000}.skip-link:focus{left:1rem;top:1rem}:root{--bg-primary: var(--color-space-deep);--text-primary: var(--text-main);--color-cyan: var(--color-neon-cyan);--color-border: var(--border-subtle);--color-text-muted: var(--text-muted);--color-text-dim: var(--text-dim);--color-gold-light: #fbbf24}:root[data-theme="light"]{--color-space-deep: #eef3fa;--color-space-surface: #ffffff;--color-space-card: #ffffff;--color-space-darker: #dfe8f4;--color-space-overlay: rgba(255, 255, 255, 0.96);--border-subtle: #c9d8ea;--border-light: #9db4cd;--border-active: #0369a1;--border-gold: rgba(180, 83, 9, 0.55);--text-pure: #0a1a2f;--text-main: #22364d;--text-muted: #46617f;--text-dim: #5b6b80;--color-neon-cyan: #0369a1;--color-neon-cyan-glow: rgba(3, 105, 161, 0.25);--color-blue: #1d4ed8;--color-blue-glow: rgba(29, 78, 216, 0.22);--color-gold: #b45309;--color-gold-glow: rgba(180, 83, 9, 0.25);--color-emerald: #047857;--color-rose: #be123c;--bg-primary: #eef3fa;--text-primary: #0a1a2f;--color-cyan: #0369a1;--color-border: #c9d8ea;--color-text-muted: #46617f;--color-text-dim: #5b6b80;--color-gold-light: #92400e}:root[data-theme="light"] #universe-canvas{opacity:0.14}html,body{transition:background-color 0.3s ease,color 0.3s ease}#universe-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background:radial-gradient(circle at 30% 20%,rgba(59,130,246,0.08),transparent 45%),#030712}.main-wrapper{position:relative;z-index:1;padding-top:84px}.container{width:min(1200px,92%);margin:0 auto}section{position:relative;padding:4rem 0;scroll-margin-top:96px}.section-despegue{min-height:calc(100vh - 84px);display:flex;align-items:center;padding-top:2rem;padding-bottom:3rem}.top-nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:1.1rem 0;background:transparent;transition:background-color 0.3s ease,padding 0.3s ease,box-shadow 0.3s ease}.top-nav.header-sticky{padding:0.6rem 0;background:rgba(10,14,39,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.45)}:root[data-theme="light"] .top-nav.header-sticky{background:rgba(255,255,255,0.95);box-shadow:0 10px 30px rgba(15,23,42,0.12)}.nav-container{width:min(1200px,92%);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1.25rem;flex-wrap:wrap}.nav-links{align-items:center;gap:1.4rem;list-style:none}.nav-links .nav-link{font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap}.nav-actions{display:flex;align-items:center;gap:0.5rem}.btn-icon{display:inline-flex;align-items:center;gap:0.45rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;padding:0.5rem 0.85rem;border-radius:999px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease,background-color 0.25s ease}.btn-icon:hover{border-color:var(--color-neon-cyan);color:var(--text-pure)}.audio-dot{color:var(--color-neon-cyan)}.hero-telemetry-top,.hero-telemetry-bottom{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}.hero-telemetry-bottom{margin-top:2rem;border-top:1px solid var(--border-subtle);padding-top:1.25rem}.flight-status{display:flex;align-items:center;gap:0.6rem;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}.status-dot{width:0.55rem;height:0.55rem;border-radius:50%;background:#34d399;box-shadow:0 0 10px rgba(52,211,153,0.8);animation:cosmos-pulse 2s infinite}@keyframes cosmos-pulse{0%,100%{opacity:1}50%{opacity:0.35}}.hud-hint{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--text-dim)}.hud-metrics{display:flex;gap:2.5rem;flex-wrap:wrap}.metric-item{display:flex;flex-direction:column;gap:0.2rem}.metric-label{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim)}.metric-value{font-family:var(--font-mono);font-size:clamp(1.15rem,3vw,1.5rem);font-weight:700;color:var(--text-pure)}.metric-unit{font-size:0.75rem;color:var(--color-neon-cyan);margin-left:0.2rem}.scroll-indicator{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-gold);text-decoration:none}.unboxed-kicker{display:flex;gap:0.75rem;flex-wrap:wrap;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.25rem}.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem}.hero-description{max-width:640px;margin-top:1rem}.segmented-btn{background:transparent;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 1.1rem;border-radius:999px;cursor:pointer;transition:background-color 0.25s ease,color 0.25s ease}.segmented-btn.active{background:var(--color-neon-cyan);color:#030712;font-weight:700}.amenity-filter-btn.active{background:rgba(6,182,212,0.12);border-color:var(--color-neon-cyan);color:var(--color-neon-cyan)}.flight-tab-btn.active{background:rgba(245,158,11,0.12);border-color:var(--color-gold);color:var(--color-gold)}.flight-stage-panel.active{display:block;animation:cosmos-panel-in 0.4s ease}@keyframes cosmos-panel-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes cosmos-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}}@media (max-width:767px){.hud-metrics{gap:1.25rem}.metric-value{font-size:1.2rem}section{padding:3rem 0}}@media (max-width:480px){.btn-icon .theme-label{display:none}}.flight-status-sep{color:var(--color-text-dim)}.btn-cta-lg{padding:0.85rem 2rem}.hud-hint-dot{color:var(--color-cyan)}.hero-universe-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0}.hero-universe-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,7,18,0.86) 0%,rgba(3,7,18,0.55) 42%,rgba(3,7,18,0.9) 100%)}.section-despegue>.container{position:relative;z-index:2}:root[data-theme="light"] .section-despegue{--text-pure: #f8fafc;--text-main: #e6edf7;--text-muted: #b9c6da;--text-dim: #93a4bd;--color-neon-cyan: #38bdf8;--color-neon-cyan-glow: rgba(56, 189, 248, 0.3);--color-gold: #fbbf24;--color-gold-glow: rgba(251, 191, 36, 0.3);--border-subtle: rgba(255, 255, 255, 0.22);--border-light: rgba(255, 255, 255, 0.45);--color-space-card: rgba(6, 12, 28, 0.55);--color-space-darker: rgba(6, 12, 28, 0.72)}.planet-picker{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.5rem}.planet-btn.segmented-btn{display:flex;flex-direction:column;align-items:center;gap:0.4rem;min-width:76px;padding:0.55rem 0.5rem 0.45rem;background:rgba(3,7,18,0.55);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);color:var(--text-muted);cursor:pointer;transition:border-color 0.3s ease,transform 0.3s ease,box-shadow 0.3s ease,background-color 0.3s ease,color 0.3s ease}.planet-btn.segmented-btn img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.25);box-shadow:0 6px 16px rgba(0,0,0,0.5);transition:transform 0.35s ease,border-color 0.35s ease}.planet-btn-name{font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.06em}.planet-btn.segmented-btn:hover{transform:translateY(-5px);border-color:var(--border-light);color:var(--text-pure);background:rgba(6,182,212,0.14)}.planet-btn.segmented-btn:hover img{transform:scale(1.09);border-color:var(--color-neon-cyan)}.planet-btn.segmented-btn.active{border-color:var(--color-neon-cyan);color:var(--text-pure);background:rgba(6,182,212,0.16);box-shadow:0 0 20px var(--color-neon-cyan-glow)}.planet-btn.segmented-btn.active img{border-color:var(--color-neon-cyan);transform:scale(1.06)}.dest-actions .btn-secondary,.dest-actions .btn-primary{flex:1;padding-left:0.75rem;padding-right:0.75rem}@media (max-width:767px){.planet-picker{flex-wrap:nowrap;overflow-x:auto;padding-bottom:0.45rem;scrollbar-width:thin}.planet-btn.segmented-btn{min-width:68px;flex:0 0 auto}}@media (max-width:480px){.planet-btn.segmented-btn{min-width:62px;padding:0.45rem 0.4rem 0.4rem}.planet-btn.segmented-btn img{width:48px;height:48px}}</style>
 
     <!-- Hoja completa: carga asíncrona (no bloquea el primer pintado) -->
     <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -119,8 +119,21 @@
            SECCIÓN A: EL DESPEGUE (Bienvenida & Explorador Planetario)
            ==================================================================== -->
       <section id="hero" class="section-despegue">
+        <!-- [AJUSTE HERO] Imagen demo del universo de fondo (NASA) + velo degradado para
+             legibilidad del texto sobre la fotografía -->
+        <img
+          class="hero-universe-bg"
+          src="./assets/imagenes/hero-universo.jpg"
+          alt=""
+          aria-hidden="true"
+          width="1920"
+          height="1080"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <div class="hero-universe-veil" aria-hidden="true"></div>
         <div class="container">
-          <!-- Barra superior de telemetría de vuelo y selector planetario -->
+          <!-- Barra superior de telemetría de vuelo -->
           <div class="hero-telemetry-top">
             <div class="flight-status">
               <span class="status-dot"></span>
@@ -129,11 +142,8 @@
               <span>ORBITAL CLASS 1</span>
             </div>
 
-            <!-- Selector de Planeta Interactivo -->
-            <div class="segmented-control" role="group" aria-label="Seleccionar cuerpo celeste">
-              <button class="segmented-btn active" data-planet-target="earth">Tierra</button>
-              <button class="segmented-btn" data-planet-target="mars">Marte</button>
-            </div>
+            <!-- [AJUSTE HERO] El selector de planetas con imágenes se movió bajo las CTAs
+                 (ver .planet-picker): el hero-telemetry-top queda solo con el estado de vuelo -->
           </div>
 
           <!-- Bloque Central Narrativo -->
@@ -160,6 +170,31 @@
               <a href="#destinos" class="btn-secondary">
                 Explorar Destinos
               </a>
+            </div>
+
+            <!-- [AJUSTE HERO] Selector de planetas con IMÁGENES REALES (NASA): cada botón
+                 sincroniza el HUD del canvas y abre la ficha emergente del cuerpo celeste -->
+            <div class="planet-picker" role="group" aria-label="Explorar cuerpos celestes">
+              <button class="planet-btn segmented-btn active" data-planet-target="earth" data-planet-info="tierra">
+                <img src="./assets/imagenes/planeta-tierra.jpg" alt="" aria-hidden="true" width="72" height="72" loading="lazy" decoding="async" />
+                <span class="planet-btn-name">Tierra</span>
+              </button>
+              <button class="planet-btn segmented-btn" data-planet-target="mars" data-planet-info="marte">
+                <img src="./assets/imagenes/planeta-marte.jpg" alt="" aria-hidden="true" width="72" height="72" loading="lazy" decoding="async" />
+                <span class="planet-btn-name">Marte</span>
+              </button>
+              <button class="planet-btn segmented-btn" data-planet-target="luna" data-planet-info="luna">
+                <img src="./assets/imagenes/planeta-luna.jpg" alt="" aria-hidden="true" width="72" height="72" loading="lazy" decoding="async" />
+                <span class="planet-btn-name">La Luna</span>
+              </button>
+              <button class="planet-btn segmented-btn" data-planet-target="jupiter" data-planet-info="jupiter">
+                <img src="./assets/imagenes/planeta-jupiter.jpg" alt="" aria-hidden="true" width="72" height="72" loading="lazy" decoding="async" />
+                <span class="planet-btn-name">Júpiter</span>
+              </button>
+              <button class="planet-btn segmented-btn" data-planet-target="saturno" data-planet-info="saturno">
+                <img src="./assets/imagenes/planeta-saturno.jpg" alt="" aria-hidden="true" width="72" height="72" loading="lazy" decoding="async" />
+                <span class="planet-btn-name">Saturno</span>
+              </button>
             </div>
           </div>
 
@@ -415,7 +450,7 @@
                 Ventanal Elíptico de Cuarzo de Zafiro
               </h3>
               <span class="telemetry-text stage-hint">
-                Mueve el cursor para explorar el campo celeste
+                Haz clic en un punto de interés para abrir su ficha celeste
               </span>
             </div>
 
@@ -424,21 +459,21 @@
                 <!-- Curvatura del planeta Tierra -->
                 <div class="earth-horizon-arc"></div>
 
-                <!-- Puntos de Interés Estelares (POIs) -->
-                <div class="poi-marker poi-marker--nebula" data-poi="Nebulosa de Orión (M42) - 1,344 años luz">
+                <!-- Puntos de Interés Estelares (POIs): data-poi-* alimenta la ficha emergente -->
+                <button type="button" class="poi-marker poi-marker--nebula" data-poi="Nebulosa de Orión (M42) - 1,344 años luz" data-poi-img="./assets/imagenes/nebulosa-orion.jpg" data-poi-title="Nebulosa de Orión (M42)" data-poi-meta="1,344 AÑOS LUZ · CUNA ESTELAR" data-poi-story="A 1,344 años luz de la Tierra, M42 es la cuna estelar más cercana: una gigantesca nube de gas donde nacen estrellas aún hoy. Los antiguos la reconocieron como la espada de Orión, y su brillo la hace visible a simple vista incluso desde la ciudad. Desde la cupola de Cosmos Tour, su verdadero color verde-azulado —invisible al ojo humano en tierra— se revela en toda su magnitud.">
                   <span>★</span>
                   <span>Nebulosa de Orión (M42)</span>
-                </div>
+                </button>
 
-                <div class="poi-marker poi-marker--pleiades" data-poi="Cúmulo de las Pléyades - 444 años luz">
+                <button type="button" class="poi-marker poi-marker--pleiades" data-poi="Cúmulo de las Pléyades - 444 años luz" data-poi-img="./assets/imagenes/pleiades.jpg" data-poi-title="Cúmulo de las Pléyades" data-poi-meta="444 AÑOS LUZ · SIETE HERMANAS" data-poi-story="Conocidas como Las Siete Hermanas o Las Pléyades, estas estrellas jóvenes —de apenas 100 millones de años— brillan a 444 años luz. Marineros de todas las civilizaciones las usaron para orientarse y aparecen en la mitología griega, japonesa y de los pueblos andinos. Su cúmulo azul se dispersará dentro de 250 millones de años: presencie, desde órbita, un instante irrepetible en términos cósmicos.">
                   <span>✦</span>
                   <span>Cúmulo de las Pléyades</span>
-                </div>
+                </button>
 
-                <div class="poi-marker poi-marker--aurora" data-poi="Aurora Australis Terrestre - 110 km altitud">
+                <button type="button" class="poi-marker poi-marker--aurora" data-poi="Aurora Australis Terrestre - 110 km altitud" data-poi-img="./assets/imagenes/aurora-australis.jpg" data-poi-title="Aurora Australis" data-poi-meta="110 KM DE ALTITUD · SHOW DE PARTÍCULAS" data-poi-story="A 110 km de altitud, partículas del viento solar chocan contra la magnetosfera terrestre y excitan los átomos de oxígeno, que devuelven esa luz verde y roja característica. Visible solo desde el hemisferio sur, la Australis se despliega sobre la Antártida como una cortina viva. En órbita baja la vea correr a 28,000 km/h sobre el planeta.">
                   <span>❇</span>
                   <span>Aurora Australis Terrestre</span>
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -470,7 +505,7 @@
             <!-- Servicio 1: Suites -->
             <article class="amenity-card" data-category="suites">
               <div class="amenity-img-wrapper">
-                <img src="./images/luxury_suite.jpg" alt="Suite de Lujo Presurizada" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <img src="./assets/imagenes/amenity-suite.jpg" alt="Suite de Lujo Presurizada" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>COSMOS TOUR EXCLUSIVE</span>
@@ -517,7 +552,7 @@
             <!-- Servicio 2: Gastronomía -->
             <article class="amenity-card" data-category="gastronomia">
               <div class="amenity-img-wrapper">
-                <img src="./images/space_gastronomy.jpg" alt="Alta Cocina Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <img src="./assets/imagenes/amenity-gastronomia.jpg" alt="Alta Cocina Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>3 ESTRELLAS MICHELIN</span>
@@ -564,7 +599,7 @@
             <!-- Servicio 3: Observatorio -->
             <article class="amenity-card" data-category="observatorio">
               <div class="amenity-img-wrapper">
-                <img src="./images/panoramic_cupola.jpg" alt="Cupola de Observación" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <img src="./assets/imagenes/amenity-cupola.jpg" alt="Cupola de Observación" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>VISTA 360° CONTINUA</span>
@@ -611,7 +646,7 @@
             <!-- Servicio 4: Academia y Trajes -->
             <article class="amenity-card" data-category="academia">
               <div class="amenity-img-wrapper">
-                <img src="./images/earth_orbit.jpg" alt="Entrenamiento Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                <img src="./assets/imagenes/amenity-academia.jpg" alt="Entrenamiento Espacial" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
                 <div class="amenity-scrim"></div>
                 <div class="amenity-badge-row">
                   <span>PREPARACIÓN VIP</span>
@@ -657,10 +692,13 @@
           </div>
 
           <!-- Tabla Comparativa de Paquetes -->
+          <!-- [AJUSTE MATRIZ] Más respiro vertical, scroll horizontal en móvil y filas
+               interactivas (hover por fila/columna desde script.js) -->
           <div class="comparison-container">
             <h3 class="comparison-title">
               Matriz Comparativa de Paquetes de Viaje
             </h3>
+            <div class="comparison-scroll">
             <table class="comparison-table">
               <thead>
                 <tr>
@@ -703,6 +741,10 @@
                 </tr>
               </tbody>
             </table>
+            </div>
+            <p class="comparison-footnote">
+              * Todos los paquetes incluyen seguro interplanetario Lloyd's, traje a medida y enlace cuántico 24/7 con la Tierra.
+            </p>
           </div>
         </div>
       </section>
@@ -1022,24 +1064,109 @@
       </div>
     </div>
 
-    <!-- Footer Aeroespacial -->
+    <!-- [AJUSTE HERO] Ficha emergente del cuerpo celeste (se abre desde .planet-btn) -->
+    <div id="planet-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Ficha del cuerpo celeste" aria-hidden="true">
+      <div class="modal-box planet-box">
+        <button id="planet-modal-close" class="modal-close-btn" aria-label="Cerrar ficha planetaria">✕</button>
+        <div class="planet-visual">
+          <img id="planet-modal-img" src="./assets/imagenes/planeta-tierra.jpg" alt="" width="640" height="360" decoding="async" />
+        </div>
+        <div class="modal-block">
+          <div class="telemetry-text modal-kicker">FICHA CELESTE · CATÁLOGO COSMOS TOUR</div>
+          <h3 id="planet-modal-title" class="modal-title">Planeta</h3>
+          <div id="planet-modal-sub" class="telemetry-text modal-subtitle">—</div>
+        </div>
+        <div class="telemetry-text modal-telemetry-grid">
+          <div>
+            <span class="modal-metric-label">DISTANCIA</span>
+            <span id="planet-modal-dist" class="modal-metric-value">—</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">DIÁMETRO</span>
+            <span id="planet-modal-diam" class="modal-metric-value">—</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">GRAVEDAD</span>
+            <span id="planet-modal-grav" class="modal-metric-value-gold">—</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">TEMPERATURA</span>
+            <span id="planet-modal-temp" class="modal-metric-value">—</span>
+          </div>
+        </div>
+        <div class="modal-block">
+          <p id="planet-modal-desc" class="planet-desc">—</p>
+        </div>
+        <div class="modal-footer-row">
+          <div>
+            <span class="telemetry-text modal-fare-label">TRAVESÍA ESTIMADA</span>
+            <div id="planet-modal-viaje" class="telemetry-text modal-price">—</div>
+          </div>
+          <a href="#destinos" class="btn-primary btn-cta-md" id="planet-modal-cta">Ver Rutas Disponibles</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- [AJUSTE MIRADOR] Ficha emergente de los POIs del Mirador Estelar (constelaciones) -->
+    <div id="poi-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Ficha celeste" aria-hidden="true">
+      <div class="modal-box poi-box">
+        <button id="poi-modal-close" class="modal-close-btn" aria-label="Cerrar ficha celeste">✕</button>
+        <div class="poi-visual">
+          <img id="poi-modal-img" src="" alt="" width="640" height="360" loading="lazy" decoding="async" />
+        </div>
+        <div class="modal-block">
+          <div class="telemetry-text modal-kicker">ARCHIVO CELESTE · MIRADOR ESTELAR</div>
+          <h3 id="poi-modal-title" class="modal-title">—</h3>
+          <div id="poi-modal-meta" class="telemetry-text modal-subtitle">—</div>
+          <p id="poi-modal-story" class="poi-story">—</p>
+        </div>
+        <div class="modal-footer-row">
+          <span class="telemetry-text modal-fare-label">OBSERVADO DESDE LA CUPOLA · MISIÓN CT-VUELO-03</span>
+          <button type="button" class="btn-secondary btn-cta-md" id="poi-modal-done">Cerrar Archivo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- [AJUSTE FOOTER] Footer compacto: 4 columnas (marca+redes sociales, legal,
+         rutas activas y contacto 24/7) + barra inferior de derechos reservados -->
     <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
-          <div>
+          <div class="footer-col footer-col-brand">
             <span class="brand-wordmark footer-brand-mark">
               COSMOS TOUR
             </span>
             <p class="footer-about">
-              Agencia pionera de turismo espacial de alto lujo y expediciones orbitales privadas.
+              Agencia pionera de turismo espacial de alto lujo.
               Transformamos la exploración cósmica en una obra de arte viviente.
             </p>
-            <div class="telemetry-text footer-meta">
-              SEDE: ZÚRICH · BASES DE DESPEGUE: CABO CAÑAVERAL / GUAYANA
+            <div class="footer-socials" aria-label="Redes sociales de Cosmos Tour">
+              <a href="#" aria-label="X (Twitter)" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+              </a>
+              <a href="#" aria-label="Instagram" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.3" fill="currentColor"/></svg>
+              </a>
+              <a href="#" aria-label="YouTube" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg>
+              </a>
+              <a href="#" aria-label="LinkedIn" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 10.5V17M7 7.6v.01M11 17v-4a2.5 2.5 0 015 0v4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              </a>
             </div>
           </div>
 
-          <div>
+          <nav class="footer-col" aria-label="Legal">
+            <div class="section-kicker footer-kicker">Legal & Términos</div>
+            <ul class="footer-links">
+              <li><a href="#">Términos y Condiciones de Vuelo</a></li>
+              <li><a href="#">Política de Privacidad</a></li>
+              <li><a href="#">Política de Cookies</a></li>
+              <li><a href="#">Seguro Interplanetario Lloyd's</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-label="Expediciones">
             <div class="section-kicker footer-kicker">Expediciones Activas</div>
             <ul class="footer-links">
               <li><a href="#destinos">Órbita Baja Terrestre (EEI)</a></li>
@@ -1047,29 +1174,27 @@
               <li><a href="#destinos">Odisea Valles Marineris (Marte)</a></li>
               <li><a href="#vuelo">Simulador de Gravedad Cero</a></li>
             </ul>
-          </div>
+          </nav>
 
-          <div>
-            <div class="section-kicker footer-kicker">Protocolos & Certificación</div>
+          <div class="footer-col">
+            <div class="section-kicker footer-kicker">Contacto 24/7</div>
             <ul class="footer-links">
-              <li><span>Cumplimiento FAA Commercial Spaceflight</span></li>
-              <li><span>Estándar ISO 24638 Espacio Civil</span></li>
-              <li><span>Seguro Interplanetario Lloyd's</span></li>
-              <li><span>Certificación Aeromédica Clase 1</span></li>
+              <li><a href="mailto:tripulacion@cosmostour.space">tripulacion@cosmostour.space</a></li>
+              <li><a href="tel:+41445550126">+41 44 555 0126</a></li>
+              <li><span>Despacho: Zúrich, Suiza</span></li>
+              <li><span>Despegues: Cabo Cañaveral / Guayana</span></li>
             </ul>
           </div>
         </div>
 
         <div class="footer-bottom">
-          <div>
-            © 2026 Cosmos Tour S.A. Todos los derechos reservados.
-          </div>
+          <div>© 2026 Cosmos Tour S.A. — Todos los derechos reservados.</div>
           <div class="footer-legal-row">
-            <span>Privacidad Confidencial</span>
+            <a href="#">Privacidad Confidencial</a>
             <span aria-hidden="true">·</span>
-            <span>Términos de Manifiesto</span>
+            <a href="#">Términos de Manifiesto</a>
             <span aria-hidden="true">·</span>
-            <span>Atención al Tripulante 24/7</span>
+            <span>Cumplimiento FAA Commercial Spaceflight</span>
           </div>
         </div>
       </div>
