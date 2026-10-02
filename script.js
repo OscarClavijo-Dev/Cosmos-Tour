@@ -614,6 +614,49 @@ function handleScrollState() {
 }
 
 /**
+ * Sincroniza la variable CSS --nav-h con la altura real de la cabecera fija.
+ * La cabecera cambia de 1 fila (desktop) a 2–3 filas (tablet/móvil) y además
+ * se comprime al hacer sticky: el desplazamiento del contenido principal y el
+ * scroll-margin de las anclas se calculan con la altura máxima (estado no
+ * sticky) para que la cabecera nunca tape el hero ni las secciones.
+ *
+ * Se mide sin tocar la clase .header-sticky para no interrumpir la transición
+ * de compresión al hacer scroll: altura = contenido + 2 × padding máximo.
+ * @returns {void}
+ */
+function syncNavOffset() {
+  if (!DOM.header) {
+    return;
+  }
+
+  const header = DOM.header;
+  const headerStyle = getComputedStyle(header);
+  const rootStyle = getComputedStyle(document.documentElement);
+  const rootFontSize = parseFloat(rootStyle.fontSize) || 16;
+
+  const padValue = (rootStyle.getPropertyValue('--nav-pad-y') || '1.1rem').trim();
+  const padNumber = parseFloat(padValue);
+  if (!padNumber) {
+    return;
+  }
+  const maxPadPx = padValue.indexOf('rem') !== -1 ? padNumber * rootFontSize : padNumber;
+
+  const currentPadY =
+    (parseFloat(headerStyle.paddingTop) || 0) + (parseFloat(headerStyle.paddingBottom) || 0);
+  const contentHeight = header.getBoundingClientRect().height - currentPadY;
+
+  /* Si la cabecera aún no está maquetada no se toca la variable. */
+  if (!(contentHeight > 0)) {
+    return;
+  }
+
+  document.documentElement.style.setProperty(
+    '--nav-h',
+    `${Math.ceil(contentHeight + maxPadPx * 2)}px`
+  );
+}
+
+/**
  * Crea la barra de progreso dentro de la cabecera y conecta el listener de
  * scroll con throttle de 100ms para optimizar el rendimiento.
  * @returns {void}
@@ -632,6 +675,21 @@ function initHeaderAndScrollIndicator() {
   });
 
   handleScrollState();
+
+  /* La altura de la cabecera depende del breakpoint, de las web fonts y de
+     styles.css (se carga vía preload+onload): ResizeObserver la resincroniza
+     automáticamente ante cualquier cambio de tamaño, con los listeners de
+     respaldo por si el navegador no soporta el observer. */
+  syncNavOffset();
+  if ('ResizeObserver' in window) {
+    const headerObserver = new ResizeObserver(() => syncNavOffset());
+    headerObserver.observe(DOM.header);
+  }
+  window.addEventListener('resize', debounce(syncNavOffset, 150));
+  window.addEventListener('load', syncNavOffset);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(syncNavOffset).catch(() => {});
+  }
 }
 
 /* ==================== 7. CONTADORES ANIMADOS DEL HERO (F4) ================ */

@@ -8,6 +8,13 @@
 
 /* VARIABLES Y SISTEMA DE DISEÑO */
 :root {
+  /* Altura de la cabecera fija: se resincroniza desde script.js (syncNavOffset)
+     con la altura real (estado no sticky) para que el contenido nunca quede
+     debajo de la cabecera fija. */
+  --nav-h: 84px;
+  /* Padding vertical máximo de .top-nav (estado no sticky, altura máxima). */
+  --nav-pad-y: 1.1rem;
+
   /* Paleta de Colores de Espacio Profundo */
   --color-space-deep: #030712;
   --color-space-surface: #0b1120;
@@ -1926,6 +1933,19 @@ img {
   .main-nav {
     display: flex;
   }
+
+  /* Lockup de marca: descriptor visible y escala intermedia en tablet */
+  .brand-tag {
+    display: block;
+  }
+  .brand-emblem svg {
+    width: 34px;
+    height: 34px;
+  }
+  .brand-name {
+    font-size: 1.06rem;
+    letter-spacing: 0.14em;
+  }
   .nav-links {
     display: flex;
     flex-direction: row;
@@ -2091,6 +2111,23 @@ img {
 @media (min-width: 1200px) {
   .section {
     padding: 6rem 0;
+  }
+
+  /* Lockup de marca: escala completa en desktop */
+  .brand-wordmark {
+    gap: 0.7rem;
+  }
+  .brand-emblem svg {
+    width: 36px;
+    height: 36px;
+  }
+  .brand-name {
+    font-size: 1.12rem;
+    letter-spacing: 0.16em;
+  }
+  .brand-tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.34em;
   }
 
   .section-title {
@@ -2333,7 +2370,9 @@ body {
 .main-wrapper {
   position: relative;
   z-index: 1;
-  padding-top: 84px;
+  /* --nav-h la sincroniza script.js con la altura real de la cabecera
+     (1 fila en desktop, 2–3 filas en tablet/móvil) */
+  padding-top: var(--nav-h, 84px);
 }
 .container {
   width: min(1200px, 92%);
@@ -2344,10 +2383,10 @@ section {
   /* [AJUSTE RESPONSIVE] Espaciado vertical entre secciones reducido de 5.5rem a 4rem
      para que el contenido se vea más pegado al grid (menos huecos entre secciones) */
   padding: 4rem 0;
-  scroll-margin-top: 96px;
+  scroll-margin-top: calc(var(--nav-h, 84px) + 12px);
 }
 .section-despegue {
-  min-height: calc(100vh - 84px);
+  min-height: calc(100vh - var(--nav-h, 84px));
   display: flex;
   align-items: center;
   padding-top: 2rem;
@@ -2386,7 +2425,7 @@ section {
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 1.1rem 0;
+  padding: var(--nav-pad-y, 1.1rem) 0;
   background: transparent;
   transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
 }
@@ -2410,6 +2449,101 @@ section {
   gap: 1.25rem;
   flex-wrap: wrap;
 }
+
+/* --- 4.1 LOCKUP DE MARCA (identidad COSMOS TOUR en cabecera) ---------------
+   Composición: emblema orbital SVG + wordmark (COSMOS / TOUR) + descriptor.
+   Mobile-first: el descriptor se oculta en pantallas pequeñas. */
+.brand-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.2rem 0.15rem;
+  border-radius: 8px;
+  color: var(--text-pure);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.brand-emblem {
+  display: block;
+  flex: 0 0 auto;
+  color: var(--text-pure);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brand-emblem svg {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+.emblem-orbit {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  opacity: 0.5;
+  transition: opacity 0.35s ease;
+}
+.emblem-core {
+  fill: var(--color-neon-cyan);
+  animation: cosmos-pulse 2.8s ease-in-out infinite;
+}
+.emblem-sat {
+  fill: currentColor;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.brand-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  font-family: var(--font-main);
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.brand-name-tail {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--color-neon-cyan);
+  transition: text-shadow 0.3s ease;
+}
+.brand-tag {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  line-height: 1;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.brand-wordmark:hover .brand-emblem,
+.brand-wordmark:focus-visible .brand-emblem {
+  transform: rotate(18deg);
+}
+.brand-wordmark:hover .emblem-orbit,
+.brand-wordmark:focus-visible .emblem-orbit {
+  opacity: 0.9;
+}
+.brand-wordmark:hover .brand-name-tail,
+.brand-wordmark:focus-visible .brand-name-tail {
+  text-shadow: 0 0 12px var(--color-neon-cyan-glow);
+}
+.brand-wordmark:active .brand-emblem {
+  transform: rotate(18deg) scale(0.92);
+}
+.brand-wordmark:focus-visible {
+  outline: 2px solid var(--color-neon-cyan);
+  outline-offset: 4px;
+}
+
 /* display lo gobiernan los breakpoints mobile-first: none (<480),
    panel colapsable (480–767) y row (≥768) */
 .nav-links {
