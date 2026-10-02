@@ -67,7 +67,7 @@ html {
   background-color: var(--color-space-deep);
   color: var(--text-main);
   scroll-behavior: smooth;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -117,46 +117,56 @@ p {
 /* ==========================================================================
    BOTONES Y ELEMENTOS DE CONTROL
    ========================================================================== */
-.btn {
+/* Base compartida: todos los botones de la landing (sin frameworks) */
+.btn,
+.btn-primary,
+.btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
+  padding: 0.8rem 1.6rem;
   font-family: var(--font-main);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  border-radius: var(--radius-md);
+  letter-spacing: 0.03em;
+  line-height: 1.2;
   text-decoration: none;
-  cursor: pointer;
+  text-align: center;
   white-space: nowrap;
+  cursor: pointer;
   border: 1px solid transparent;
-  transition: all var(--transition-fast);
+  border-radius: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
-
 .btn-primary {
-  background-color: var(--color-neon-cyan);
-  color: #020617;
-  border-color: var(--color-neon-cyan);
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
+  background-image: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: var(--btn-primary-shadow);
 }
-.btn-primary:hover {
-  background-color: #22d3ee;
-  border-color: #22d3ee;
-  box-shadow: 0 0 18px var(--color-neon-cyan-glow);
-  transform: translateY(-1px);
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-primary-shadow-hover);
 }
-
+.btn-primary:active {
+  transform: translateY(0);
+}
 .btn-secondary {
-  background-color: var(--color-gold);
-  color: #020617;
-  border-color: var(--color-gold);
+  background-image: var(--btn-secondary-bg);
+  color: var(--btn-secondary-fg);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--btn-secondary-shadow);
 }
-.btn-secondary:hover {
-  background-color: #fbbf24;
-  border-color: #fbbf24;
-  box-shadow: 0 0 16px var(--color-gold-glow);
-  transform: translateY(-1px);
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-secondary-shadow-hover);
+}
+.btn-secondary:active {
+  transform: translateY(0);
 }
 
 .btn-outline {
@@ -1814,10 +1824,6 @@ img {
 }
 /* Etiqueta de texto del botón de audio oculta: en 320px solo queda el
    icono ♫ (el botón conserva su aria-label accesible) */
-.audio-label {
-  display: none;
-}
-
 /* Elementos apilados y con scroll táctil en móvil */
 .telemetry-bar {
   flex-direction: column;
@@ -1902,10 +1908,7 @@ img {
   }
 
   /* Etiqueta de audio visible a partir de 480px */
-  .audio-label {
-    display: inline;
   }
-}
 
 /* --------------------------------------------------------------------------
    2. TABLET BREAKPOINT: min-width: 768px
@@ -2441,9 +2444,6 @@ section {
 .btn-icon:hover {
   border-color: var(--color-neon-cyan);
   color: var(--text-pure);
-}
-.audio-dot {
-  color: var(--color-neon-cyan);
 }
 .scroll-progress {
   position: absolute;
@@ -4072,17 +4072,39 @@ section {
   color: var(--text-dim);
 }
 
-/* --- 15.7 Footer compacto con 4 columnas, redes y legal -------------------- */
-/* [AJUSTE FOOTER] Rejilla de columnas + redes sociales + barra legal compacta */
+/* --- 15.7 Footer comercial profesional ------------------------------------ */
+/* [AJUSTE FOOTER] Banda CTA de conversión + 4 columnas + badges de confianza */
 .site-footer {
-  /* [AJUSTE FOOTER] Padding reducido (3rem -> 2.25rem) para un pie más pequeño */
-  padding: 2.25rem 0 1.1rem;
+  padding: 0 0 1.25rem;
+}
+.footer-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 2.5rem 0 2.25rem;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 2.5rem;
+}
+.footer-cta-copy {
+  max-width: 640px;
+}
+.footer-cta-title {
+  font-size: clamp(1.3rem, 3vw, 1.75rem);
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.footer-cta-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.75rem;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1.75rem;
 }
 .footer-brand-mark {
   display: inline-block;
@@ -4102,6 +4124,9 @@ section {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 .footer-links li {
   font-size: 0.85rem;
@@ -4139,6 +4164,25 @@ section {
   transform: translateY(-3px);
   box-shadow: 0 6px 16px var(--color-neon-cyan-glow);
 }
+.footer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 1.1rem 0 0;
+  padding: 0;
+}
+.footer-badges li {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 0.32rem 0.75rem;
+  background-color: rgba(15, 23, 42, 0.45);
+}
 .footer-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -4165,6 +4209,7 @@ section {
   color: var(--color-neon-cyan);
   text-decoration: underline;
 }
+
 
 /* --- 15.8 Responsivo: tablet, desktop y celulares -------------------------- */
 /* [AJUSTE RESPONSIVE] Tablet >= 768px */
@@ -4228,5 +4273,145 @@ section {
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+
+/* ==========================================================================
+   BOTONES: VARIABLES POR TEMA (contraste AA en modo oscuro y claro)
+   ========================================================================== */
+:root {
+  --btn-primary-bg: linear-gradient(135deg, var(--color-neon-cyan) 0%, #22d3ee 100%);
+  --btn-primary-fg: #04202b;
+  --btn-primary-shadow: 0 10px 24px rgba(6, 182, 212, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --btn-primary-shadow-hover: 0 16px 32px rgba(6, 182, 212, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  --btn-secondary-bg: linear-gradient(135deg, var(--color-gold) 0%, #fbbf24 100%);
+  --btn-secondary-fg: #241503;
+  --btn-secondary-shadow: 0 10px 24px rgba(245, 158, 11, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --btn-secondary-shadow-hover: 0 16px 32px rgba(245, 158, 11, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+:root[data-theme="light"] {
+  --btn-primary-bg: linear-gradient(135deg, #075985 0%, #0369a1 100%);
+  --btn-primary-fg: #ffffff;
+  --btn-primary-shadow: 0 10px 24px rgba(3, 105, 161, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --btn-primary-shadow-hover: 0 16px 32px rgba(3, 105, 161, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --btn-secondary-bg: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+  --btn-secondary-fg: #ffffff;
+  --btn-secondary-shadow: 0 10px 24px rgba(146, 64, 14, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --btn-secondary-shadow-hover: 0 16px 32px rgba(146, 64, 14, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* ==========================================================================
+   AJUSTES DE ACCESIBILIDAD Y CHROME DE CABECERA
+   ========================================================================== */
+/* [AJUSTE AUDITORIA] Icono + texto + color en mensajes de error del formulario */
+.error-message:not(:empty)::before {
+  content: "\26A0\00a0";
+}
+
+/* [AJUSTE BOTONES] CTA de navegación compacto en formato píldora */
+.nav-actions .btn-primary {
+  padding: 0.62rem 1.4rem;
+  font-size: 0.8125rem;
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   15.9 PAGINA LEGAL (Politica de Privacidad, Terminos y Cookies)
+   ========================================================================== */
+body.legal-page {
+  min-height: 100vh;
+}
+.legal-top {
+  width: min(920px, 92%);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+}
+.legal-main {
+  width: min(920px, 92%);
+  margin: 0 auto;
+  padding: 1.5rem 0 4rem;
+}
+.legal-doc h1 {
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  line-height: 1.15;
+  margin: 0.75rem 0 1rem;
+}
+.legal-lead {
+  font-size: 0.98rem;
+}
+.legal-doc section {
+  padding: 0;
+}
+.legal-doc h2 {
+  font-size: 1.2rem;
+  margin: 2.25rem 0 0.75rem;
+}
+.legal-doc p,
+.legal-doc li {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+.legal-doc ul {
+  list-style: none;
+  margin: 0.75rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.legal-doc li {
+  position: relative;
+  padding-left: 1.15rem;
+}
+.legal-doc li::before {
+  content: "\203A";
+  position: absolute;
+  left: 0;
+  color: var(--color-neon-cyan);
+}
+.legal-footer {
+  width: min(920px, 92%);
+  margin: 0 auto;
+  border-top: 1px solid var(--border-subtle);
+  padding: 1.25rem 0 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+.legal-footer a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+.legal-footer a:hover {
+  color: var(--color-neon-cyan);
+  text-decoration: underline;
+}
+
+/* [AJUSTE FOOTER] Responsive de la banda CTA y badges */
+@media (max-width: 767px) {
+  .footer-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .footer-badges li {
+    font-size: 0.75rem;
   }
 }
