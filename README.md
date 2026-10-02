@@ -85,3 +85,47 @@ Móvil (min-width: 320px base): Disposición vertical fluida a 1 sola columna, c
 ), menús desplazables horizontalmente y navegación optimizada para pulgares.
 Tablet (min-width: 768px): Despliegue del menú de navegación completo, cuadrículas a 2 columnas en destinos y testimonios, y alineación horizontal en barras de control y pie de página.
 Desktop (min-width: 1280px): Expansión del contenedor a 1320px, disposición asimétrica de pantalla ancha (5:7 en hero y consola de simulación, 7:5 en hospitalidad y formulario de reserva), y cuadrícula de 4 columnas en telemetría y cronogramas.
+
+## Oscar 
+# Correciones HTML
+
+# [R] ROL
+Actúa como un Senior Frontend Developer especializado en HTML5 semántico y accesibilidad web, con amplia experiencia en desarrollo de landing pages comerciales y cumplimiento de estándares WCAG. Tu tono debe ser técnico, preciso y directo.
+
+# [C] CONTEXTO
+- El objetivo principal de este proyecto es: Corregir y optimizar el código HTML de la landing page "Cosmos Tour" (agencia de turismo espacial de lujo) para que cumpla estrictamente con los requisitos académicos obligatorios de una electiva universitaria.
+- El público objetivo o audiencia es: Estudiantes de ingeniería de sistemas y profesor evaluador que revisará el cumplimiento de especificaciones técnicas.
+- Los antecedentes o situación actual son: El HTML actual tiene una estructura avanzada con Three.js y animaciones, pero NO cumple con 2 requisitos obligatorios: (1) Falta completamente la sección de testimonios/prueba social, (2) El formulario no incluye el checkbox de términos y condiciones.
+- Restricciones o limitaciones: NO modificar el diseño visual existente, NO cambiar las clases CSS personalizadas, mantener la estética de lujo y aeroespacial, conservar todos los IDs existentes excepto donde sea estrictamente necesario para cumplir requisitos.
+
+# [I] INSTRUCCIÓN
+Necesito que realices las siguientes correcciones paso a paso:
+
+1. INSERTAR una nueva sección de testimonios ANTES de la sección "tripulacion" (formulario) con:
+   - ID obligatorio: id="testimonios"
+   - Mínimo 2 testimonios de clientes ficticios pero verosímiles
+   - Cada testimonio debe incluir: nombre completo, cargo/profesión, ciudad/país, y texto del testimonio (2-3 líneas)
+   - Usar etiquetas semánticas: <article> o <blockquote> para cada testimonio
+   - Mantener la estética visual oscura y de lujo del sitio
+
+2. AGREGAR al formulario existente (id="manifest-form") el campo faltante:
+   - Checkbox obligatorio con label "Acepto los términos y condiciones de vuelo"
+   - Atributo required en el checkbox
+   - Ubicarlo antes del botón de submit
+
+3. CORREGIR los IDs de las secciones para que coincidan con los requisitos:
+   - Cambiar id="despegue" por id="hero" (mantener también la clase section-despegue)
+   - Cambiar id="servicios" por id="beneficios" (mantener también la clase section-servicios)
+   - Cambiar id="tripulacion" por id="registro" (mantener también la clase section-tripulacion)
+
+4. VALIDAR que todas las secciones tengan las etiquetas HTML semánticas correctas según la guía
+
+# [F] FORMATO
+Entrega la respuesta estructurada de la siguiente manera:
+- Tipo de salida: Código HTML completo y funcional listo para copiar y pegar
+- Estructura: 
+  * Primero muestra SOLO las 3 secciones modificadas/insertadas (testimonios, formulario corregido, y el hero con ID corregido)
+  * Luego proporciona el archivo HTML COMPLETO con todas las correcciones integradas
+- Extensión aproximada: Código completo sin resúmenes, debe ser funcional al 100%
+
+NOTA: Mantén intactas todas las demás secciones (destinos, vuelo, servicios, footer) y los scripts. Solo modifica lo estrictamente necesario para cumplir los requisitos.
