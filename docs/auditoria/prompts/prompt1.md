@@ -1,6 +1,6 @@
 Análisis inicial del formulario
 
-Analiza el archivo [nombre-del-archivo-del-formulario] de mi landing page. 
+Analiza el archivo Hoja de Registro de Tripulación de mi landing page. 
 Identifica problemas de seguridad, rendimiento, lógica y calidad de código. 
 Clasifica cada hallazgo según: desactualizado, incompatibilidad, seguridad, 
 rendimiento o lógica. Indica nivel de severidad (crítico/moderado/menor) 
