@@ -1,11 +1,7 @@
+Análisis inicial del formulario
 
-Genera un formulario de contacto completo para una landing page con las siguientes características:
-- Campos: nombre, email, teléfono, mensaje
-- Validación en tiempo real con JavaScript
-- Persistencia en localStorage
-- Mensajes de error personalizados
-- Diseño responsive
-- Prevención de envío múltiple
-- Feedback visual al usuario
-
-Incluye HTML, CSS y JavaScript en archivos separados.
+Analiza el archivo [nombre-del-archivo-del-formulario] de mi landing page. 
+Identifica problemas de seguridad, rendimiento, lógica y calidad de código. 
+Clasifica cada hallazgo según: desactualizado, incompatibilidad, seguridad, 
+rendimiento o lógica. Indica nivel de severidad (crítico/moderado/menor) 
+y explica el impacto si se despliega sin corrección.
