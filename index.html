@@ -1050,17 +1050,37 @@
               <div class="form-grid">
                 <div class="form-group">
                   <label class="form-label" for="manifest-name">Nombre Completo del Astronauta *</label>
-                  <input type="text" id="manifest-name" class="form-input" required placeholder="Ej. Helena Valenzuela Ruiz" />
+                  <input
+                    type="text"
+                    id="manifest-name"
+                    class="form-input"
+                    required
+                    minlength="5"
+                    maxlength="80"
+                    pattern="[A-Za-zÀ-ÖØ-öø-ÿ' \-]+"
+                    title="Solo letras (con acentos), espacios, apóstrofes y guiones. Mínimo 5 caracteres."
+                    placeholder="Ej. Helena Valenzuela Ruiz"
+                  />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-email">Correo Electrónico Confidencial *</label>
-                  <input type="email" id="manifest-email" class="form-input" required placeholder="h.valenzuela@cosmos-private.com" />
+                  <input type="email" id="manifest-email" class="form-input" required maxlength="100" placeholder="h.valenzuela@cosmos-private.com" />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-passport">Número de Pasaporte Internacional *</label>
-                  <input type="text" id="manifest-passport" class="form-input" required placeholder="P-89240177A" />
+                  <input
+                    type="text"
+                    id="manifest-passport"
+                    class="form-input"
+                    required
+                    minlength="3"
+                    maxlength="20"
+                    pattern="[A-Za-z0-9\-]+"
+                    title="3–20 caracteres alfanuméricos. Se permiten guiones."
+                    placeholder="P-89240177A"
+                  />
                 </div>
 
                 <div class="form-group">

@@ -53,6 +53,43 @@ const THEME_STORAGE_KEY = 'cosmos-tour-theme';
 /** Expresión regular de validación de correo electrónico. */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 
+/** Whitelists de caracteres para campos de texto libres del formulario. */
+const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{5,80}$/;
+const PASSPORT_REGEX = /^[A-Za-z0-9-]{3,20}$/;
+
+/** Longitudes máximas permitidas por campo (defensa anti-basura/DoS ligero). */
+const FIELD_MAX_LENGTHS = { name: 80, email: 100, passport: 20 };
+
+/**
+ * Normaliza y sanea una cadena de entrada de usuario: elimina caracteres de
+ * control (incluido NUL), colapsa espacios múltiples, recorta y limita
+ * longitud. Defensa en profundidad ANTES de cualquier renderizado, aunque
+ * el DOM se pinte siempre con textContent (nunca con innerHTML).
+ * @param {unknown} value - Valor crudo del input.
+ * @param {number} maxLength - Longitud máxima de salida.
+ * @returns {string} Cadena saneada.
+ */
+function sanitizeText(value, maxLength = 80) {
+  return String(value ?? '')
+    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLength);
+}
+
+/**
+ * Comprueba que el valor de un <select> pertenezca a sus propias <option>.
+ * Bloquea valores inyectados manipulando el DOM por consola.
+ * @param {HTMLSelectElement} field - Campo select del formulario.
+ * @returns {boolean} true si el valor está en la whitelist del propio select.
+ */
+function isAllowedSelectValue(field) {
+  if (!field.options || field.options.length === 0) {
+    return Boolean(field.value);
+  }
+  return Array.from(field.options).some((option) => option.value === field.value);
+}
+
 /** Constantes de animación, física y umbrales. */
 const COUNTER_DURATION_MS = 2000;
 const STICKY_HEADER_THRESHOLD = 80;
@@ -97,38 +134,64 @@ const appState = {
 const VALIDATION_RULES = [
   {
     id: 'manifest-name',
-    check: (field) =>
-      field.value.trim().length >= 5
+    check: (field) => {
+      const value = sanitizeText(field.value, FIELD_MAX_LENGTHS.name);
+      if (value.length < 5) {
+        return 'El nombre completo debe tener al menos 5 caracteres.';
+      }
+      return NAME_REGEX.test(value)
         ? ''
-        : 'El nombre completo debe tener al menos 5 caracteres.'
+        : 'El nombre solo puede contener letras (con acentos), espacios, apóstrofes y guiones.';
+    }
   },
   {
     id: 'manifest-email',
-    check: (field) =>
-      EMAIL_REGEX.test(field.value.trim())
+    check: (field) => {
+      const value = sanitizeText(field.value, FIELD_MAX_LENGTHS.email);
+      return EMAIL_REGEX.test(value) && value.length <= FIELD_MAX_LENGTHS.email
         ? ''
-        : 'Introduce un correo electrónico válido (ej. nombre@dominio.com).'
+        : 'Introduce un correo electrónico válido (ej. nombre@dominio.com).';
+    }
   },
   {
     id: 'manifest-passport',
-    check: (field) =>
-      field.value.trim().length > 0 ? '' : 'El número de pasaporte es obligatorio.'
+    check: (field) => {
+      const value = sanitizeText(field.value, FIELD_MAX_LENGTHS.passport);
+      if (!value) {
+        return 'El número de pasaporte es obligatorio.';
+      }
+      return PASSPORT_REGEX.test(value)
+        ? ''
+        : 'El pasaporte debe tener 3–20 caracteres alfanuméricos (se permiten guiones).';
+    }
   },
   {
     id: 'manifest-destination',
-    check: (field) => (field.value ? '' : 'Selecciona una expedición.')
+    check: (field) =>
+      field.value && isAllowedSelectValue(field)
+        ? ''
+        : 'Selecciona una expedición.'
   },
   {
     id: 'manifest-suite',
-    check: (field) => (field.value ? '' : 'Selecciona una categoría de suite.')
+    check: (field) =>
+      field.value && isAllowedSelectValue(field)
+        ? ''
+        : 'Selecciona una categoría de suite.'
   },
   {
     id: 'manifest-window',
-    check: (field) => (field.value ? '' : 'Selecciona una ventana de despegue.')
+    check: (field) =>
+      field.value && isAllowedSelectValue(field)
+        ? ''
+        : 'Selecciona una ventana de despegue.'
   },
   {
     id: 'manifest-role',
-    check: (field) => (field.value ? '' : 'Selecciona tu rol en el manifiesto.')
+    check: (field) =>
+      field.value && isAllowedSelectValue(field)
+        ? ''
+        : 'Selecciona tu rol en el manifiesto.'
   },
   {
     id: 'manifest-terms',
@@ -448,19 +511,23 @@ function collectManifestData() {
   if (!DOM.form) {
     return null;
   }
-  const getValue = (id) => {
+  const getValue = (id, maxLength) => {
     const element = document.getElementById(id);
-    return element ? element.value.trim() : '';
+    return element ? sanitizeText(element.value, maxLength) : '';
+  };
+  const getSelectValue = (id) => {
+    const element = document.getElementById(id);
+    return element && isAllowedSelectValue(element) ? element.value : '';
   };
 
   return {
-    name: getValue('manifest-name'),
-    email: getValue('manifest-email'),
-    passport: getValue('manifest-passport'),
-    destination: getValue('manifest-destination'),
-    suite: getValue('manifest-suite'),
-    window: getValue('manifest-window'),
-    role: getValue('manifest-role')
+    name: getValue('manifest-name', FIELD_MAX_LENGTHS.name),
+    email: getValue('manifest-email', FIELD_MAX_LENGTHS.email),
+    passport: getValue('manifest-passport', FIELD_MAX_LENGTHS.passport),
+    destination: getSelectValue('manifest-destination'),
+    suite: getSelectValue('manifest-suite'),
+    window: getSelectValue('manifest-window'),
+    role: getSelectValue('manifest-role')
   };
 }
 
@@ -712,13 +779,20 @@ function prepareMetricCounter(element) {
   const decimals = hasDecimalDigits ? decimalPart.length : 0;
 
   const unitElement = element.querySelector('.metric-unit');
-  const unitHTML = unitElement ? ` ${unitElement.outerHTML}` : '';
 
-  element.innerHTML = `<span class="metric-number">0</span>${unitHTML}`;
+  /* Reconstrucción con DOM API (textContent/createElement) en lugar de
+     innerHTML: evita cualquier vector de inyección de markup futuro. */
+  const numberSpan = document.createElement('span');
+  numberSpan.className = 'metric-number';
+  numberSpan.textContent = '0';
+  element.replaceChildren(numberSpan);
+  if (unitElement) {
+    element.appendChild(unitElement);
+  }
 
   return {
     element,
-    numberElement: element.querySelector('.metric-number'),
+    numberElement: numberSpan,
     value,
     decimals
   };

@@ -66,3 +66,67 @@
 | Menor | 7 | Deuda técnica y fragilidad ante futura integración con backend. |
 
 **Prioridad de corrección sugerida:** C1/C2 (decidir si el formulario pasa a ser funcional con backend o se re-etiqueta explícitamente como demo) → M1 (contraste de errores en tema claro) → M4 (lag de validación) → M6 (impresión) → resto.
+
+---
+
+# Auditoría de seguridad — Manejo de inputs (Prompt 2: XSS / inyección / sanitización)
+
+> Fecha: 27 de octubre de 2026
+> Alcance: `script.js` (validación F1, recolección de datos, renderizado del boarding pass, contadores del hero) e `index.html` (campos del formulario `#manifest-form`).
+
+---
+
+## Veredicto general
+
+**No existe un XSS ejecutable hoy.** Todo el flujo del formulario renderiza datos de usuario con `textContent` (nunca `innerHTML`):
+
+- `showToast()` → `toast.textContent = message` (`script.js:367`)
+- `validateFieldById()` → `errorElement.textContent` (`script.js:480`)
+- `populateBoardingPass()` → `setText()` con `textContent` (`script.js:1749-1752`)
+- `fillModalList()` → `listItem.textContent` (`script.js:1625-1628`)
+
+Tampoco hay `eval`, `new Function`, `setTimeout` con string, `document.write` ni `insertAdjacentHTML` con datos de entrada en todo el proyecto.
+
+Sin embargo, la revisión identificó **5 riesgos residuales de defensa en profundidad** que quedaron corregidos en esta pasada.
+
+---
+
+## Hallazgos y correcciones aplicadas
+
+| # | Hallazgo | Categoría | Severidad | Corrección |
+|---|----------|-----------|-----------|------------|
+| S1 | **Sin saneado de caracteres de control/NUL ni límite de longitud** en los campos libres (`manifest-name`, `manifest-email`, `manifest-passport`): solo se hacía `.trim()`. Un valor manipulado (consola, autofill malicioso, futuro backend) podía transportar `\u0000`, caracteres de control o 10.000 caracteres sin filtrar. | Seguridad (sanitización) | Menor → corregido | Nueva utilidad `sanitizeText()` (`script.js:72-83`): elimina `[\u0000-\u001F\u007F]`, colapsa espacios, recorta y limita longitud. Constantes `FIELD_MAX_LENGTHS` (`script.js:61`). |
+| S2 | **Sin whitelist en los 4 `<select>`**: si se manipulaba el `value` del DOM por consola, cualquier string arbitrario pasaba a la credencial y a `generateMissionCode()`. | Seguridad (validación) | Menor → corregido | Nueva utilidad `isAllowedSelectValue()` (`script.js:86-93`) que verifica el valor contra las `<option>` reales del propio select. Aplicada en las 4 reglas de `VALIDATION_RULES` y en `collectManifestData()`. |
+| S3 | **Regex de nombre/pasaporte demasiado permisivas**: nombre validaba solo longitud ≥5; pasaporte solo no-vacío. Ambos aceptaban cualquier carácter, incluidos potenciales payloads HTML. | Seguridad (validación) | Menor → corregido | Whitelists estrictas: `NAME_REGEX` (`script.js:57`, letras acentuadas, espacios, apóstrofes, guiones, máx. 80) y `PASSPORT_REGEX` (`script.js:58`, alfanumérico + guion, 3–20). |
+| S4 | **`prepareMetricCounter()` reconstruía el DOM con `innerHTML` + `outerHTML`** (`script.js` antiguo:717). Contenido estático hoy, pero patrón inseguro: si los datos del HUD se volvieran dinámicos sería un vector de inyección directo. | Seguridad (código inseguro) | Menor → corregido | Reescrito con `createElement`/`replaceChildren`/`textContent` (`script.js:780-791`): cero interpolación de markup. |
+| S5 | **HTML sin `maxlength`/`minlength`/`pattern`** en los inputs libres: sin barrera nativa contra pegado masivo o entrada fuera de formato. | Seguridad / Calidad | Menor → corregido | Añadidos `maxlength`, `minlength`, `pattern` (espejo de las regex JS) y `title` descriptivo en los 3 inputs (`index.html:1053-1084`). |
+
+---
+
+## Defensa en profundidad resultante (capas activas)
+
+```
+Capa 1 — HTML nativo:     maxlength / minlength / pattern en los inputs
+Capa 2 — Validación JS:   VALIDATION_RULES con whitelists (regex + options de select)
+Capa 3 — Sanitización:    sanitizeText() en collectManifestData() ANTES de usar los datos
+Capa 4 — Renderizado:     100% textContent (nunca innerHTML con datos de usuario)
+```
+
+Si en el futuro se integra un backend (pendiente: hallazgo C1), los datos ya llegan saneados y acotados; la única capa que faltaría sería la **validación en servidor** (obligatoria cualquierday: el cliente nunca es confiable).
+
+---
+
+## Nota sobre `novalidate`
+
+El formulario desactiva la validación nativa vía JS (`script.js:577`) para controlar los mensajes inline. Los atributos `pattern`/`minlength` añadidos en HTML **no bloquean el submit** mientras `novalidate` esté activo, pero:
+
+- `maxlength` **sí** funciona incluso con `novalidate` (límite al tecleo/pegado).
+- Las reglas equivalentes ya están duplicadas en `VALIDATION_RULES` (capa 2).
+- Si el script fallara y `novalidate` no se aplicara, los atributos nativos respaldan.
+
+---
+
+## Correcciones NO aplicadas (requieren decisión de producto)
+
+- **C1/C2 de la auditoría inicial** (sin backend, biométrico simulado): fuera del alcance de esta pasada de seguridad; dependen de decisión de negocio.
+- **CSP (Content-Security-Policy)**: no se añadió meta-tag porque el sitio carga fuentes de terceros (gstatic) y tiene estilos inline; una política estricta rompería la página. Recomendación: definirla en cabecera HTTP al desplegar, con `script-src 'self'` y sin `unsafe-inline` para scripts.
