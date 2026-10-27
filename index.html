@@ -1085,7 +1085,8 @@
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-destination">Expedición Seleccionada</label>
-                  <select id="manifest-destination" class="form-select">
+                  <select id="manifest-destination" class="form-select" required>
+                    <option value="" disabled selected>Selecciona una expedición…</option>
                     <option value="La Luna">La Luna (Expedición Cis-Lunar Artemisa)</option>
                     <option value="Marte">Marte (Odisea Valles Marineris)</option>
                     <option value="Estación Espacial Internacional">Estación Espacial Internacional (Apex Cupola)</option>
@@ -1094,7 +1095,8 @@
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-suite">Categoría de Suite a Bordo</label>
-                  <select id="manifest-suite" class="form-select">
+                  <select id="manifest-suite" class="form-select" required>
+                    <option value="" disabled selected>Selecciona una categoría…</option>
                     <option value="Celestial Sovereign Suite">Celestial Sovereign Suite (42 m³)</option>
                     <option value="Mirador Cupola Stateroom">Mirador Cupola Stateroom (35 m³)</option>
                     <option value="Pod Privado de Ingravidez">Pod Privado de Ingravidez (24 m³)</option>
@@ -1103,7 +1105,8 @@
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-window">Ventana Temporal de Despegue</label>
-                  <select id="manifest-window" class="form-select">
+                  <select id="manifest-window" class="form-select" required>
+                    <option value="" disabled selected>Selecciona una ventana…</option>
                     <option value="Octubre 2026">Octubre 2026</option>
                     <option value="Noviembre 2026">Noviembre 2026</option>
                     <option value="Marzo 2027">Marzo 2027</option>
@@ -1113,10 +1116,11 @@
 
                 <div class="form-group full-width">
                   <label class="form-label" for="manifest-role">Rol en el Manifiesto de Vuelo</label>
-                  <select id="manifest-role" class="form-select">
+                  <select id="manifest-role" class="form-select" required>
+                    <option value="" disabled selected>Selecciona tu rol…</option>
                     <option value="Comandante Civil de Travesía">Comandante Civil de Travesía</option>
                     <option value="Especialista de Observación Astronómica">Especialista de Observación Astronómica</option>
-                    <option value="Pasajero de Placer & Bienestar">Pasajero de Placer & Bienestar</option>
+                    <option value="Pasajero de Placer &amp; Bienestar">Pasajero de Placer &amp; Bienestar</option>
                   </select>
                 </div>
               </div>

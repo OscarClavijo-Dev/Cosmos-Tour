@@ -115,6 +115,7 @@ const appState = {
   theme: 'dark',
   headerSticky: false,
   formValidation: {},
+  formSubmitting: false,
   launchRunning: false,
   launchRafId: null,
   launchStartTimestamp: 0,
@@ -147,8 +148,10 @@ const VALIDATION_RULES = [
   {
     id: 'manifest-email',
     check: (field) => {
+      /* sanitizeText ya trunca a FIELD_MAX_LENGTHS.email: no hace falta
+         comprobar la longitud de nuevo tras el saneado. */
       const value = sanitizeText(field.value, FIELD_MAX_LENGTHS.email);
-      return EMAIL_REGEX.test(value) && value.length <= FIELD_MAX_LENGTHS.email
+      return EMAIL_REGEX.test(value)
         ? ''
         : 'Introduce un correo electrónico válido (ej. nombre@dominio.com).';
     }
@@ -199,6 +202,18 @@ const VALIDATION_RULES = [
       field.checked ? '' : 'Debes aceptar los términos y condiciones de vuelo.'
   }
 ];
+
+/**
+ * Índice O(1) de reglas por id: evita el .find() lineal en cada evento de
+ * validación (blur/input/change) y en validateAllFields().
+ */
+const RULES_BY_ID = new Map(VALIDATION_RULES.map((rule) => [rule.id, rule]));
+
+/** Campos que ya recibieron blur/change: condicionan la validación en input. */
+const touchedFields = new Set();
+
+/** Cache de spans .error-message por id de campo (evita getElementById repetido). */
+const errorElementCache = new Map();
 
 /**
  * Catálogo de expediciones usado por el modal dossier (F14).
@@ -444,63 +459,97 @@ function showToast(message, type = 'info') {
 
 /**
  * Obtiene (creándolo si hace falta) el <span class="error-message"> asociado
- * a un campo y lo coloca debajo de él dentro de su .form-group.
+ * a un campo y lo coloca debajo de él dentro de su .form-group. El span se
+ * cachea en errorElementCache para no repetir getElementById en cada tecla.
  * @param {HTMLElement} field - Campo del formulario.
- * @returns {HTMLElement} Span de mensaje de error.
+ * @returns {HTMLElement|null} Span de mensaje de error o null si no hay donde
+ *   insertarlo (campo huérfano sin contenedor).
  */
 function getErrorElement(field) {
-  const errorId = `${field.id}-error`;
-  const existing = document.getElementById(errorId);
-  if (existing) {
-    return existing;
+  const cached = errorElementCache.get(field.id);
+  if (cached) {
+    return cached;
   }
 
-  const span = document.createElement('span');
-  span.className = 'error-message';
-  span.id = errorId;
-  span.setAttribute('aria-live', 'polite');
+  const errorId = `${field.id}-error`;
+  let span = document.getElementById(errorId);
+  if (!span) {
+    span = document.createElement('span');
+    span.className = 'error-message';
+    span.id = errorId;
+    span.setAttribute('aria-live', 'polite');
 
-  const container =
-    field.type === 'checkbox'
-      ? field.closest('.form-group') || field.parentElement
-      : field.parentElement;
-  container.appendChild(span);
+    const container =
+      field.type === 'checkbox'
+        ? field.closest('.form-group') || field.parentElement
+        : field.parentElement;
+    if (!container) {
+      return null;
+    }
+    container.appendChild(span);
+  }
 
+  errorElementCache.set(field.id, span);
+  /* aria-describedby se fija siempre, incluso si el span ya venía en el HTML. */
   field.setAttribute('aria-describedby', errorId);
   return span;
 }
 
 /**
  * Valida un campo concreto y pinta su resultado inline (.error-message).
- * @param {string} ruleId - id del campo (coincide con VALIDATION_RULES).
+ * El mensaje y el borde rojo solo se muestran tras el primer blur/change del
+ * campo (touchedFields), evitando "fastidiar" mientras el usuario tipea por
+ * primera vez. Una vez tocado, el campo se re-valida en cada input (sin lag).
+ * @param {string} ruleId - id del campo (debe existir en RULES_BY_ID).
  * @returns {boolean} true si el campo es válido.
  */
 function validateFieldById(ruleId) {
-  const rule = VALIDATION_RULES.find((item) => item.id === ruleId);
+  const rule = RULES_BY_ID.get(ruleId);
   const field = document.getElementById(ruleId);
   if (!rule || !field) {
     return true;
   }
 
-  const message = rule.check(field);
+  let message;
+  try {
+    message = rule.check(field);
+  } catch (error) {
+    console.error(`[Cosmos Tour] Error ejecutando regla de "${ruleId}":`, error);
+    message = 'No se pudo validar este campo. Inténtalo de nuevo.';
+  }
+
   const isValid = message === '';
+  const showError = !isValid && touchedFields.has(ruleId);
   const errorElement = getErrorElement(field);
 
-  errorElement.textContent = isValid ? '' : message;
-  field.classList.toggle('field-invalid', !isValid);
-  field.setAttribute('aria-invalid', String(!isValid));
+  if (errorElement) {
+    errorElement.textContent = showError ? message : '';
+  }
+  field.classList.toggle('field-invalid', showError);
+  field.setAttribute('aria-invalid', String(showError));
   appState.formValidation[ruleId] = isValid;
 
   return isValid;
 }
 
 /**
- * Valida la totalidad de los campos del manifiesto.
- * @returns {boolean} true si todo el formulario es válido.
+ * Valida la totalidad de los campos del manifiesto forzando la visualización
+ * de errores (marca todos como touched, como en un submit). Devuelve el id
+ * del primer campo inválido (en orden del formulario) o null si todo es
+ * válido, evitando un segundo recorrido para localizarlo.
+ * @returns {string|null} id del primer campo inválido o null.
  */
 function validateAllFields() {
-  const results = VALIDATION_RULES.map((rule) => validateFieldById(rule.id));
-  return results.every(Boolean);
+  let firstInvalidId = null;
+
+  for (const rule of VALIDATION_RULES) {
+    touchedFields.add(rule.id);
+    if (!validateFieldById(rule.id) && firstInvalidId === null) {
+      firstInvalidId = rule.id;
+    }
+  }
+
+  return firstInvalidId;
 }
 
 /**
@@ -548,30 +597,43 @@ function generateMissionCode(destination) {
 
 /**
  * Manejador de submit: prevenir el envío si hay errores y disparar el flujo
- * de escaneo biométrico + boarding pass si todo es válido.
+ * de escaneo biométrico + boarding pass si todo es válido. Lleva un guard
+ * anti doble envío (requestSubmit programático o doble evento casi simultáneo)
+ * mediante appState.formSubmitting, que se libera en resetBoardingPassFlow.
  * @param {SubmitEvent} event - Evento de envío del formulario.
  * @returns {void}
  */
 function handleManifestSubmit(event) {
   event.preventDefault();
 
-  if (!validateAllFields()) {
+  if (appState.formSubmitting) {
+    return;
+  }
+
+  const firstInvalidId = validateAllFields();
+  if (firstInvalidId !== null) {
     showToast('Revisa los campos marcados antes de continuar.', 'error');
-    const firstInvalid = VALIDATION_RULES.find(
-      (rule) => !appState.formValidation[rule.id]
-    );
-    const field = firstInvalid ? document.getElementById(firstInvalid.id) : null;
+    const field = document.getElementById(firstInvalidId);
     if (field) {
       field.focus();
     }
     return;
   }
 
+  appState.formSubmitting = true;
   startBoardingPassFlow();
 }
 
 /**
- * Inicializa la validación en tiempo real (blur/input/change) y el submit.
+ * Inicializa la validación en tiempo real y el submit con DELEGACIÓN de
+ * eventos sobre el <form> (3 listeners en total en vez de ~24 por campo):
+ * - focusout (burbujea, a diferencia de blur): marca el campo como touched
+ *   y valida — el error aparece al salir del campo por primera vez.
+ * - input: re-valida solo si el campo ya fue touched — corrige el lag M4
+ *   (cambiar un campo válido a inválido mientras se escribe avisa al instante,
+ *   sin esperar al siguiente blur) sin molestar en el primer tipeo.
+ * - change: cubre selects y checkbox (también dispara input en modernos, la
+ *   validación es idempotente).
  * Se desactiva la validación nativa (novalidate) para controlar los mensajes
  * inline con .error-message, conservando los atributos required del HTML.
  * @returns {void}
@@ -583,23 +645,30 @@ function initFormValidation() {
 
   DOM.form.setAttribute('novalidate', 'novalidate');
 
-  VALIDATION_RULES.forEach((rule) => {
-    const field = document.getElementById(rule.id);
-    if (!field) {
+  DOM.form.addEventListener('focusout', (event) => {
+    const id = event.target.id;
+    if (!RULES_BY_ID.has(id)) {
       return;
     }
+    touchedFields.add(id);
+    validateFieldById(id);
+  });
 
-    field.addEventListener('blur', () => validateFieldById(rule.id));
-
-    field.addEventListener('input', () => {
-      if (field.classList.contains('field-invalid')) {
-        validateFieldById(rule.id);
-      }
-    });
-
-    if (field.type === 'checkbox' || field.tagName === 'SELECT') {
-      field.addEventListener('change', () => validateFieldById(rule.id));
+  DOM.form.addEventListener('input', (event) => {
+    const id = event.target.id;
+    if (!RULES_BY_ID.has(id) || !touchedFields.has(id)) {
+      return;
     }
+    validateFieldById(id);
+  });
+
+  DOM.form.addEventListener('change', (event) => {
+    const id = event.target.id;
+    if (!RULES_BY_ID.has(id)) {
+      return;
+    }
+    touchedFields.add(id);
+    validateFieldById(id);
   });
 
   DOM.form.addEventListener('submit', handleManifestSubmit);
@@ -1877,10 +1946,15 @@ function startBoardingPassFlow() {
 }
 
 /**
- * Reinicia el flujo para editar el manifiesto de nuevo.
+ * Reinicia el flujo para editar el manifiesto de nuevo. Libera el guard anti
+ * doble envío y limpia el estado "touched" para que la validación en vivo
+ * vuelva a arrancar desde cero (los errores solo reaparecen tras blur/submit).
  * @returns {void}
  */
 function resetBoardingPassFlow() {
+  appState.formSubmitting = false;
+  touchedFields.clear();
+
   if (DOM.passResult) {
     DOM.passResult.classList.remove('is-visible');
   }

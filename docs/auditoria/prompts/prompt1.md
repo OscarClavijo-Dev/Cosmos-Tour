@@ -17,3 +17,9 @@ específicas con código.
 Analiza la lógica de validación del formulario. Verifica si usa APIs modernas, 
 si el manejo de errores es robusto, y si hay código redundante o ineficiente. 
 Proporciona versión corregida.
+
+# Prompt 4: Accesibilidad y mejores prácticas
+
+Evalúa el formulario según estándares de accesibilidad (ARIA labels, 
+navegación por teclado, mensajes de error claros) y mejores prácticas 
+de desarrollo web moderno.

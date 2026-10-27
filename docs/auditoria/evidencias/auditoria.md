@@ -130,3 +130,59 @@ El formulario desactiva la validación nativa vía JS (`script.js:577`) para con
 
 - **C1/C2 de la auditoría inicial** (sin backend, biométrico simulado): fuera del alcance de esta pasada de seguridad; dependen de decisión de negocio.
 - **CSP (Content-Security-Policy)**: no se añadió meta-tag porque el sitio carga fuentes de terceros (gstatic) y tiene estilos inline; una política estricta rompería la página. Recomendación: definirla en cabecera HTTP al desplegar, con `script-src 'self'` y sin `unsafe-inline` para scripts.
+
+---
+
+# Auditoría de lógica de validación — APIs modernas, robustez y eficiencia (Prompt 3)
+
+> Fecha: 27 de octubre de 2026
+> Alcance: sección 4 de `script.js` (reglas, renderizado de errores, listeners y submit) y los `<select>` del formulario en `index.html`.
+
+---
+
+## APIs modernas: evaluación
+
+| API / patrón | ¿Se usaba? | Evaluación |
+|--------------|------------|------------|
+| ES6+ (const, arrows, template literals, `Array.from`) | Sí | Correcto |
+| `novalidate` nativo + validación custom progresiva | Sí | Correcto: si el script falla, la validación nativa (con `required`/`pattern`) respalda |
+| `aria-invalid` / `aria-describedby` / `aria-live` | Sí | Correcto, pero con fallo: `aria-describedby` no se fijaba si el span de error ya venía en el HTML (L6) |
+| `classList.toggle` con booleano | Sí | Correcto |
+| Delegación de eventos sobre el `<form>` | **No** — ~24 listeners individuales (3 por campo) | Corregido (L3): ahora solo 3 listeners (`focusout`, `input`, `change`) filtran por `RULES_BY_ID.has(event.target.id)` |
+| `Map`/`Set` para índices y estado | **No** — `VALIDATION_RULES.find` lineal en cada tecla | Corregido (L5): `RULES_BY_ID = new Map(...)` → lookup O(1) |
+| Cache de nodos DOM | **No** — `getElementById` en cada validación | Corregido (L6): `errorElementCache = new Map(...)` |
+| Guard anti doble envío | **No** | Corregido (L2): flag `appState.formSubmitting` liberado en `resetBoardingPassFlow()` |
+
+---
+
+## Hallazgos y correcciones aplicadas
+
+| # | Hallazgo | Categoría | Severidad | Corrección |
+|---|----------|-----------|-----------|------------|
+| L1 | **Lag de validación en `input` (era M4 del audit):** el listener solo re-validaba si el campo *ya* tenía la clase `field-invalid`; un campo tocado que pasaba de válido a inválido mientras se escribía no mostraba error hasta el siguiente `blur`. | Lógica | Moderado → corregido | Nuevo estado `touchedFields` (Set): el error aparece al primer `focusout`/`change`; después, `input` re-valida al instante, sin molestar en el primer tipeo (`script.js:500-528`, `648-672`). |
+| L2 | **Sin guard anti doble envío (era m1):** un `requestSubmit()` programático o dos eventos submit casi simultáneos ejecutaban dos veces `startBoardingPassFlow` (doble rAF, doble toast, doble credencial). | Lógica | Menor → corregido | Flag `appState.formSubmitting`; se ignora el submit si ya está en curso y se libera en `resetBoardingPassFlow()` junto con `touchedFields.clear()` (`script.js:609-624`, `1955-1956`). |
+| L3 | **~24 listeners individuales** (3 por campo × 8 campos): más memoria y más trabajo de registro que la delegación. | Ineficiencia | Menor → corregido | Delegación de eventos sobre `DOM.form`: 3 listeners en total que resuelven el campo vía `event.target.id` + `RULES_BY_ID` (`script.js:636-675`). |
+| L4 | **Doble listener en select/checkbox:** se registraban `input` *y* `change` por separado; en navegadores modernos ambos disparan → validación duplicada en cada cambio. | Redundancia | Menor → corregido | Unificado en el handler delegado `change` (idempotente). |
+| L5 | **Búsqueda lineal de reglas:** `VALIDATION_RULES.find` se ejecutaba en cada evento y en cada campo de `validateAllFields()`. | Ineficiencia | Menor → corregido | Índice `RULES_BY_ID = new Map(VALIDATION_RULES.map(...))` → lookup O(1) (`script.js:210`). |
+| L6 | **`getElementById` en cada validación** para localizar el span de error; además `aria-describedby` no se asignaba si el span ya existía en el HTML. | Ineficiencia / Accesibilidad | Menor → corregido | Cache `errorElementCache` (Map) y asignación incondicional de `aria-describedby` (`script.js:465-496`). |
+| L7 | **Doble recorrido en el submit:** `validateAllFields()` validaba todo, y luego `handleManifestSubmit` volvía a recorrer `VALIDATION_RULES` contra `appState.formValidation` para hallar el primer inválido. | Redundancia | Menor → corregido | `validateAllFields()` devuelve directamente el `id` del primer campo inválido (o `null`), en un solo `for` (`script.js:537-551`, `613`). |
+| L8 | **Condición muerta en la regla de email:** `value.length <= FIELD_MAX_LENGTHS.email` tras `sanitizeText()` (que ya trunca a esa longitud) nunca podía ser falsa. | Redundancia | Menor → corregido | Condición eliminada (`script.js:148-156`). |
+| L9 | **Sin robustez ante excepciones:** `rule.check()` sin `try/catch` rompería toda la validación si una regla lanzara; `container.appendChild` en `getErrorElement` reventaría con un campo huérfano sin `.form-group`. | Manejo de errores | Menor → corregido | `try/catch` en `validateFieldById` con mensaje de fallback + guard `if (!container) return null` (`script.js:507-517`, `483-485`). |
+| L10 | **Reglas muertas en los 4 `<select>` (era M5):** siempre existía una opción por defecto seleccionada, por lo que `field.value` nunca era vacío y las 4 reglas jamás fallaban en condiciones normales. | Lógica | Moderado → corregido | Opción placeholder `value="" disabled selected` + atributo `required` en los 4 `<select>` (`index.html:1068-1106`): ahora el usuario debe elegir explícitamente y el mensaje "Selecciona…" es alcanzable. |
+
+---
+
+## Cambios de comportamiento visibles
+
+- **Primer tipeo sin errores:** el mensaje de un campo no aparece mientras se escribe la primera vez; aparece al salir del campo (`focusout`) o al enviar. Es el patrón estándar de UX de formularios (evita "fastidiar" mientras el usuario tipea) y corrige el lag M4.
+- **Re-validación en vivo tras el primer blur:** una vez tocado, el campo se re-valida en cada tecla — si pasa de válido a inválido, el error y el borde rojo aparecen al instante.
+- **Selects obligatorios:** los 4 `<select>` arrancan vacíos con placeholder; si el usuario no elige, el submit muestra el error correspondiente (antes era imposible fallar).
+- **Doble envío neutralizado:** doble clic o `requestSubmit()` programático ya no duplican el escaneo biométrico ni la credencial.
+
+---
+
+## Verificación
+
+- `node --check script.js` → sintaxis OK.
+- Delegación: los 3 listeners se registran una sola vez en `initFormValidation()`; el filtro `RULES_BY_ID.has(event.target.id)` ignora eventos de campos sin regla (incluido el checkbox de términos… no: `manifest-terms` sí tiene regla y cubre `change`).
+- `validateAllFields()` marca todos los campos como `touched` antes de validar, forzando la visualización de todos los errores en el submit (misma UX que la versión anterior).
