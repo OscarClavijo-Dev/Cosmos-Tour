@@ -1854,13 +1854,16 @@ function populateBoardingPass(data) {
 }
 
 /**
- * Actualiza el estado de la barra de escaneo biométrico.
+ * Actualiza el estado de la barra de escaneo biométrico (ancho visual +
+ * aria-valuenow del progressbar para lectores de pantalla).
  * @param {number} percentage - Progreso 0 a 100.
  * @returns {void}
  */
 function updateBiometricProgress(percentage) {
+  const clamped = clamp(percentage, 0, 100);
   if (DOM.scanBar) {
-    DOM.scanBar.style.width = `${clamp(percentage, 0, 100).toFixed(1)}%`;
+    DOM.scanBar.style.width = `${clamped.toFixed(1)}%`;
+    DOM.scanBar.setAttribute('aria-valuenow', String(Math.round(clamped)));
   }
   if (DOM.scanText) {
     if (percentage < 35) {
@@ -1906,6 +1909,10 @@ function runBiometricScan(data) {
 
     if (DOM.passResult) {
       DOM.passResult.classList.add('is-visible');
+      /* Mueve el foco (y el lector de pantalla) a la credencial recién
+         generada: tabindex="-1" en el HTML permite enfocarla sin añadirla
+         al orden natural de Tabulación. */
+      DOM.passResult.focus({ preventScroll: true });
       DOM.passResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -1963,6 +1970,7 @@ function resetBoardingPassFlow() {
   }
   if (DOM.scanBar) {
     DOM.scanBar.style.width = '0%';
+    DOM.scanBar.setAttribute('aria-valuenow', '0');
   }
   if (DOM.scanText) {
     DOM.scanText.textContent = 'Iniciando validación...';

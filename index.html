@@ -122,7 +122,7 @@
   </head>
   <body>
     <!-- Enlace de omisión (skip link): accesible con teclado, oculto visualmente -->
-    <a class="skip-link" href="#hero">Saltar al contenido principal</a>
+    <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
     <!-- Lienzo 3D Nativo del Cosmos y Planetas -->
     <canvas id="universe-canvas" aria-hidden="true"></canvas>
 
@@ -213,7 +213,7 @@
     </script>
 
     <!-- Contenedor Semántico Principal -->
-    <main class="main-wrapper">
+    <main id="main-content" class="main-wrapper" tabindex="-1">
       <!-- ====================================================================
            SECCIÓN A: EL DESPEGUE (Bienvenida & Explorador Planetario)
            ==================================================================== -->
@@ -975,26 +975,34 @@
                 COSMOS TOUR CREW ACCREDITATION · PROTOCOLO AST-2026
               </div>
               <div class="telemetry-text seal-status-row">
-                ESTADO: <span id="manifest-seal-status" class="seal-status">○ PENDIENTE DE ESCANEO</span>
+                ESTADO: <span id="manifest-seal-status" class="seal-status" aria-live="polite">○ PENDIENTE DE ESCANEO</span>
               </div>
             </div>
 
             <!-- Caja de Escaneo Biométrico Láser -->
             <div id="biometric-scanner-box" class="biometric-scanner-box">
-              <div class="scan-fingerprint-icon">⚡</div>
+              <div class="scan-fingerprint-icon" aria-hidden="true">⚡</div>
               <div class="telemetry-text biometric-label">
                 ESCANEO BIOMÉTRICO LÁSER & APERTURA DE EXPEDIENTE AEROESPACIAL
               </div>
               <div class="scan-progress-track">
-                <div id="scan-progress-bar" class="scan-progress-bar"></div>
+                <div
+                  id="scan-progress-bar"
+                  class="scan-progress-bar"
+                  role="progressbar"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="0"
+                  aria-label="Progreso del escaneo biométrico"
+                ></div>
               </div>
-              <div id="scan-progress-text" class="telemetry-text scan-progress-note">
+              <div id="scan-progress-text" class="telemetry-text scan-progress-note" aria-live="polite">
                 Iniciando validación...
               </div>
             </div>
 
             <!-- Tarjeta de Embarque Generada -->
-            <div id="boarding-pass-result" class="boarding-pass-result">
+            <div id="boarding-pass-result" class="boarding-pass-result" tabindex="-1" aria-label="Tarjeta de embarque generada">
               <div class="pass-header">
                 <div>
                   <div class="telemetry-text pass-header-kicker">
@@ -1046,15 +1054,17 @@
             </div>
 
             <!-- Formulario de Manifiesto -->
-            <form id="manifest-form">
+            <form id="manifest-form" aria-label="Formulario de manifiesto de vuelo">
               <div class="form-grid">
                 <div class="form-group">
-                  <label class="form-label" for="manifest-name">Nombre Completo del Astronauta *</label>
+                  <label class="form-label" for="manifest-name">Nombre Completo del Astronauta <span aria-hidden="true">*</span></label>
                   <input
                     type="text"
                     id="manifest-name"
+                    name="name"
                     class="form-input"
                     required
+                    autocomplete="name"
                     minlength="5"
                     maxlength="80"
                     pattern="[A-Za-zÀ-ÖØ-öø-ÿ' \-]+"
@@ -1064,17 +1074,19 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="manifest-email">Correo Electrónico Confidencial *</label>
-                  <input type="email" id="manifest-email" class="form-input" required maxlength="100" placeholder="h.valenzuela@cosmos-private.com" />
+                  <label class="form-label" for="manifest-email">Correo Electrónico Confidencial <span aria-hidden="true">*</span></label>
+                  <input type="email" id="manifest-email" name="email" class="form-input" required autocomplete="email" inputmode="email" maxlength="100" placeholder="h.valenzuela@cosmos-private.com" />
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="manifest-passport">Número de Pasaporte Internacional *</label>
+                  <label class="form-label" for="manifest-passport">Número de Pasaporte Internacional <span aria-hidden="true">*</span></label>
                   <input
                     type="text"
                     id="manifest-passport"
+                    name="passport"
                     class="form-input"
                     required
+                    autocomplete="off"
                     minlength="3"
                     maxlength="20"
                     pattern="[A-Za-z0-9\-]+"
@@ -1084,8 +1096,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="manifest-destination">Expedición Seleccionada</label>
-                  <select id="manifest-destination" class="form-select" required>
+                  <label class="form-label" for="manifest-destination">Expedición Seleccionada <span aria-hidden="true">*</span></label>
+                  <select id="manifest-destination" name="destination" class="form-select" required>
                     <option value="" disabled selected>Selecciona una expedición…</option>
                     <option value="La Luna">La Luna (Expedición Cis-Lunar Artemisa)</option>
                     <option value="Marte">Marte (Odisea Valles Marineris)</option>
@@ -1094,8 +1106,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="manifest-suite">Categoría de Suite a Bordo</label>
-                  <select id="manifest-suite" class="form-select" required>
+                  <label class="form-label" for="manifest-suite">Categoría de Suite a Bordo <span aria-hidden="true">*</span></label>
+                  <select id="manifest-suite" name="suite" class="form-select" required>
                     <option value="" disabled selected>Selecciona una categoría…</option>
                     <option value="Celestial Sovereign Suite">Celestial Sovereign Suite (42 m³)</option>
                     <option value="Mirador Cupola Stateroom">Mirador Cupola Stateroom (35 m³)</option>
@@ -1104,8 +1116,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="manifest-window">Ventana Temporal de Despegue</label>
-                  <select id="manifest-window" class="form-select" required>
+                  <label class="form-label" for="manifest-window">Ventana Temporal de Despegue <span aria-hidden="true">*</span></label>
+                  <select id="manifest-window" name="window" class="form-select" required>
                     <option value="" disabled selected>Selecciona una ventana…</option>
                     <option value="Octubre 2026">Octubre 2026</option>
                     <option value="Noviembre 2026">Noviembre 2026</option>
@@ -1115,8 +1127,8 @@
                 </div>
 
                 <div class="form-group full-width">
-                  <label class="form-label" for="manifest-role">Rol en el Manifiesto de Vuelo</label>
-                  <select id="manifest-role" class="form-select" required>
+                  <label class="form-label" for="manifest-role">Rol en el Manifiesto de Vuelo <span aria-hidden="true">*</span></label>
+                  <select id="manifest-role" name="role" class="form-select" required>
                     <option value="" disabled selected>Selecciona tu rol…</option>
                     <option value="Comandante Civil de Travesía">Comandante Civil de Travesía</option>
                     <option value="Especialista de Observación Astronómica">Especialista de Observación Astronómica</option>
@@ -1142,10 +1154,10 @@
               </div>
 
               <div class="form-footer-row">
-                <span class="telemetry-text form-footnote">
+                <span id="manifest-form-footnote" class="telemetry-text form-footnote">
                   El envío activará el escaneo biométrico seguro de tolerancia de vuelo.
                 </span>
-                <button type="submit" class="btn-primary btn-cta-lg">
+                <button type="submit" class="btn-primary btn-cta-lg" aria-describedby="manifest-form-footnote">
                   Validar y Emitir Credencial
                 </button>
               </div>
@@ -1156,7 +1168,7 @@
     </main>
 
     <!-- Modal Dossier de Navegación Interplanetaria (Salto Warp) -->
-    <div id="dossier-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div id="dossier-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="modal-box">
         <button id="modal-close-btn" class="modal-close-btn" aria-label="Cerrar expediente">✕</button>
 

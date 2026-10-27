@@ -2789,7 +2789,9 @@ section {
   min-height: 1em;
   font-size: 0.75rem;
   font-family: var(--font-mono);
-  color: #fb7185;
+  /* var(--color-rose) se adapta al tema: #f43f5e en oscuro (≈4.7:1) y
+     #be123c en claro (≈5.9:1 sobre blanco) — cumple WCAG AA 4.5:1. */
+  color: var(--color-rose);
 }
 .error-message:empty {
   display: none;
@@ -3392,7 +3394,9 @@ section {
 .scan-progress-track {
   height: 8px;
   margin: 0.9rem 0 0.5rem;
-  background: rgba(255, 255, 255, 0.07);
+  /* 0.14 (no 0.07): el riel debe ser perceptible sobre el fondo oscuro de la
+     caja también en modo claro (WCAG 1.4.11 contraste de componentes). */
+  background: rgba(255, 255, 255, 0.14);
   border-radius: 999px;
   overflow: hidden;
 }

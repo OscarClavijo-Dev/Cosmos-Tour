@@ -186,3 +186,96 @@ El formulario desactiva la validación nativa vía JS (`script.js:577`) para con
 - `node --check script.js` → sintaxis OK.
 - Delegación: los 3 listeners se registran una sola vez en `initFormValidation()`; el filtro `RULES_BY_ID.has(event.target.id)` ignora eventos de campos sin regla (incluido el checkbox de términos… no: `manifest-terms` sí tiene regla y cubre `change`).
 - `validateAllFields()` marca todos los campos como `touched` antes de validar, forzando la visualización de todos los errores en el submit (misma UX que la versión anterior).
+
+---
+
+# Auditoría de accesibilidad y buenas prácticas modernas (Prompt 4)
+
+> Fecha: 27 de octubre de 2026
+> Alcance: formulario `#manifest-form` en `index.html` (etiquetas, ARIA, navegación por teclado, mensajes de error), estilos de foco/contraste en `styles.css`, flujo de escaneo/credencial en `script.js`.
+> Referencias: WCAG 2.2 (1.3.5, 1.4.3, 1.4.11, 2.4.1, 2.4.7, 4.1.2, 4.1.3), ARIA Authoring Practices, HTML Living Standard.
+
+---
+
+## Lo que ya estaba bien (verificado)
+
+- **Labels asociados:** todos los campos tienen `<label for>` coincide con el `id` — WCAG 1.3.1 ✓.
+- **Región live de errores:** cada `.error-message` se crea con `aria-live="polite"` y se enlaza con `aria-describedby` + `aria-invalid` en el campo — WCAG 4.1.3 ✓.
+- **Toast accesible:** `#toast-container` con `role="status"` + `aria-live="polite"` ✓.
+- **Foco visible:** regla global `:focus-visible` con `outline: 2px solid var(--color-neon-cyan)` — WCAG 2.4.7 ✓.
+- **Skip link:** `<a class="skip-link">` oculto hasta foco de teclado ✓ (con mejora aplicada, ver A3).
+- **Modales:** `role="dialog"` + `aria-modal="true"` + `aria-label`, foco inicial en botón de cierre y restauración al cerrar — WCAG 2.4.3 ✓.
+- **Navegación por teclado nativa:** botones, enlaces, inputs, selects y checkbox son operables con Tab/Intro/Espacio sin `tabindex` artificiales ✓.
+- **`prefers-reduced-motion`:** respetado en JS y CSS (`@media (prefers-reduced-motion: reduce)`) ✓.
+- **Iconos decorativos:** `aria-hidden="true"` en canvas, emblemas, iconos de escaneo y separadores ✓.
+
+---
+
+## Hallazgos y correcciones aplicadas
+
+| # | Hallazgo | Categoría | Severidad | Corrección |
+|---|----------|-----------|-----------|------------|
+| A1 | **Sin `autocomplete` ni `inputmode`** en los campos de texto: los navegadores/móviles no ofrecían autocompletado ni teclado adecuado (WCAG 1.3.5 Identify Input Purpose). | Accesibilidad / UX | Moderado → corregido | `autocomplete="name"` en nombre, `autocomplete="email"` + `inputmode="email"` en correo, `autocomplete="off"` en pasaporte (PII sensible que no debe persistirse) (`index.html:1063-1095`). |
+| A2 | **Sin atributos `name`** en ningún campo salvo el checkbox: `FormData`/backend futuro solo recibiría el checkbox; también es práctica estándar de HTML. | Calidad / Futuro backend | Menor → corregido | `name="name|email|passport|destination|suite|window|role"` en los 7 campos (`index.html:1053-1131`). |
+| A3 | **Skip link apuntaba a `#hero`** (sección), no al landmark `<main>`: el usuario de teclado/lector no saltaba al contenido principal semántico — WCAG 2.4.1 (Bloquear contenido). | Accesibilidad | Menor → corregido | `<main id="main-content" tabindex="-1">` y skip link → `#main-content` (`index.html:125`, `216`). |
+| A4 | **El formulario no tenía nombre accesible:** al navegar por landmarks/regiones, el `<form>` aparecía sin nombre — WCAG 4.1.2 (Name, Role, Value). | Accesibilidad | Menor → corregido | `aria-label="Formulario de manifiesto de vuelo"` en `<form>` (`index.html:1056`). |
+| A5 | **Asteriscos `*` de campos obligatorios legibles por lector de pantalla:** el texto literal `*` puede anunciarse como "asterisk" ruidoso; el estado obligatorio ya lo transmite el atributo `required` — WCAG 1.3.1 / práctica ARIA. | Accesibilidad | Menor → corregido | Cada `*` envuelto en `<span aria-hidden="true">*</span>` (`index.html:1060-1130`). |
+| A6 | **Progreso del escaneo invisible para lectores de pantalla:** `#scan-progress-bar` era un `div` sin semántica; `#scan-progress-text` y `#manifest-seal-status` cambiaban sin `aria-live` — WCAG 4.1.3 (Mensajes de estado). | Accesibilidad | Moderado → corregido | `role="progressbar"` + `aria-valuemin/max/now` + `aria-label` en la barra (sincronizado en JS con `setAttribute('aria-valuenow', …)`); `aria-live="polite"` en texto de progreso y sello (`index.html:978-1005`, `script.js:1925-1935`). |
+| A7 | **La credencial generada no recibía foco:** tras el escaneo, el foco seguía en el formulario oculto y el lector no anunciaba el resultado — WCAG 2.4.3 / 4.1.3. | Accesibilidad | Moderado → corregido | `tabindex="-1"` + `aria-label` en `#boarding-pass-result`; `focus({ preventScroll: true })` tras revelarla (`index.html:1010`, `script.js:1977-1983`). |
+| A8 | **Pie de formulario no asociado al botón de envío:** la consecuencia del submit ("activará el escaneo biométrico…") no se anunciaba al enfocar el botón — práctica ARIA `aria-describedby`. | Accesibilidad | Menor → corregido | `id="manifest-form-footnote"` en el pie + `aria-describedby` en el `<button type="submit">` (`index.html:1215-1221`). |
+| A9 | **Contraste AA fallido de `.error-message` en tema claro (era M1):** color fijo `#fb7185` ≈3.2:1 sobre blanco, inferior al 4.5:1 exigido — WCAG 1.4.3. | Accesibilidad / Contraste | Moderado → corregido | `color: var(--color-rose)`: `#f43f5e` en oscuro (≈4.7:1) y `#be123c` en claro (≈5.9:1 sobre blanco) — ambos AA ✓ (`styles.css:2792-2796`). |
+| A10 | **Riel de escaneo casi imperceptible (era M7):** `rgba(255,255,255,0.07)` sobre la caja oscura; umbral de contraste no textual 3:1 — WCAG 1.4.11. | Accesibilidad / Contraste | Menor → corregido | Alpha subido a `0.14` — perceptible en ambos temas sin romper el diseño (`styles.css:3407-3412`). |
+| A11 | **Modal dossier sin `aria-hidden` inicial** (los otros dos sí lo tenían): al cargar, un lector podía detectar el diálogo oculto como contenido presente — consistencia ARIA. | Accesibilidad | Menor → corregido | `aria-hidden="true"` en el markup inicial de `#dossier-modal` (`index.html:1171`); el JS ya lo alternaba al abrir/cerrar. |
+
+---
+
+## Navegación por teclado — evaluación
+
+| Aspecto | Estado |
+|---------|--------|
+| Orden de Tabulación | ✓ Natural (orden del DOM, sin `tabindex` positivos) |
+| Foco visible | ✓ `:focus-visible` global + indicador en `.form-input:focus` (borde + box-shadow cyan) |
+| Skip link | ✓ Apunta a `#main-content` tras corrección A3 |
+| Escape cierra modales | ✓ Dossier, ficha planeta y ficha POI |
+| Foco en errores | ✓ `handleManifestSubmit` enfoca el primer campo inválido |
+| Foco tras acción dinámica | ✓ Credencial enfocada tras escaneo (A7) |
+| Modal: foco inicial/restauración | ✓ Botón de cierre al abrir, elemento previo al cerrar |
+| **Foco atrapado en modales (focus trap)** | ⚠ **No implementado:** con Tab se puede salir del diálogo al contenido de fondo. Recomendación futura: helper `trapFocus(modal)` en `keydown` (no bloquea hoy la navegación, pero es deuda respecto a ARIA APG). |
+
+---
+
+## Mensajes de error — claridad (WCAG 3.3.1, 3.3.3)
+
+| Aspecto | Evaluación |
+|---------|------------|
+| Identificación | ✓ Icono `⚠` vía CSS `::before` (no solo color) + texto + borde rojo |
+| Específicos y accionables | ✓ "El nombre completo debe tener al menos 5 caracteres", "Introduce un correo válido (ej. nombre@dominio.com)", "Selecciona una expedición…" |
+| Asociación al campo | ✓ `aria-describedby` + `aria-live="polite"` + `field-invalid` |
+| Localización del fallo | ✓ Submit enfoca el primer campo inválido |
+| Sugerencia de corrección | ✓ `title`/`pattern` en HTML + mensajes con formato esperado |
+
+---
+
+## Mejores prácticas de desarrollo web moderno — estado
+
+| Práctica | Estado |
+|----------|--------|
+| HTML semántico (`main`, `section`, `label`, `button`) | ✓ |
+| ARIA mínimo necesario (sin `role` redundantes) | ✓ (mejorado en esta pasada) |
+| Validación nativa como respaldo (`required`/`pattern` + `novalidate` solo por JS) | ✓ |
+| `autocomplete`/`inputmode` para móvil (A1) | ✓ corregido |
+| Progressive enhancement (si JS falla, validación nativa activa) | ✓ |
+| Delegación de eventos + `Map`/`Set` (Prompt 3) | ✓ |
+| `prefers-reduced-motion` | ✓ |
+| Tema claro/oscuro con variables CSS | ✓ (errores y contraste ahora adaptados) |
+| **Focus trap en modales** | ⚠ deuda conocida (ver arriba) |
+| **`@media print` para la credencial** | ⚠ deuda conocida (M6 del audit inicial, fuera de alcance de este prompt) |
+
+---
+
+## Verificación
+
+- `node --check script.js` → sintaxis OK.
+- Contraste `.error-message`: `#be123c`/`#ffffff` ≈5.9:1 (AA ✓), `#f43f5e`/`#030712` ≈4.7:1 (AA ✓).
+- Regiones live: `#scan-progress-text`, `#manifest-seal-status`, `#toast-container`, `.error-message` — todas `aria-live="polite"` (no interrumpen al usuario).
+- El `*` obligatorio ya no se anuncia; `required` sigue exponiendo el estado nativo a AT.
