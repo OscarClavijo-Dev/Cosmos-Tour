@@ -24,8 +24,9 @@
    1. CONFIGURACIÓN INICIAL (constantes, reglas, catálogo de destinos)
    2. UTILIDADES Y ALMACENAMIENTO (throttle, debounce, localStorage seguro)
    3. TOASTS Y FEEDBACK VISUAL (sustituyen alert/confirm/prompt)
-   4. VALIDACIÓN DE FORMULARIO (F1)
-   5. ANIMACIONES SCROLL / INTERSECTION OBSERVER (F2)
+    4. VALIDACIÓN DE FORMULARIO (F1)
+   4b. PERSISTENCIA DE RESERVAS (AUTOGUARDADO + FORMSPREE)
+    5. ANIMACIONES SCROLL / INTERSECTION OBSERVER (F2)
    6. HEADER STICKY + PROGRESO DE SCROLL (F3 y F12)
    7. CONTADORES ANIMADOS DEL HERO (F4)
    8. TEMA OSCURO / CLARO (F5)
@@ -110,9 +111,15 @@ const VALIDATION_RULES = [
         : 'Introduce un correo electrónico válido (ej. nombre@dominio.com).'
   },
   {
+    // VALIDACIÓN MEJORADA: el pasaporte debe tener al menos 6 caracteres
+    // alfanuméricos (se ignoran espacios y guiones, ej. "P-89240177A").
     id: 'manifest-passport',
-    check: (field) =>
-      field.value.trim().length > 0 ? '' : 'El número de pasaporte es obligatorio.'
+    check: (field) => {
+      const limpio = field.value.trim().replace(/[\s-]/g, '');
+      return /^[a-zA-Z0-9]{6,}$/.test(limpio)
+        ? ''
+        : 'El número de pasaporte debe contener al menos 6 caracteres alfanuméricos.';
+    }
   },
   {
     id: 'manifest-destination',
@@ -278,6 +285,32 @@ function randomInt(min, max) {
 }
 
 /**
+ * BLOQUE: Utilidad de formato de fecha legible.
+ * Convierte un Date (o string ISO) al formato "DD/MM/YYYY HH:MM:SS"
+ * para los timestamps persistidos y las notificaciones en pantalla.
+ * @param {Date|string} date - Fecha a formatear (por defecto, ahora).
+ * @returns {string} Fecha legible, ej. "29/10/2026 14:35:07".
+ */
+function formatDate(date = new Date()) {
+  try {
+    const fecha = date instanceof Date ? date : new Date(date);
+    if (Number.isNaN(fecha.getTime())) {
+      return '';
+    }
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const anio = fecha.getFullYear();
+    const horas = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    const segundos = String(fecha.getSeconds()).padStart(2, '0');
+    return `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+  } catch (error) {
+    console.warn('[Cosmos Tour] Error al formatear la fecha:', error);
+    return '';
+  }
+}
+
+/**
  * Lectura segura de localStorage (try/catch obligatorio).
  * @param {string} key - Clave a leer.
  * @returns {string|null} Valor almacenado o null si no existe o falla.
@@ -303,6 +336,21 @@ function writeStorage(key, value) {
     return true;
   } catch (error) {
     console.warn('[Cosmos Tour] localStorage no disponible (escritura):', error);
+    return false;
+  }
+}
+
+/**
+ * Eliminación segura de una clave de localStorage (try/catch obligatorio).
+ * @param {string} key - Clave a eliminar.
+ * @returns {boolean} true si se eliminó correctamente.
+ */
+function removeStorage(key) {
+  try {
+    window.localStorage.removeItem(key);
+    return true;
+  } catch (error) {
+    console.warn('[Cosmos Tour] localStorage no disponible (eliminación):', error);
     return false;
   }
 }
@@ -465,9 +513,13 @@ function collectManifestData() {
 }
 
 /**
- * Genera un código de misión aleatorio coherente con el destino.
+ * BLOQUE: Generación de código de misión ÚNICO.
+ * Formato: CT-2026-<PREFIX>-<dígtos> donde el prefijo depende del destino
+ * (LUN/MAR/ISS) y los 4 dígitos se derivan del timestamp actual (fecha+hora
+ * en milisegundos), garantizando unicidad en cada emisión.
+ * Ejemplos: "CT-2026-LUN-8420", "CT-2026-MAR-1547".
  * @param {string} destination - Nombre de la expedición.
- * @returns {string} Código tipo CT-2026-LUN-123.
+ * @returns {string} Código de misión único.
  */
 function generateMissionCode(destination) {
   const prefixes = {
@@ -476,31 +528,37 @@ function generateMissionCode(destination) {
     'Estación Espacial Internacional': 'ISS'
   };
   const prefix = prefixes[destination] || 'ORB';
-  return `CT-2026-${prefix}-${randomInt(100, 999)}`;
+
+  // Dígitos únicos: resto del timestamp (epoch en ms) en base 10000,
+  // rellenado con ceros a la izquierda para mantener 4 cifras.
+  const digitos = String(Date.now() % 10000).padStart(4, '0');
+
+  return `CT-2026-${prefix}-${digitos}`;
 }
 
 /**
- * Manejador de submit: prevenir el envío si hay errores y disparar el flujo
- * de escaneo biométrico + boarding pass si todo es válido.
+ * Manejador de submit: prevenir el comportamiento por defecto, validar todos
+ * los campos requeridos y, si todo es válido, transmitir el manifiesto a
+ * Formspree (flujo de persistencia y conversión).
  * @param {SubmitEvent} event - Evento de envío del formulario.
  * @returns {void}
  */
 function handleManifestSubmit(event) {
   event.preventDefault();
 
-  if (!validateAllFields()) {
+  // VALIDACIÓN MEJORADA PREVIA AL ENVÍO: email con regex, pasaporte con
+  // mínimo 6 caracteres alfanuméricos, campos requeridos y términos.
+  const errores = validarManifiestoParaEnvio();
+  if (errores.length > 0) {
     showToast('Revisa los campos marcados antes de continuar.', 'error');
-    const firstInvalid = VALIDATION_RULES.find(
-      (rule) => !appState.formValidation[rule.id]
-    );
-    const field = firstInvalid ? document.getElementById(firstInvalid.id) : null;
-    if (field) {
-      field.focus();
+    const primerCampoInvalido = document.getElementById(errores[0].campo);
+    if (primerCampoInvalido) {
+      primerCampoInvalido.focus();
     }
     return;
   }
 
-  startBoardingPassFlow();
+  procesarEnvioReserva();
 }
 
 /**
@@ -536,6 +594,653 @@ function initFormValidation() {
   });
 
   DOM.form.addEventListener('submit', handleManifestSubmit);
+}
+
+/* ============ 4b. PERSISTENCIA DE RESERVAS (AUTOGUARDADO + FORMSPREE) ===== */
+
+// BLOQUE 1: CONSTANTES DE PERSISTENCIA
+// Claves de localStorage, endpoint de Formspree y mapeo de campos del
+// formulario. Todo el módulo referencia exclusivamente estas constantes.
+
+/** Clave de localStorage: borrador de la reserva activa (autoguardado). */
+const RESERVA_ACTIVA_KEY = 'cosmostour_reserva_activa';
+
+/** Clave de localStorage: pasajero ya convertido (reserva confirmada). */
+const PASAJERO_CONVERTIDO_KEY = 'cosmostour_pasajero_convertido';
+
+/** Clave de localStorage: extras de experiencia (se consulta y se limpia). */
+const EXPERIENCIAS_EXTRAS_KEY = 'cosmostour_experiencias_extras';
+
+/**
+ * Endpoint de Formspree. Reemplaza [ID_DE_FORMSPREE] por el ID real que
+ * Formspree genera al crear el formulario (también debe actualizarse el
+ * atributo action del <form id="manifest-form"> en index.html).
+ */
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/[ID_DE_FORMSPREE]';
+
+/** Mapeo de IDs del formulario a las claves del borrador persistido. */
+const RESERVA_FIELD_MAP = [
+  { id: 'manifest-name', key: 'nombreCompleto' },
+  { id: 'manifest-email', key: 'correoElectronico' },
+  { id: 'manifest-passport', key: 'numeroPasaporte' },
+  { id: 'manifest-destination', key: 'expedicionSeleccionada' },
+  { id: 'manifest-suite', key: 'categoriaSuite' },
+  { id: 'manifest-window', key: 'ventanaDespegue' },
+  { id: 'manifest-role', key: 'rolManifiesto' },
+  { id: 'manifest-terms', key: 'terminosAceptados' }
+];
+
+/** Identificador del setInterval del monitor de verificación (cada 2 s). */
+let monitorAutoguardadoId = null;
+
+// BLOQUE 2: RECOLECCIÓN DEL BORRADOR DEL FORMULARIO
+// Lee el valor actual de los 8 campos y construye el objeto que se
+// persistirá. El timestamp se guarda en formato legible "DD/MM/YYYY HH:MM:SS".
+
+/**
+ * Lee el valor actual de todos los campos del manifiesto y construye el
+ * objeto borrador con la estructura persistida.
+ * @returns {Object} Borrador de reserva con los 8 campos + timestamp.
+ */
+function collectReservaDraft() {
+  const draft = {
+    nombreCompleto: '',
+    correoElectronico: '',
+    numeroPasaporte: '',
+    expedicionSeleccionada: '',
+    categoriaSuite: '',
+    ventanaDespegue: '',
+    rolManifiesto: '',
+    terminosAceptados: false,
+    // FECHA/HORA LEGIBLE: formato DD/MM/YYYY HH:MM:SS vía formatDate().
+    timestamp: formatDate(new Date())
+  };
+
+  // BUCLE: recorre el mapeo y extrae valor (o checked en checkboxes).
+  RESERVA_FIELD_MAP.forEach(({ id, key }) => {
+    const field = document.getElementById(id);
+    if (!field) {
+      return;
+    }
+    draft[key] = field.type === 'checkbox' ? field.checked : field.value.trim();
+  });
+
+  return draft;
+}
+
+// BLOQUE 3: AUTOGUARDADO EN TIEMPO REAL
+// Se ejecuta en cada evento 'input' del formulario: serializa TODOS los
+// campos como JSON en 'cosmostour_reserva_activa' y actualiza el timestamp.
+
+/**
+ * AUTOGUARDADO EN TIEMPO REAL: serializa todos los campos del formulario
+ * como JSON en 'cosmostour_reserva_activa', actualizando el timestamp en
+ * cada pulsación de tecla/cambio. Log visible en DevTools.
+ * @returns {void}
+ */
+function guardarReservaAutoguardado() {
+  try {
+    if (!DOM.form) {
+      return;
+    }
+    const draft = collectReservaDraft();
+    const guardado = writeStorage(RESERVA_ACTIVA_KEY, JSON.stringify(draft));
+    if (guardado) {
+      // LOG DE DEMOSTRACIÓN: confirma en consola cada autoguardado exitoso.
+      console.log('🛰️ [AUTOGUARDADO] Datos guardados en cosmostour_reserva_activa', draft);
+      toggleBotonCancelarReserva(true);
+    }
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al autoguardar la reserva:', error);
+  }
+}
+
+// BLOQUE 4: RESTAURACIÓN AUTOMÁTICA AL CARGAR LA PÁGINA
+// Al iniciar (DOMContentLoaded), si existe el borrador, se rellenan todos
+// los campos y se muestra la notificación discreta con la fecha legible.
+
+/**
+ * RESTAURACIÓN AUTOMÁTICA: si existe un borrador en localStorage, rellena
+ * todos los campos del formulario y muestra la notificación discreta.
+ * @returns {boolean} true si se restauró algún borrador.
+ */
+function restaurarReservaAutoguardada() {
+  try {
+    // PASO 1: leer la clave del borrador activo.
+    const raw = readStorage(RESERVA_ACTIVA_KEY);
+    if (!raw) {
+      return false;
+    }
+
+    // PASO 2: parsear el JSON con protección.
+    const draft = JSON.parse(raw);
+    if (!draft || typeof draft !== 'object') {
+      return false;
+    }
+
+    // PASO 3: rellenar cada campo del formulario con el valor guardado.
+    let restaurado = false;
+    RESERVA_FIELD_MAP.forEach(({ id, key }) => {
+      const field = document.getElementById(id);
+      if (!field || draft[key] === undefined) {
+        return;
+      }
+      if (field.type === 'checkbox') {
+        field.checked = Boolean(draft[key]);
+      } else {
+        field.value = String(draft[key]);
+      }
+      restaurado = true;
+    });
+
+    // PASO 4: feedback visual + log completo del objeto recuperado.
+    if (restaurado) {
+      console.log('🛰️ [RESTAURACIÓN] Datos recuperados:', draft);
+      mostrarNotificacionRestauracion(draft.timestamp);
+      toggleBotonCancelarReserva(true);
+    }
+    return restaurado;
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al restaurar la reserva:', error);
+    return false;
+  }
+}
+
+// BLOQUE 5: NOTIFICACIÓN VISUAL DE RESTAURACIÓN
+// Muestra un aviso discreto sobre el formulario con la fecha legible
+// "DD/MM/YYYY HH:MM:SS" del último autoguardado; se oculta a los 5 s.
+
+/**
+ * Muestra (y oculta tras unos segundos) la notificación visual discreta de
+ * restauración sobre el formulario.
+ * @param {string} timestamp - Timestamp legible "DD/MM/YYYY HH:MM:SS".
+ * @returns {void}
+ */
+function mostrarNotificacionRestauracion(timestamp) {
+  const notification = document.getElementById('restore-notification');
+  if (!notification) {
+    return;
+  }
+
+  // La fecha ya viene en formato legible desde formatDate(); se conserva
+  // formatDate() como respaldo por si el valor guardado fuera ISO.
+  const fechaLegible = formatDate(timestamp) || timestamp || '';
+
+  notification.textContent = `Reserva restaurada - Última actualización: ${fechaLegible}`;
+  notification.hidden = false;
+  notification.classList.add('is-visible');
+
+  setTimeout(() => {
+    notification.classList.remove('is-visible');
+    setTimeout(() => {
+      notification.hidden = true;
+    }, 350);
+  }, 5000);
+}
+
+// BLOQUE 6: LIMPIEZA DE DATOS Y CONEXIÓN DE EVENTOS DEL FORMULARIO
+// Botón "Cancelar Reserva" (borra el borrador y recarga) y los listeners
+// de 'input'/'change' mediante delegación sobre el <form> completo.
+
+/**
+ * Muestra u oculta el botón discreto "Cancelar Reserva" del pie del formulario.
+ * @param {boolean} visible - true para mostrar el botón.
+ * @returns {void}
+ */
+function toggleBotonCancelarReserva(visible) {
+  const button = document.getElementById('btn-cancelar-reserva');
+  if (button) {
+    button.hidden = !visible;
+  }
+}
+
+/**
+ * LIMPIEZA DE DATOS: elimina 'cosmostour_reserva_activa' y recarga la página
+ * para partir de un formulario en blanco.
+ * @returns {void}
+ */
+function limpiarReservaActiva() {
+  try {
+    removeStorage(RESERVA_ACTIVA_KEY);
+    window.location.reload();
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al cancelar la reserva:', error);
+  }
+}
+
+/**
+ * Conecta el botón #btn-cancelar-reserva con la limpieza del borrador.
+ * @returns {void}
+ */
+function initBotonCancelarReserva() {
+  const button = document.getElementById('btn-cancelar-reserva');
+  if (!button) {
+    return;
+  }
+  button.addEventListener('click', () => {
+    const confirmado = window.confirm(
+      '¿Cancelar la reserva en curso? Se eliminarán los datos autoguardados de este dispositivo.'
+    );
+    if (confirmado) {
+      limpiarReservaActiva();
+    }
+  });
+}
+
+/**
+ * Conecta el evento 'input' (y 'change' como respaldo para checkboxes y
+ * selects en navegadores antiguos) en el formulario completo mediante
+ * delegación: cualquier campo que cambie dispara el autoguardado total.
+ * @returns {void}
+ */
+function initAutoguardadoEnTiempoReal() {
+  if (!DOM.form) {
+    return;
+  }
+  DOM.form.addEventListener('input', guardarReservaAutoguardado);
+  DOM.form.addEventListener('change', guardarReservaAutoguardado);
+}
+
+// BLOQUE 7: MONITOR DE VERIFICACIÓN EN TIEMPO REAL (DEMO DevTools)
+// setInterval cada 2000 ms mientras el formulario sea visible: comprueba si
+// 'cosmostour_reserva_activa' existe y lista los campos que ya tienen valor.
+
+/**
+ * Arranca el monitor de autoguardado (una sola instancia). Cada 2 segundos
+ * imprime en consola la lista de campos persistidos con valor, lo que
+ * permite demostrar campo por campo que el autoguardado funciona.
+ * @returns {void}
+ */
+function iniciarMonitorAutoguardado() {
+  // EVITAR DUPLICADOS: solo se crea un intervalo.
+  if (monitorAutoguardadoId !== null) {
+    return;
+  }
+
+  monitorAutoguardadoId = setInterval(() => {
+    try {
+      // FILTRO 1: el monitor solo habla si el formulario está visible
+      // (se oculta automáticamente cuando el usuario ya es convertido).
+      const formOculto =
+        !DOM.form || DOM.form.style.display === 'none' || DOM.form.hidden;
+      const panel = document.getElementById('convertido-panel');
+      const panelVisible = panel && !panel.hidden;
+      if (formOculto || panelVisible) {
+        return;
+      }
+
+      // FILTRO 2: leer y parsear el borrador persistido.
+      const raw = readStorage(RESERVA_ACTIVA_KEY);
+      if (!raw) {
+        return;
+      }
+      const draft = JSON.parse(raw);
+
+      // FILTRO 3: construir la lista de campos con valor no vacío.
+      const camposConValor = RESERVA_FIELD_MAP
+        .filter(({ key }) => {
+          const valor = draft[key];
+          return valor !== '' && valor !== false && valor !== undefined && valor !== null;
+        })
+        .map(({ key }) => key)
+        .join(', ');
+
+      // LOG DE DEMOSTRACIÓN: lista legible de campos autoguardados.
+      console.log(`🔍 [MONITOR] Campos guardados: ${camposConValor || '(ninguno)'}`);
+    } catch (error) {
+      console.warn('[Cosmos Tour] Error en el monitor de autoguardado:', error);
+    }
+  }, 2000);
+}
+
+// BLOQUE 8: VALIDACIÓN MEJORADA PREVIA AL ENVÍO
+// Ejecuta todas las reglas (email con regex, pasaporte ≥6 alfanuméricos,
+// campos requeridos y términos), pinta los errores junto a cada campo y
+// devuelve la lista de errores para que el envío NO continúe si la hay.
+
+/**
+ * Valida el manifiesto completo antes de enviar, mostrando el mensaje de
+ * error específico bajo cada campo inválido.
+ * @returns {Array<{campo: string, mensaje: string}>} Lista de errores.
+ */
+function validarManifiestoParaEnvio() {
+  const errores = [];
+
+  // BUCLE: validar campo por campo con las reglas declarativas.
+  VALIDATION_RULES.forEach((rule) => {
+    const field = document.getElementById(rule.id);
+    if (!field) {
+      return;
+    }
+    const mensaje = rule.check(field);
+    const esValido = mensaje === '';
+
+    // Pintar resultado inline (.error-message + aria-invalid).
+    const errorElement = getErrorElement(field);
+    errorElement.textContent = esValido ? '' : mensaje;
+    field.classList.toggle('field-invalid', !esValido);
+    field.setAttribute('aria-invalid', String(!esValido));
+    appState.formValidation[rule.id] = esValido;
+
+    if (!esValido) {
+      errores.push({ campo: rule.id, mensaje });
+    }
+  });
+
+  // LOG DE DEMOSTRACIÓN: reporte de errores en la consola de DevTools.
+  if (errores.length > 0) {
+    console.warn('⚠️ [VALIDACIÓN] Errores encontrados:', errores);
+  }
+
+  return errores;
+}
+
+// BLOQUE 9: REGISTRO DE PASAJERO CONVERTIDO
+// Tras un envío exitoso se persiste 'cosmostour_pasajero_convertido' con el
+// código de misión único (destino + timestamp) y se limpian los borradores.
+
+/**
+ * Registra en localStorage 'cosmostour_pasajero_convertido' los datos de la
+ * reserva confirmada (incluye nombre y ventana de despegue para poder
+ * reconstruir el mensaje personalizado en cargas posteriores).
+ * @param {Object} data - Borrador enviado con éxito a Formspree.
+ * @returns {Object} Registro del pasajero convertido guardado.
+ */
+function registrarPasajeroConvertido(data) {
+  const registro = {
+    convertido: true,
+    // FECHA/HORA LEGIBLE del momento de la confirmación.
+    timestamp: formatDate(new Date()),
+    destinoConfirmado: data.expedicionSeleccionada,
+    // CÓDIGO ÚNICO: prefijo del destino (LUN/MAR/ISS) + dígitos del timestamp.
+    codigoMision: generateMissionCode(data.expedicionSeleccionada),
+    nombrePasajero: data.nombreCompleto,
+    ventanaDespegue: data.ventanaDespegue
+  };
+  writeStorage(PASAJERO_CONVERTIDO_KEY, JSON.stringify(registro));
+  return registro;
+}
+
+/**
+ * LIMPIEZA POST-CONVERSIÓN: elimina el borrador activo y las experiencias
+ * extras persistidas, ya que la reserva quedó confirmada en Formspree.
+ * @returns {void}
+ */
+function limpiarAlmacenamientoPostConversion() {
+  removeStorage(RESERVA_ACTIVA_KEY);
+  removeStorage(EXPERIENCIAS_EXTRAS_KEY);
+  toggleBotonCancelarReserva(false);
+}
+
+// BLOQUE 10: MENSAJE DE USUARIO CONVERTIDO MEJORADO
+// Icono según destino (🌙/🔴/🛰️), código de misión, ventana de despegue,
+// lista de experiencias extras (si existen) y botón de descarga simulada.
+
+/**
+ * Devuelve el ícono temático según el destino confirmado de la expedición.
+ * @param {string} destino - Nombre de la expedición.
+ * @returns {string} Emoji del destino (🌙, 🔴, 🛰️ o 🛸 genérico).
+ */
+function obtenerIconoDestino(destino) {
+  const iconos = {
+    'La Luna': '🌙',
+    'Marte': '🔴',
+    'Estación Espacial Internacional': '🛰️'
+  };
+  return iconos[destino] || '🛸';
+}
+
+/**
+ * Lee 'cosmostour_experiencias_extras' y normaliza su contenido a un array
+ * de textos (soporta array de strings u objeto con nombres de experiencia).
+ * @returns {string[]} Lista de experiencias extras (vacía si no hay datos).
+ */
+function obtenerExperienciasExtras() {
+  try {
+    const raw = readStorage(EXPERIENCIAS_EXTRAS_KEY);
+    if (!raw) {
+      return [];
+    }
+    const datos = JSON.parse(raw);
+    if (Array.isArray(datos)) {
+      return datos.map((item) => String(item));
+    }
+    if (datos && typeof datos === 'object') {
+      return Object.entries(datos)
+        .filter(([, seleccionado]) => Boolean(seleccionado))
+        .map(([nombre]) => nombre);
+    }
+    return [];
+  } catch (error) {
+    console.warn('[Cosmos Tour] Error al leer experiencias extras:', error);
+    return [];
+  }
+}
+
+/**
+ * Oculta el formulario y muestra el panel personalizado de pasajero
+ * convertido: saludo, destino con ícono, código de misión, ventana de
+ * despegue, experiencias extras y botones de descarga/nueva reserva.
+ * @param {Object} registro - Registro de 'cosmostour_pasajero_convertido'.
+ * @returns {void}
+ */
+function mostrarMensajeConvertido(registro) {
+  const panel = document.getElementById('convertido-panel');
+  if (!panel) {
+    return;
+  }
+
+  const setText = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = value;
+    }
+  };
+
+  // DATO 1: nombre del pasajero en el saludo.
+  setText('convertido-greeting', `Bienvenido Comandante ${registro.nombrePasajero}`);
+
+  // DATO 2: destino confirmado precedido de su ícono temático.
+  const iconoDestino = obtenerIconoDestino(registro.destinoConfirmado);
+  setText(
+    'convertido-credencial',
+    `Tu credencial de embarque para ${iconoDestino} ${registro.destinoConfirmado} ha sido emitida.`
+  );
+
+  // DATO 3: código de misión único generado en la confirmación.
+  setText('convertido-codigo', registro.codigoMision);
+
+  // DATO 4: ventana temporal de despegue.
+  setText('convertido-ventana', registro.ventanaDespegue);
+
+  // DATO 5: lista de experiencias extras (solo si hay alguna persistida).
+  const extrasBloque = document.getElementById('convertido-extras');
+  const extrasLista = document.getElementById('convertido-extras-lista');
+  const experiencias = obtenerExperienciasExtras();
+  if (extrasBloque && extrasLista) {
+    extrasLista.innerHTML = '';
+    if (experiencias.length > 0) {
+      experiencias.forEach((nombre) => {
+        const item = document.createElement('li');
+        item.textContent = nombre;
+        extrasLista.appendChild(item);
+      });
+      extrasBloque.hidden = false;
+    } else {
+      extrasBloque.hidden = true;
+    }
+  }
+
+  // DATO 6: botón "Descargar Credencial" (simulado con alert para la demo).
+  const btnDescargar = document.getElementById('btn-descargar-credencial');
+  if (btnDescargar && !btnDescargar.dataset.bound) {
+    btnDescargar.dataset.bound = '1';
+    btnDescargar.addEventListener('click', () => {
+      window.alert(
+        `🛰️ CREDENCIAL DE EMBARQUE AST-2026\n\n` +
+        `Pasajero: ${registro.nombrePasajero}\n` +
+        `Destino: ${iconoDestino} ${registro.destinoConfirmado}\n` +
+        `Código de Misión: ${registro.codigoMision}\n` +
+        `Ventana de Despegue: ${registro.ventanaDespegue}\n\n` +
+        `(Descarga simulada — demostración académica)`
+      );
+    });
+  }
+
+  // OCULTAR formulario y notificación de restauración si estaban visibles.
+  if (DOM.form) {
+    DOM.form.style.display = 'none';
+  }
+  const notification = document.getElementById('restore-notification');
+  if (notification) {
+    notification.hidden = true;
+  }
+
+  panel.hidden = false;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// BLOQUE 11: DETECCIÓN DE USUARIO YA CONVERTIDO
+// Se ejecuta al cargar la página: si 'cosmostour_pasajero_convertido'
+// existe, se oculta el formulario y se muestra la credencial personalizada.
+
+/**
+ * DETECCIÓN DE USUARIO YA CONVERTIDO: si existe 'cosmostour_pasajero_convertido',
+ * oculta el formulario y muestra el mensaje personalizado de credencial.
+ * @returns {boolean} true si el usuario ya había confirmado una reserva.
+ */
+function verificarUsuarioConvertido() {
+  try {
+    // PASO 1: leer la clave de conversión.
+    const raw = readStorage(PASAJERO_CONVERTIDO_KEY);
+    if (!raw) {
+      return false;
+    }
+
+    // PASO 2: parsear y verificar la bandera "convertido".
+    const registro = JSON.parse(raw);
+    if (!registro || registro.convertido !== true) {
+      return false;
+    }
+
+    // PASO 3: log de demostración + render del panel de credencial.
+    console.log('🛰️ [USUARIO CONVERTIDO] Mostrando credencial de embarque', registro);
+    mostrarMensajeConvertido(registro);
+    return true;
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al verificar pasajero convertido:', error);
+    return false;
+  }
+}
+
+// BLOQUE 12: ENVÍO A FORMSPREE (POST con fetch)
+// Envía el manifiesto como multipart/form-data con Accept: application/json;
+// si response.ok, se persiste la conversión y se limpia el almacenamiento.
+
+/**
+ * ENVÍO A FORMSPREE: envía el manifiesto completo por POST (fetch) con
+ * formato multipart/form-data y cabecera Accept: application/json para
+ * recibir la respuesta sin navegación fuera de la página.
+ * @param {Object} data - Borrador de reserva validado.
+ * @returns {Promise<Response>} Respuesta HTTP de Formspree.
+ */
+function enviarReservaFormspree(data) {
+  // LOG DE DEMOSTRACIÓN: marca visible del inicio del POST en DevTools.
+  console.log('🛰️ [ENVÍO] Iniciando POST a Formspree...', {
+    endpoint: FORMSPREE_ENDPOINT,
+    datos: data
+  });
+
+  // CONSTRUCCIÓN del cuerpo multipart con todos los campos del manifiesto.
+  const body = new FormData();
+  Object.entries(data).forEach(([key, value]) => {
+    body.append(key, typeof value === 'boolean' ? String(value) : value);
+  });
+
+  // PETICIÓN asíncrona: fetch no recarga la página (sin navegación).
+  return fetch(FORMSPREE_ENDPOINT, {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body
+  });
+}
+
+/**
+ * Flujo completo de envío: transmite a Formspree y, si la respuesta es
+ * exitosa (response.ok), registra al pasajero convertido, limpia el
+ * almacenamiento temporal, muestra el mensaje de bienvenida y la alerta de
+ * éxito. Cualquier error se captura con try/catch y se notifica por toast.
+ * @returns {Promise<void>}
+ */
+async function procesarEnvioReserva() {
+  const data = collectReservaDraft();
+  const submitButton = DOM.form ? DOM.form.querySelector('button[type="submit"]') : null;
+
+  try {
+    // PASO 1: deshabilitar el botón para evitar envíos duplicados.
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Transmitiendo manifiesto...';
+    }
+
+    // PASO 2: petición POST a Formspree.
+    const response = await enviarReservaFormspree(data);
+    if (!response.ok) {
+      throw new Error(`Formspree respondió con estado ${response.status}`);
+    }
+
+    // PASO 3 (ÉXITO): persistir conversión, limpiar borradores y mostrar panel.
+    const registro = registrarPasajeroConvertido(data);
+    limpiarAlmacenamientoPostConversion();
+    console.log('🛰️ [ÉXITO] Reserva confirmada. localStorage limpiado.', registro);
+    mostrarMensajeConvertido(registro);
+    showToast('Reserva confirmada. Tu credencial de embarque AST-2026 ha sido generada.', 'success');
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al enviar la reserva a Formspree:', error);
+    showToast('No se pudo confirmar la reserva. Verifica tu conexión e inténtalo de nuevo.', 'error');
+  } finally {
+    // PASO 4: reactivar el botón con su texto original en cualquier caso.
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Validar y Emitir Credencial';
+    }
+  }
+}
+
+// BLOQUE 13: INICIALIZACIÓN DE LA CAPA DE PERSISTENCIA
+// Orden de arranque: (1) verificar usuario convertido, (2) conectar
+// autoguardado, (3) restaurar borrador, (4) botón cancelar, (5) monitor.
+
+/**
+ * Inicializa toda la capa de persistencia: primero verifica si el usuario ya
+ * es convertido (si lo es, el formulario queda oculto); en caso contrario
+ * arranca el autoguardado, restaura el borrador previo, conecta el botón de
+ * cancelación y arranca el monitor de verificación cada 2 segundos.
+ * @returns {void}
+ */
+function initPersistenciaReservas() {
+  // BLOQUE 13.1: verificación inicial de usuario convertido.
+  const yaConvertido = verificarUsuarioConvertido();
+  if (yaConvertido) {
+    // Panel convertido: conectar "Registrar otra expedición" (reset total).
+    const btnNuevaReserva = document.getElementById('btn-nueva-reserva');
+    if (btnNuevaReserva) {
+      btnNuevaReserva.addEventListener('click', () => {
+        removeStorage(PASAJERO_CONVERTIDO_KEY);
+        removeStorage(RESERVA_ACTIVA_KEY);
+        window.location.reload();
+      });
+    }
+    return;
+  }
+
+  // BLOQUE 13.2: arranque del flujo para usuarios en curso de reserva.
+  initAutoguardadoEnTiempoReal();
+  restaurarReservaAutoguardada();
+  initBotonCancelarReserva();
+
+  // BLOQUE 13.3: monitor de demostración (DevTools) cada 2 segundos.
+  iniciarMonitorAutoguardado();
 }
 
 /* ================= 5. ANIMACIONES SCROLL / OBSERVER (F2) ================== */
@@ -2118,6 +2823,7 @@ function init() {
   safeInit('tema oscuro/claro', initThemeToggle);
   safeInit('cabecera sticky + progreso', initHeaderAndScrollIndicator);
   safeInit('validación de formulario', initFormValidation);
+  safeInit('persistencia de reservas (autoguardado + Formspree)', initPersistenciaReservas);
   safeInit('animaciones de scroll', initScrollAnimations);
   safeInit('contadores del hero', initHeroCounters);
   safeInit('selector de planeta', initPlanetSelector);

@@ -4709,3 +4709,173 @@ body.legal-page {
     font-size: 0.75rem;
   }
 }
+
+/* ==========================================================================
+   16. PERSISTENCIA DE RESERVAS (NOTIFICACIÓN RESTAURADA + USUARIO CONVERTIDO)
+   ========================================================================== */
+
+/* --- Notificación discreta de reserva restaurada --- */
+.restore-notification {
+  margin-bottom: var(--space-125);
+  padding: var(--space-06) var(--space-09);
+  background: var(--acento-08);
+  border: 1px solid var(--acento-22);
+  border-left: 3px solid var(--color-neon-cyan);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.restore-notification.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Panel de pasajero convertido (reemplaza al formulario) --- */
+.convertido-panel {
+  text-align: center;
+  padding: var(--space-2) var(--space-15);
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 40px var(--color-gold-glow);
+}
+.convertido-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+  margin-bottom: var(--space-075);
+}
+.convertido-greeting {
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+  color: var(--text-pure);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-05);
+}
+.convertido-credencial {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: var(--space-125);
+}
+.convertido-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-075);
+  max-width: 520px;
+  margin: 0 auto var(--space-125);
+}
+.convertido-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  padding: var(--space-075) var(--space-09);
+  background: var(--fondo-resumen);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.convertido-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.convertido-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gold);
+}
+.convertido-note {
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-125);
+}
+
+/* --- Lista de experiencias extras del panel convertido --- */
+.convertido-extras {
+  max-width: 520px;
+  margin: 0 auto var(--space-125);
+  padding: var(--space-075) var(--space-09);
+  background: var(--fondo-resumen);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-045);
+  text-align: left;
+}
+.convertido-extras-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+}
+.convertido-extras-lista li {
+  position: relative;
+  padding-left: var(--space-115);
+  font-size: 0.83rem;
+  color: var(--text-lectura);
+}
+.convertido-extras-lista li::before {
+  content: "\2022";
+  position: absolute;
+  left: 0;
+  color: var(--color-gold);
+}
+
+/* --- Acciones del panel convertido (descargar + nueva reserva) --- */
+.convertido-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-125);
+  flex-wrap: wrap;
+}
+
+/* --- Botón discreto "Cancelar Reserva" --- */
+.btn-cancel-reserva {
+  background: none;
+  border: none;
+  padding: 0.4rem 0.6rem;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.btn-cancel-reserva:hover,
+.btn-cancel-reserva:focus-visible {
+  color: var(--rosa);
+  text-decoration: underline;
+}
+
+/* --- Acciones del pie del formulario (submit + cancelar) --- */
+.form-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-075);
+  flex-wrap: wrap;
+}
+
+/* --- Responsive del panel convertido --- */
+@media (max-width: 599px) {
+  .convertido-panel {
+    padding: var(--space-125) var(--space-1);
+  }
+  .convertido-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-footer-actions {
+    justify-content: flex-end;
+    width: 100%;
+  }
+}

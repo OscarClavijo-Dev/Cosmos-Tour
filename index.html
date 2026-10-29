@@ -1045,27 +1045,30 @@
               </div>
             </div>
 
-            <!-- Formulario de Manifiesto -->
-            <form id="manifest-form">
+            <!-- Notificación discreta de restauración de reserva (la genera script.js) -->
+            <div id="restore-notification" class="restore-notification" role="status" aria-live="polite" hidden></div>
+
+            <!-- Formulario de Manifiesto (envío asíncrono a Formspree vía fetch) -->
+            <form id="manifest-form" action="https://formspree.io/f/[ID_DE_FORMSPREE]" method="POST">
               <div class="form-grid">
                 <div class="form-group">
                   <label class="form-label" for="manifest-name">Nombre Completo del Astronauta *</label>
-                  <input type="text" id="manifest-name" class="form-input" required placeholder="Ej. Helena Valenzuela Ruiz" />
+                  <input type="text" id="manifest-name" name="nombreCompleto" class="form-input" required placeholder="Ej. Helena Valenzuela Ruiz" />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-email">Correo Electrónico Confidencial *</label>
-                  <input type="email" id="manifest-email" class="form-input" required placeholder="h.valenzuela@cosmos-private.com" />
+                  <input type="email" id="manifest-email" name="correoElectronico" class="form-input" required placeholder="h.valenzuela@cosmos-private.com" />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-passport">Número de Pasaporte Internacional *</label>
-                  <input type="text" id="manifest-passport" class="form-input" required placeholder="P-89240177A" />
+                  <input type="text" id="manifest-passport" name="numeroPasaporte" class="form-input" required placeholder="P-89240177A" />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-destination">Expedición Seleccionada</label>
-                  <select id="manifest-destination" class="form-select">
+                  <select id="manifest-destination" name="expedicionSeleccionada" class="form-select">
                     <option value="La Luna">La Luna (Expedición Cis-Lunar Artemisa)</option>
                     <option value="Marte">Marte (Odisea Valles Marineris)</option>
                     <option value="Estación Espacial Internacional">Estación Espacial Internacional (Apex Cupola)</option>
@@ -1074,7 +1077,7 @@
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-suite">Categoría de Suite a Bordo</label>
-                  <select id="manifest-suite" class="form-select">
+                  <select id="manifest-suite" name="categoriaSuite" class="form-select">
                     <option value="Celestial Sovereign Suite">Celestial Sovereign Suite (42 m³)</option>
                     <option value="Mirador Cupola Stateroom">Mirador Cupola Stateroom (35 m³)</option>
                     <option value="Pod Privado de Ingravidez">Pod Privado de Ingravidez (24 m³)</option>
@@ -1083,7 +1086,7 @@
 
                 <div class="form-group">
                   <label class="form-label" for="manifest-window">Ventana Temporal de Despegue</label>
-                  <select id="manifest-window" class="form-select">
+                  <select id="manifest-window" name="ventanaDespegue" class="form-select">
                     <option value="Octubre 2026">Octubre 2026</option>
                     <option value="Noviembre 2026">Noviembre 2026</option>
                     <option value="Marzo 2027">Marzo 2027</option>
@@ -1093,7 +1096,7 @@
 
                 <div class="form-group full-width">
                   <label class="form-label" for="manifest-role">Rol en el Manifiesto de Vuelo</label>
-                  <select id="manifest-role" class="form-select">
+                  <select id="manifest-role" name="rolManifiesto" class="form-select">
                     <option value="Comandante Civil de Travesía">Comandante Civil de Travesía</option>
                     <option value="Especialista de Observación Astronómica">Especialista de Observación Astronómica</option>
                     <option value="Pasajero de Placer & Bienestar">Pasajero de Placer & Bienestar</option>
@@ -1107,7 +1110,7 @@
                   <input
                     type="checkbox"
                     id="manifest-terms"
-                    name="manifest-terms"
+                    name="terminosAceptados"
                     required
                     class="terms-checkbox"
                   />
@@ -1121,11 +1124,51 @@
                 <span class="telemetry-text form-footnote">
                   El envío activará el escaneo biométrico seguro de tolerancia de vuelo.
                 </span>
-                <button type="submit" class="btn-primary btn-cta-lg">
-                  Validar y Emitir Credencial
-                </button>
+                <div class="form-footer-actions">
+                  <button type="button" id="btn-cancelar-reserva" class="btn-cancel-reserva" hidden>
+                    Cancelar Reserva
+                  </button>
+                  <button type="submit" class="btn-primary btn-cta-lg">
+                    Validar y Emitir Credencial
+                  </button>
+                </div>
               </div>
             </form>
+
+            <!-- Panel de pasajero ya convertido: reemplaza al formulario cuando
+                 existe 'cosmostour_pasajero_convertido' en localStorage -->
+            <div id="convertido-panel" class="convertido-panel" role="status" hidden>
+              <div class="convertido-icon" aria-hidden="true">🚀</div>
+              <h3 id="convertido-greeting" class="convertido-greeting"></h3>
+              <p id="convertido-credencial" class="convertido-credencial"></p>
+              <div class="convertido-grid">
+                <div class="convertido-cell">
+                  <span class="convertido-label">Código de Misión</span>
+                  <span id="convertido-codigo" class="convertido-value"></span>
+                </div>
+                <div class="convertido-cell">
+                  <span class="convertido-label">Ventana de Despegue</span>
+                  <span id="convertido-ventana" class="convertido-value"></span>
+                </div>
+              </div>
+              <!-- Lista de experiencias extras: solo visible si hay datos en
+                   'cosmostour_experiencias_extras' al momento de la conversión -->
+              <div id="convertido-extras" class="convertido-extras" hidden>
+                <span class="convertido-label">Experiencias Extras Seleccionadas</span>
+                <ul id="convertido-extras-lista" class="convertido-extras-lista"></ul>
+              </div>
+              <p class="convertido-note">
+                Revisa tu correo electrónico confidencial para los detalles de tu expedición.
+              </p>
+              <div class="convertido-actions">
+                <button type="button" id="btn-descargar-credencial" class="btn-primary btn-pass-sm">
+                  Descargar Credencial
+                </button>
+                <button type="button" id="btn-nueva-reserva" class="btn-cancel-reserva">
+                  Registrar otra expedición
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
