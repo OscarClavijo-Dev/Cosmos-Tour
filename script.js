@@ -723,11 +723,11 @@ const PASAJERO_CONVERTIDO_KEY = 'cosmostour_pasajero_convertido';
 const EXPERIENCIAS_EXTRAS_KEY = 'cosmostour_experiencias_extras';
 
 /**
- * Endpoint de Formspree. Reemplaza [ID_DE_FORMSPREE] por el ID real que
- * Formspree genera al crear el formulario (también debe actualizarse el
- * atributo action del <form id="manifest-form"> en index.html).
+ * Endpoint real de Formspree (formulario "Cosmos Tour"). Coincide con el
+ * atributo action del <form id="manifest-form"> en index.html; el envío se
+ * hace por POST con FormData (multipart) y Accept: application/json.
  */
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/[ID_DE_FORMSPREE]';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mjyyolgb';
 
 /** Mapeo de IDs del formulario a las claves del borrador persistido. */
 const RESERVA_FIELD_MAP = [
