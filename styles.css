@@ -4970,3 +4970,52 @@ body.legal-page {
     align-items: flex-start;
   }
 }
+
+/* ==========================================================================
+   18. ESTADOS DE ENVÍO: ERRORES (.error), SPINNER, BANNER ÉXITO Y REINTENTO
+   ========================================================================== */
+.form-input.error,
+.form-select.error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+}
+.terms-checkbox.error {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+/* Banner verde de confirmación (visible2 s antes de la credencial). */
+.envio-exito {
+  margin-bottom: var(--space-1);
+  padding: var(--space-075) var(--space-1);
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.55);
+  border-radius: var(--radius-md);
+  color: #34d399;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* Botón en progreso: spinner + bloqueo de clics mientras fetch está en curso. */
+.btn-primary.is-loading {
+  pointer-events: none;
+  opacity: 0.85;
+}
+.spinner {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 0.4rem;
+  vertical-align: -2px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: cosmos-spin 0.7s linear infinite;
+}
+@keyframes cosmos-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

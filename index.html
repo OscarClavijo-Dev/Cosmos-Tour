@@ -920,7 +920,7 @@
               <footer class="testimonial-footer">
                 <span class="author-name">Rafael Augusto Miranda Cardona</span>
                 <span class="author-role">CEO de Fintech Andina · Bogotá, Colombia</span>
-                <span class="mission-tag">MISIÓN CT-2026-ISS-087</span>
+                <span class="mission-tag">MISIÓN CT-2026-EEI-087</span>
               </footer>
             </article>
 
@@ -1047,6 +1047,12 @@
 
             <!-- Notificación discreta de restauración de reserva (la genera script.js) -->
             <div id="restore-notification" class="restore-notification" role="status" aria-live="polite" hidden></div>
+
+            <!-- Confirmación visual del envío: se muestra mientras Formspree
+                 responde bien (2 s antes de revelar la credencial AST-2026) -->
+            <div id="envio-exito" class="envio-exito" role="status" aria-live="polite" hidden>
+              ✅ ¡Reserva Confirmada! Tu credencial AST-2026 está lista.
+            </div>
 
             <!-- BLOQUE: CARRITO DE EXPERIENCIAS PREMIUM (REQUERIMIENTO 2)
                  Cada checkbox persiste su ID en 'cosmostour_experiencias_extras';
@@ -1186,6 +1192,9 @@
                 <div class="form-footer-actions">
                   <button type="button" id="btn-cancelar-reserva" class="btn-cancel-reserva" hidden>
                     Cancelar Reserva
+                  </button>
+                  <button type="button" id="btn-reintentar-envio" class="btn-primary btn-retry-envio" hidden>
+                    Reintentar Envío
                   </button>
                   <button type="submit" class="btn-primary btn-cta-lg">
                     Validar y Emitir Credencial
