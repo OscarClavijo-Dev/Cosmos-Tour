@@ -1484,7 +1484,18 @@ async function procesarEnvioReserva() {
     // PASO 2: petición POST a Formspree.
     const response = await enviarReservaFormspree(data);
     if (!response.ok) {
-      throw new Error(`Formspree respondió con estado ${response.status}`);
+      // Formspree responde JSON con { errors: [{ field, message }] } (guía
+      // Vanilla JS/AJAX); se conserva para pintarlo en los campos del form.
+      let detalle = null;
+      try {
+        detalle = await response.json();
+      } catch (parseError) {
+        detalle = null;
+      }
+      const errorHttp = new Error(`Formspree respondió con estado ${response.status}`);
+      errorHttp.status = response.status;
+      errorHttp.formspree = detalle;
+      throw errorHttp;
     }
 
     // PASO 3 (ÉXITO): registrar conversión ANTES de limpiar (usa los datos).
@@ -1514,10 +1525,28 @@ async function procesarEnvioReserva() {
       );
     } else {
       console.error('[Cosmos Tour] Error al enviar la reserva a Formspree:', error);
-      showToast(
-        'No se pudo confirmar la reserva. Tu reserva está guardada localmente. Intenta nuevamente.',
-        'error'
-      );
+
+      // ERRORES POR CAMPO de Formspree (respuesta 422) → pintarlos inline
+      // con nuestro formato (.error + .error-message), como hace la guía.
+      const erroresFormspree =
+        error.formspree && Array.isArray(error.formspree.errors) ? error.formspree.errors : [];
+      erroresFormspree.forEach((item) => {
+        if (!item || !item.field) {
+          return;
+        }
+        const campo = DOM.form ? DOM.form.querySelector(`[name="${item.field}"]`) : null;
+        if (campo) {
+          campo.classList.add('field-invalid', 'error');
+          campo.setAttribute('aria-invalid', 'true');
+          getErrorElement(campo).textContent = item.message || 'Revisa este campo.';
+        }
+      });
+
+      const primerMensaje =
+        erroresFormspree.length > 0 && erroresFormspree[0].message
+          ? erroresFormspree[0].message
+          : 'No se pudo confirmar la reserva. Tu reserva está guardada localmente. Intenta nuevamente.';
+      showToast(primerMensaje, 'error');
     }
     // SE MANTIENEN los datos: 'cosmostour_reserva_activa' NO se limpia
     // (y se fuerza un autoguardado por si el usuario no había escrito nada).
@@ -1547,17 +1576,11 @@ async function procesarEnvioReserva() {
  */
 function initPersistenciaReservas() {
   // BLOQUE 13.1: verificación inicial de usuario convertido.
+  // (El botón #btn-nueva-reserva se enlaza SIEMPRE en initBotonNuevaReserva,
+  // llamado desde init(); antes solo se enlazaba aquí y no funcionaba tras
+  // una conversión recién ocurrida en esta misma sesión.)
   const yaConvertido = verificarUsuarioConvertido();
   if (yaConvertido) {
-    // Panel convertido: conectar "Registrar otra expedición" (reset total).
-    const btnNuevaReserva = document.getElementById('btn-nueva-reserva');
-    if (btnNuevaReserva) {
-      btnNuevaReserva.addEventListener('click', () => {
-        removeStorage(PASAJERO_CONVERTIDO_KEY);
-        removeStorage(RESERVA_ACTIVA_KEY);
-        window.location.reload();
-      });
-    }
     return;
   }
 
@@ -1574,6 +1597,92 @@ function initPersistenciaReservas() {
 
   // BLOQUE 13.3: monitor de demostración (DevTools) cada 2 segundos.
   iniciarMonitorAutoguardado();
+}
+
+/**
+ * REINICIO PARA OTRA EXPEDICIÓN (#btn-nueva-reserva): borra todos los
+ * datos persistidos (convertido + borrador + carrito) y restaura la UI
+ * completa del formulario (revierte ocultarFormularioYCtasReserva), limpiando
+ * también las validaciones — sin depender de recargar la página.
+ * @returns {void}
+ */
+function reiniciarParaNuevaReserva() {
+  // PASO 1: borrar TODOS los datos de la reserva/conversión.
+  removeStorage(PASAJERO_CONVERTIDO_KEY);
+  removeStorage(RESERVA_ACTIVA_KEY);
+  removeStorage(EXPERIENCIAS_EXTRAS_KEY);
+
+  // PASO 2: ocultar credencial, banner de éxito y avisos de la reserva previa.
+  const credencial = document.getElementById('credencial-embarque');
+  if (credencial) {
+    credencial.hidden = true;
+  }
+  const bannerExito = document.getElementById('envio-exito');
+  if (bannerExito) {
+    bannerExito.hidden = true;
+  }
+  mostrarBotonReintento(false);
+  toggleBotonCancelarReserva(false);
+  const notificacion = document.getElementById('restore-notification');
+  if (notificacion) {
+    notificacion.hidden = true;
+    notificacion.classList.remove('is-visible');
+  }
+
+  // PASO 3: revelar formulario y todos los CTAs ocultos por la conversión.
+  if (DOM.form) {
+    DOM.form.reset();
+    DOM.form.classList.remove('hidden');
+    DOM.form.style.display = '';
+  }
+  document.querySelectorAll('a[href="#registro"]').forEach((link) => {
+    link.classList.remove('hidden');
+  });
+  const btnInitiateLaunch = document.getElementById('btn-initiate-launch');
+  if (btnInitiateLaunch) {
+    btnInitiateLaunch.classList.remove('hidden');
+  }
+  ['biometric-scanner-box', 'boarding-pass-result', 'experiencias-carrito'].forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.classList.remove('hidden');
+    }
+  });
+
+  // PASO 4: limpiar estados de validación (.error/.field-invalid + mensajes).
+  VALIDATION_RULES.forEach((rule) => {
+    const field = document.getElementById(rule.id);
+    if (!field) {
+      return;
+    }
+    field.classList.remove('field-invalid', 'error');
+    field.removeAttribute('aria-invalid');
+    const errorElement = document.getElementById(`${rule.id}-error`);
+    if (errorElement) {
+      errorElement.textContent = '';
+    }
+    appState.formValidation[rule.id] = true;
+  });
+
+  // PASO 5: vaciar el carrito visual (el storage ya se borró en el PASO 1).
+  sincronizarUICarrito();
+
+  console.log('🔁 [NUEVA RESERVA] Datos borrados. Formulario restaurado para una nueva expedición.');
+  scrollToSectionById('registro');
+}
+
+/**
+ * Conecta #btn-nueva-reserva SIEMPRE (al cargar ya convertido O tras una
+ * conversión reciente en la misma sesión — antes solo se enlazaba en el
+ * primer caso y el botón no hacía nada tras enviar el formulario).
+ * @returns {void}
+ */
+function initBotonNuevaReserva() {
+  const btnNuevaReserva = document.getElementById('btn-nueva-reserva');
+  if (!btnNuevaReserva) {
+    return;
+  }
+  btnNuevaReserva.addEventListener('click', reiniciarParaNuevaReserva);
 }
 
 // BLOQUE 14: SISTEMA DE CARRITO DE EXPERIENCIAS EXTRAS (REQUERIMIENTO 2)
@@ -3754,6 +3863,7 @@ function init() {
   safeInit('backup automático de reserva (5 min)', initBackupAutomatico);
   safeInit('botón reintentar envío', initBotonReintento);
   safeInit('botones de reserva (tarjetas + modal)', initBotonesReserva);
+  safeInit('botón registrar otra expedición', initBotonNuevaReserva);
   safeInit('animaciones de scroll', initScrollAnimations);
   safeInit('contadores del hero', initHeroCounters);
   safeInit('selector de planeta', initPlanetSelector);
