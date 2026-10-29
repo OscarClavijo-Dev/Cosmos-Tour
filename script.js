@@ -3844,6 +3844,85 @@ function initBotonesReserva() {
   });
 }
 
+/* ============ 18. BLOQUE ct-countdown — IIFE (convención "ct-") =========== */
+/* Snippet funcional autocontenido: estado 100% privado (sin fugas globales
+   salvo el puente window.initCtCountdown), ES6+ en modo estricto, sin
+   dependencias del resto de la app. Arrancado desde init() con safeInit. */
+(() => {
+  'use strict';
+
+  /** Fecha objetivo por defecto (ventana de despegue:15/11/2026 09:00). */
+  const CT_DESTINO_DEFAULT = '2026-11-15T09:00:00';
+
+  /** Referencia al setInterval (evita dobles arranques). */
+  let ctIntervaloId = null;
+  let ctIniciado = false;
+
+  /** Formatea un número a 2 dígitos ("07"). */
+  const ctDosDigitos = (valor) => String(valor).padStart(2, '0');
+
+  /** Lee data-ct-target del bloque (o usa la fecha por defecto). */
+  const ctFechaObjetivo = (raiz) => {
+    const crudo = raiz.dataset.ctTarget || CT_DESTINO_DEFAULT;
+    const fecha = new Date(crudo);
+    return Number.isNaN(fecha.getTime()) ? new Date(CT_DESTINO_DEFAULT) : fecha;
+  };
+
+  /** Pinta días/horas/minutos/segundos; devuelve true al llegar a cero. */
+  const ctPintar = (raiz, restanteMs) => {
+    const totalSegundos = Math.max(0, Math.floor(restanteMs / 1000));
+    const unidades = {
+      dias: Math.floor(totalSegundos / 86400),
+      horas: Math.floor((totalSegundos % 86400) / 3600),
+      minutos: Math.floor((totalSegundos % 3600) / 60),
+      segundos: totalSegundos % 60
+    };
+    Object.entries(unidades).forEach(([nombre, valor]) => {
+      const nodo = raiz.querySelector(`[data-ct-unit="${nombre}"]`);
+      if (nodo) {
+        nodo.textContent = ctDosDigitos(valor);
+      }
+    });
+    return restanteMs <= 0;
+  };
+
+  /** ARRANQUE idempotente de la cuenta regresiva (1 tick/s). */
+  const initCtCountdown = () => {
+    if (ctIniciado) {
+      return;
+    }
+    const raiz = document.querySelector('.ct-countdown-block');
+    if (!raiz) {
+      return;
+    }
+    ctIniciado = true;
+
+    const objetivo = ctFechaObjetivo(raiz);
+    const estado = raiz.querySelector('[data-ct-estado]');
+
+    const tic = () => {
+      const restante = objetivo.getTime() - Date.now();
+      const finalizado = ctPintar(raiz, restante);
+      if (finalizado) {
+        // Al llegar a cero: anuncio único para lectores de pantalla (aria-live).
+        if (estado) {
+          estado.textContent = '¡Ventana abierta! El despegue está en curso.';
+        }
+        if (ctIntervaloId) {
+          window.clearInterval(ctIntervaloId);
+          ctIntervaloId = null;
+        }
+      }
+    };
+
+    tic();
+    ctIntervaloId = window.setInterval(tic, 1000);
+  };
+
+  // PUENTE con init() del sitio: fuera de la IIFE no se expone ningún estado.
+  window.initCtCountdown = initCtCountdown;
+})();
+
 function safeInit(label, initializer) {
   try {
     initializer();
@@ -3877,6 +3956,7 @@ function init() {
   safeInit('botón reintentar envío', initBotonReintento);
   safeInit('botones de reserva (tarjetas + modal)', initBotonesReserva);
   safeInit('botón registrar otra expedición', initBotonNuevaReserva);
+  safeInit('bloque ct-countdown (cuenta regresiva)', window.initCtCountdown);
   safeInit('animaciones de scroll', initScrollAnimations);
   safeInit('contadores del hero', initHeroCounters);
   safeInit('selector de planeta', initPlanetSelector);

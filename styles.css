@@ -67,6 +67,21 @@
   --fuente-principal: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --fuente-secundaria: 'Plus Jakarta Sans', var(--fuente-principal);
 
+  /* ===== TOKENS ct- (bloque ct-countdown · convención de nombres "ct-") =====
+     Paleta nueva: Primary #6366f1 · Secondary #8b5cf6 · Accent #06b6d4
+     (accent/bg coinciden con --color-acento / --color-space-card existentes).
+     --ct-text (#1e293b) queda reservado para bordes/sutiles: sobre fondo
+     oscuro NO se usa como texto (accesibilidad → --text-main). */
+  --ct-primary: #6366f1;
+  --ct-secondary: #8b5cf6;
+  --ct-accent: #06b6d4;
+  --ct-bg: #0f172a;
+  --ct-text: #1e293b;
+  --ct-primary-glow: rgba(99, 102, 241, 0.35);
+  --ct-secondary-glow: rgba(139, 92, 246, 0.35);
+  --ct-font-title: 'Orbitron', 'Space Grotesk', sans-serif;
+  --ct-font-body: 'Inter', 'Plus Jakarta Sans', sans-serif;
+
   /* Colores sólidos fijos (invariantes al tema) */
   --blanco: #ffffff;
   --despegue-acento: #38bdf8;
@@ -5017,5 +5032,125 @@ body.legal-page {
 @keyframes cosmos-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   19. BLOQUE ct-countdown (snippet convención "ct-") — MOBILE-FIRST
+   Solo usa custom properties (--ct-* nuevas + tokens existentes del sistema).
+   ========================================================================== */
+.ct-countdown-block {
+  position: relative;
+  padding: var(--space-15) 1.25rem;
+  background: var(--ct-bg);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+.ct-countdown-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, var(--ct-primary), var(--ct-secondary) 55%, var(--ct-accent));
+  opacity: 0.1;
+  pointer-events: none;
+}
+.ct-countdown-inner {
+  position: relative;
+  z-index: 1;
+}
+.ct-countdown-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ct-accent);
+}
+.ct-countdown-title {
+  margin-top: var(--space-06);
+  font-family: var(--ct-font-title);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 4vw, 2.1rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+.ct-countdown-fecha {
+  margin-top: var(--space-06);
+  font-family: var(--ct-font-body);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.ct-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-06);
+  margin-top: var(--space-1);
+}
+.ct-countdown-unit {
+  padding: var(--space-075) var(--space-06);
+  background: var(--color-space-surface);
+  border: 1px solid var(--ct-text);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.ct-countdown-value {
+  display: block;
+  font-family: var(--ct-font-title);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 7vw, 3rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-pure);
+  text-shadow: 0 0 18px var(--color-neon-cyan-glow);
+}
+.ct-countdown-label {
+  display: block;
+  margin-top: var(--space-06);
+  font-family: var(--ct-font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.ct-countdown-cta {
+  display: inline-block;
+  margin-top: var(--space-1);
+  padding: 0.7rem 1.4rem;
+  font-family: var(--ct-font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--blanco);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--ct-primary), var(--ct-secondary));
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.ct-countdown-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px var(--ct-primary-glow);
+}
+.ct-countdown-cta:focus-visible {
+  outline: 2px solid var(--ct-accent);
+  outline-offset: 3px;
+}
+
+/* Tablet / desktop: más respiración y cifras mayores (mobile-first ↑). */
+@media (min-width: 768px) {
+  .ct-countdown-block {
+    padding: var(--space-15) 2rem;
+  }
+  .ct-countdown-unit {
+    padding: var(--space-1) var(--space-09);
+  }
+  .ct-countdown-label {
+    font-size: 0.74rem;
+  }
+}
+
+/* Accesibilidad: respeta la preferencia de movimiento reducido. */
+@media (prefers-reduced-motion: reduce) {
+  .ct-countdown-cta {
+    transition: none;
   }
 }
