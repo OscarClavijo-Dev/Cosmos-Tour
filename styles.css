@@ -5154,3 +5154,181 @@ body.legal-page {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   20. BLOQUE ct-hero — Hero full-screen (HTML + CSS · SIN JavaScript)
+   Convención: clases con prefijo "ct-hero" · mobile-first · performance
+   (fondo 100% CSS = cero peticiones de imagen · LCP inmediato)
+   Tokens del sistema usados:
+   --ct-primary #6366f1 · --ct-secondary #8b5cf6 · --ct-accent #06b6d4
+   --ct-bg #0f172a · --ct-font-title (Orbitron) · --ct-font-body (Inter)
+   ========================================================================== */
+.ct-hero {
+  /* Tokens locales del componente: siempre se consumen vía var(). */
+  --ct-hero-star: rgba(255, 255, 255, 0.8);
+
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100vh; /* fallback */
+  min-height: 100svh; /* full-screen real en móvil (ignora la barra del navegador) */
+  padding: calc(var(--nav-h) + 2.5rem) 1.25rem var(--space-15);
+  background: var(--ct-bg);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* FONDO ESPACIAL: nebulosas (radial-gradients) + campo de estrellas.
+   Sin imágenes externas → sin round-trips y sin JavaScript. */
+.ct-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 65% 55% at 72% 18%, var(--ct-primary-glow), transparent 70%),
+    radial-gradient(ellipse 55% 45% at 18% 82%, var(--color-neon-cyan-glow), transparent 72%),
+    radial-gradient(ellipse 80% 60% at 50% 130%, var(--ct-secondary-glow), transparent 65%),
+    radial-gradient(2px 2px at 14% 26%, var(--ct-hero-star), transparent 60%),
+    radial-gradient(1.5px 1.5px at 32% 64%, var(--ct-hero-star), transparent 60%),
+    radial-gradient(1px 1px at 48% 18%, var(--ct-hero-star), transparent 60%),
+    radial-gradient(2px 2px at 66% 72%, var(--ct-hero-star), transparent 60%),
+    radial-gradient(1.5px 1.5px at 82% 34%, var(--ct-hero-star), transparent 60%),
+    radial-gradient(1px 1px at 90% 58%, var(--ct-hero-star), transparent 60%),
+    radial-gradient(1.5px 1.5px at 24% 88%, var(--ct-hero-star), transparent 60%),
+    radial-gradient(1px 1px at 58% 44%, var(--ct-hero-star), transparent 60%);
+  pointer-events: none;
+}
+
+/* Orbe planetario decorativo (puro CSS, esquina inferior derecha). */
+.ct-hero-orb {
+  position: absolute;
+  right: -14vw;
+  bottom: -22vw;
+  width: clamp(240px, 46vw, 560px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 28%,
+    var(--ct-secondary),
+    var(--ct-primary) 46%,
+    var(--color-space-darker) 82%
+  );
+  box-shadow: 0 0 90px var(--ct-primary-glow);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.ct-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 46rem;
+  text-align: center;
+}
+
+.ct-hero-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ct-accent);
+}
+
+.ct-hero-title {
+  margin-top: var(--space-06);
+  font-family: var(--ct-font-title);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 8vw, 4.4rem);
+  line-height: 1.06;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-pure);
+  text-shadow: 0 0 34px var(--ct-primary-glow);
+}
+
+.ct-hero-subtitle {
+  margin-top: var(--space-1);
+  font-family: var(--ct-font-body);
+  font-size: clamp(0.98rem, 2.6vw, 1.15rem);
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.ct-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-06);
+  justify-content: center;
+  margin-top: var(--space-15);
+}
+
+.ct-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--ct-font-body);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.ct-hero-cta-primary {
+  color: var(--blanco);
+  background-image: linear-gradient(135deg, var(--ct-primary), var(--ct-secondary));
+  box-shadow: 0 14px 32px var(--ct-primary-glow);
+}
+.ct-hero-cta-primary:hover {
+  transform: translateY(-3px);
+}
+
+.ct-hero-cta-secondary {
+  color: var(--text-pure);
+  border: 1px solid var(--border-light);
+}
+.ct-hero-cta-secondary:hover {
+  border-color: var(--ct-accent);
+  color: var(--ct-accent);
+  transform: translateY(-3px);
+}
+
+.ct-hero-cta:focus-visible {
+  outline: 2px solid var(--ct-accent);
+  outline-offset: 3px;
+}
+
+.ct-hero-meta {
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Tablet / desktop: más respiración (mobile-first ↑). */
+@media (min-width: 768px) {
+  .ct-hero {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .ct-hero-actions {
+    gap: var(--space-09);
+  }
+}
+
+/* Accesibilidad: respeta la preferencia de movimiento reducido. */
+@media (prefers-reduced-motion: reduce) {
+  .ct-hero-cta {
+    transition: none;
+  }
+  .ct-hero-cta-primary:hover,
+  .ct-hero-cta-secondary:hover {
+    transform: none;
+  }
+}

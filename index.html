@@ -31,23 +31,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- === OPTIMIZACIÓN 1.1: PRELOAD DE RECURSOS CRÍTICOS (LCP/FCP) === -->
-    <!-- Imagen LCP: imagesrcset/imagesizes deben coincidir EXACTAMENTE con el
-         <source> de <picture> para que el navegador elija el mismo candidato. -->
-    <link
-      rel="preload"
-      as="image"
-      type="image/webp"
-      imagesrcset="./assets/imagenes/hero-universo-640.webp 640w, ./assets/imagenes/hero-universo-960.webp 960w, ./assets/imagenes/hero-universo-1280.webp 1280w, ./assets/imagenes/hero-universo-1920.webp 1920w"
-      imagesizes="100vw"
-      fetchpriority="high"
-    />
     <!-- JS con defer: el preload scanner lo descubre sin bloquear el HTML -->
     <link rel="preload" href="script.js" as="script" />
-    <!-- Fuentes woff2 exactas que usa Google Fonts (evita el swap tardío = CLS).
-         crossorigin es obligatorio: las fuentes se solicitan en modo CORS. -->
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q131nj-o.woff2" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3pQPwlBFgsAXHNk.woff2" />
+    <!-- Fuentes woff2 EXACTAS que sirve Google Fonts (verificadas contra la
+         respuesta real de css2): Space Grotesk/Orbitron/Inter son variables
+         (un archivo cubre todos los pesos). Si Google rota de versión, hay que
+         resincronizar estos href con la nueva respuesta. crossorigin es
+         obligatorio: las fuentes se solicitan en modo CORS. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/orbitron/v35/yMJRMIlzdpvBhQQL_Qq7dy0.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- CSS crítico above-the-fold: render-blocking mínimo (~11KB inline) -->
@@ -122,7 +116,7 @@
   </head>
   <body>
     <!-- Enlace de omisión (skip link): accesible con teclado, oculto visualmente -->
-    <a class="skip-link" href="#hero">Saltar al contenido principal</a>
+    <a class="skip-link" href="#ct-hero">Saltar al contenido principal</a>
     <!-- Lienzo 3D Nativo del Cosmos y Planetas -->
     <canvas id="universe-canvas" aria-hidden="true"></canvas>
 
@@ -130,7 +124,7 @@
     <header class="top-nav">
       <div class="nav-container">
         <!-- Zona 1: Lockup de marca (emblema orbital + wordmark + descriptor) -->
-        <a href="#hero" class="brand-wordmark" aria-label="Cosmos Tour — ir al inicio">
+        <a href="#ct-hero" class="brand-wordmark" aria-label="Cosmos Tour — ir al inicio">
           <span class="brand-emblem" aria-hidden="true">
             <svg viewBox="0 0 48 48" width="34" height="34" focusable="false">
               <ellipse
@@ -157,7 +151,7 @@
         <!-- Zona 2: Enlaces de navegación semánticos -->
         <nav>
           <ul class="nav-links">
-            <li><a href="#hero" class="nav-link active">El Despegue</a></li>
+            <li><a href="#ct-hero" class="nav-link active">El Despegue</a></li>
             <li><a href="#destinos" class="nav-link">Destinos</a></li>
             <li><a href="#vuelo" class="nav-link">Experiencia de Vuelo</a></li>
             <li><a href="#beneficios" class="nav-link">Suites & Lujo</a></li>
@@ -217,133 +211,33 @@
       <!-- ====================================================================
            SECCIÓN A: EL DESPEGUE (Bienvenida & Explorador Planetario)
            ==================================================================== -->
-      <section id="hero" class="section-despegue" aria-labelledby="hero-title">
-        <!-- [AJUSTE HERO] Imagen demo del universo de fondo (NASA) + velo degradado para
-             legibilidad del texto sobre la fotografía -->
-        <picture>
-          <source
-            type="image/webp"
-            srcset="./assets/imagenes/hero-universo-640.webp 640w, ./assets/imagenes/hero-universo-960.webp 960w, ./assets/imagenes/hero-universo-1280.webp 1280w, ./assets/imagenes/hero-universo-1920.webp 1920w"
-            sizes="100vw"
-          />
-          <img
-            class="hero-universe-bg"
-            src="./assets/imagenes/hero-universo.jpg"
-            alt="Panorama infrarrojo de la Vía Láctea con franjas de nebulosas rosadas y azules sobre fondo negro"
-            width="1920"
-            height="1160"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </picture>
-        <div class="hero-universe-veil" aria-hidden="true"></div>
-        <div class="container">
-          <!-- Barra superior de telemetría de vuelo -->
-          <div class="hero-telemetry-top">
-            <div class="flight-status">
-              <span class="status-dot"></span>
-              <span>SISTEMA DE VUELO: NOMINAL</span>
-              <span class="flight-status-sep">/</span>
-              <span>ORBITAL CLASS 1</span>
-            </div>
+            <!-- ================================================================
+           BLOQUE ct-hero — Hero full-screen · HTML semántico · SIN JavaScript
+           Clases con prefijo "ct-hero" · CTAs enlazan a secciones existentes
+           (#registro usa el scroll suave y se auto-oculta si ya eres convertido)
+           ================================================================ -->
+      <section id="ct-hero" class="ct-hero" aria-labelledby="ct-hero-title">
+        <!-- Decoración: nebulosas + campo de estrellas + orbe (100% CSS, sin imágenes) -->
+        <div class="ct-hero-bg" aria-hidden="true"></div>
+        <div class="ct-hero-orb" aria-hidden="true"></div>
 
-            <!-- [AJUSTE HERO] El selector de planetas con imágenes se movió bajo las CTAs
-                 (ver .planet-picker): el hero-telemetry-top queda solo con el estado de vuelo -->
+        <div class="ct-hero-content">
+          <p class="ct-hero-kicker">Agencia de Turismo Espacial · Ventana 2026</p>
+
+          <h1 id="ct-hero-title" class="ct-hero-title">Explora el Universo</h1>
+
+          <p class="ct-hero-subtitle">
+            Tours espaciales de alto lujo a la Luna, Marte y la Estación Espacial
+            Internacional. Despega a bordo de nuestra flota privada y vive la
+            experiencia definitiva más allá de la atmósfera terrestre.
+          </p>
+
+          <div class="ct-hero-actions">
+            <a class="ct-hero-cta ct-hero-cta-primary" href="#registro">Reserva tu Viaje</a>
+            <a class="ct-hero-cta ct-hero-cta-secondary" href="#destinos">Conoce Más</a>
           </div>
 
-          <!-- Bloque Central Narrativo -->
-          <div class="hero-content">
-            <div class="unboxed-kicker">
-              <span>Expediciones Civiles Privadas</span>
-              <span aria-hidden="true">·</span>
-              <span>Certificación Cis-Lunar</span>
-              <span aria-hidden="true">·</span>
-              <span>Gravedad Cero Exclusiva</span>
-            </div>
-
-            <h1 id="hero-title" class="hero-title">La Frontera Definitiva del Lujo</h1>
-
-            <p class="hero-description">
-              Cosmos Tour redefine los límites de la experiencia humana: cruceros astronómicos privados, suites de ingravidez con ventanales de cuarzo y expediciones personalizadas a la Luna y Marte.
-            </p>
-
-            <div class="hero-actions">
-              <button id="btn-initiate-launch" class="btn-primary btn-cta-lg">
-                Iniciar Despegue
-              </button>
-              <a href="#destinos" class="btn-secondary btn-cta-lg">
-                Explorar Destinos
-              </a>
-            </div>
-
-            <!-- [AJUSTE HERO] Selector de planetas con IMÁGENES REALES (NASA): cada botón
-                 sincroniza el HUD del canvas y abre la ficha emergente del cuerpo celeste -->
-            <div class="planet-picker" role="group" aria-label="Explorar cuerpos celestes">
-              <button class="planet-btn segmented-btn active" data-planet-target="earth" data-planet-info="tierra">
-                <picture>
-                  <source type="image/webp" srcset="./assets/imagenes/planeta-tierra-160.webp 160w" sizes="72px" />
-                  <img src="./assets/imagenes/planeta-tierra.jpg" alt="" width="72" height="72" loading="lazy" decoding="async" />
-                </picture>
-                <span class="planet-btn-name">Tierra</span>
-              </button>
-              <button class="planet-btn segmented-btn" data-planet-target="mars" data-planet-info="marte">
-                <picture>
-                  <source type="image/webp" srcset="./assets/imagenes/planeta-marte-326.webp 326w" sizes="72px" />
-                  <img src="./assets/imagenes/planeta-marte.jpg" alt="" width="72" height="72" loading="lazy" decoding="async" />
-                </picture>
-                <span class="planet-btn-name">Marte</span>
-              </button>
-              <button class="planet-btn segmented-btn" data-planet-target="luna" data-planet-info="luna">
-                <picture>
-                  <source type="image/webp" srcset="./assets/imagenes/planeta-luna-229.webp 229w" sizes="72px" />
-                  <img src="./assets/imagenes/planeta-luna.jpg" alt="" width="72" height="72" loading="lazy" decoding="async" />
-                </picture>
-                <span class="planet-btn-name">La Luna</span>
-              </button>
-              <button class="planet-btn segmented-btn" data-planet-target="jupiter" data-planet-info="jupiter">
-                <picture>
-                  <source type="image/webp" srcset="./assets/imagenes/planeta-jupiter-480.webp 480w" sizes="72px" />
-                  <img src="./assets/imagenes/planeta-jupiter.jpg" alt="" width="72" height="72" loading="lazy" decoding="async" />
-                </picture>
-                <span class="planet-btn-name">Júpiter</span>
-              </button>
-              <button class="planet-btn segmented-btn" data-planet-target="saturno" data-planet-info="saturno">
-                <picture>
-                  <source type="image/webp" srcset="./assets/imagenes/planeta-saturno-352.webp 352w" sizes="72px" />
-                  <img src="./assets/imagenes/planeta-saturno.jpg" alt="" width="72" height="72" loading="lazy" decoding="async" />
-                </picture>
-                <span class="planet-btn-name">Saturno</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- HUD Inferior con Métricas e Indicador de Despegue -->
-          <div class="hero-telemetry-bottom">
-            <div class="hud-hint">
-              <span class="hud-hint-dot">●</span>
-              <span>Arrastra para rotar · Rueda para zoom orbital</span>
-            </div>
-
-            <div class="hud-metrics">
-              <div class="metric-item">
-                <span class="metric-label">Altitud Orbital</span>
-                <span class="metric-value">420.5 <span class="metric-unit">KM</span></span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Velocidad Relativa</span>
-                <span class="metric-value">7.66 <span class="metric-unit">KM/S</span></span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Período de Órbita</span>
-                <span class="metric-value">92.68 <span class="metric-unit">MIN</span></span>
-              </div>
-            </div>
-
-            <a href="#destinos" class="scroll-indicator">
-              <span>Descender al Cosmos</span>
-              <span>↓</span>
-            </a>
-          </div>
+          <p class="ct-hero-meta">Despegue: Noviembre 2026 · Solo 24 plazas por ventana</p>
         </div>
       </section>
 
