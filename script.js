@@ -356,6 +356,65 @@ function removeStorage(key) {
 }
 
 /**
+ * BLOQUE: Lectura segura de sessionStorage (try/catch obligatorio).
+ * Puede fallar si el almacenamiento está lleno o está deshabilitado.
+ * @param {string} key - Clave a leer.
+ * @returns {string|null} Valor almacenado o null si no existe o falla.
+ */
+function readSession(key) {
+  try {
+    return window.sessionStorage.getItem(key);
+  } catch (error) {
+    console.warn('[Cosmos Tour] sessionStorage no disponible (lectura):', error);
+    return null;
+  }
+}
+
+/**
+ * BLOQUE: Escritura segura de sessionStorage (try/catch obligatorio).
+ * @param {string} key - Clave a guardar.
+ * @param {string} value - Valor a guardar.
+ * @returns {boolean} true si se guardó correctamente.
+ */
+function writeSession(key, value) {
+  try {
+    window.sessionStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    console.warn('[Cosmos Tour] sessionStorage no disponible (escritura):', error);
+    return false;
+  }
+}
+
+/**
+ * BLOQUE: Parseo seguro de JSON con validación previa.
+ * Comprueba que el dato sea string no vacío antes de JSON.parse (que
+ * lanzaría excepción con datos corruptos) y valida que sea un objeto/array.
+ * @param {string} raw - Cadena cruda a parsear.
+ * @param {string} etiqueta - Etiqueta para el mensaje de advertencia.
+ * @returns {Object|Array|null} Datos válidos o null si el JSON no es válido.
+ */
+function parsearJSONSeguro(raw, etiqueta = 'JSON') {
+  // VALIDACIÓN 1: debe ser string no vacío.
+  if (typeof raw !== 'string' || raw.trim() === '') {
+    return null;
+  }
+  try {
+    // VALIDACIÓN 2: JSON.parse lanza si hay sintaxis corrupta.
+    const datos = JSON.parse(raw);
+    // VALIDACIÓN 3: solo se aceptan objetos o arrays.
+    if (datos === null || typeof datos !== 'object') {
+      console.warn(`[Cosmos Tour] ${ etiqueta}: el JSON no es un objeto/array válido.`);
+      return null;
+    }
+    return datos;
+  } catch (error) {
+    console.warn(`[Cosmos Tour] ${ etiqueta}: JSON inválido.`, error);
+    return null;
+  }
+}
+
+/**
  * Cachea en la constante DOM todas las referencias necesarias del HTML.
  * Se ejecuta una sola vez desde init() (script con defer = DOM disponible).
  * @returns {void}
@@ -863,7 +922,7 @@ function iniciarMonitorAutoguardado() {
       // (se oculta automáticamente cuando el usuario ya es convertido).
       const formOculto =
         !DOM.form || DOM.form.style.display === 'none' || DOM.form.hidden;
-      const panel = document.getElementById('convertido-panel');
+      const panel = document.getElementById('credencial-embarque');
       const panelVisible = panel && !panel.hidden;
       if (formOculto || panelVisible) {
         return;
@@ -955,7 +1014,11 @@ function registrarPasajeroConvertido(data) {
     // CÓDIGO ÚNICO: prefijo del destino (LUN/MAR/ISS) + dígitos del timestamp.
     codigoMision: generateMissionCode(data.expedicionSeleccionada),
     nombrePasajero: data.nombreCompleto,
-    ventanaDespegue: data.ventanaDespegue
+    ventanaDespegue: data.ventanaDespegue,
+    // SNAPSHOT de la suite y las experiencias extras: se guardan aquí porque
+    // la clave 'cosmostour_experiencias_extras' se elimina al convertir.
+    categoriaSuite: data.categoriaSuite,
+    experienciasExtras: obtenerExperienciasExtras()
   };
   writeStorage(PASAJERO_CONVERTIDO_KEY, JSON.stringify(registro));
   return registro;
@@ -972,9 +1035,11 @@ function limpiarAlmacenamientoPostConversion() {
   toggleBotonCancelarReserva(false);
 }
 
-// BLOQUE 10: MENSAJE DE USUARIO CONVERTIDO MEJORADO
-// Icono según destino (🌙/🔴/🛰️), código de misión, ventana de despegue,
-// lista de experiencias extras (si existen) y botón de descarga simulada.
+// BLOQUE 10: CREDENCIAL DE PASAJERO CONVERTIDO (LÓGICA AVANZADA)
+// Al detectar la conversión se OCULTA el formulario y los CTAs de reserva
+// y se MUESTRA el bloque #credencial-embarque con los datos completos:
+// estado bio-cleared, nombre, código de misión, destino (distancia +
+// duración), ventana de despegue, suite, experiencias y acciones simuladas.
 
 /**
  * Devuelve el ícono temático según el destino confirmado de la expedición.
@@ -991,26 +1056,41 @@ function obtenerIconoDestino(destino) {
 }
 
 /**
- * Lee 'cosmostour_experiencias_extras' y normaliza su contenido a un array
- * de textos (soporta array de strings u objeto con nombres de experiencia).
- * @returns {string[]} Lista de experiencias extras (vacía si no hay datos).
+ * Lee 'cosmostour_experiencias_extras' (array de IDs del carrito) y lo
+ * normaliza a textos legibles "Nombre ($precio USD)" resolviendo cada ID
+ * contra el catálogo. Soporta también formatos legibles (strings sueltos).
+ * @returns {string[]} Lista de experiencias para mostrar (vacía si no hay).
  */
 function obtenerExperienciasExtras() {
   try {
+    // LECTURA + VALIDACIÓN JSON segura (puede fallar si está lleno/deshabilitado).
     const raw = readStorage(EXPERIENCIAS_EXTRAS_KEY);
     if (!raw) {
       return [];
     }
-    const datos = JSON.parse(raw);
+    const datos = parsearJSONSeguro(raw, 'experiencias_extras');
+    if (!datos) {
+      return [];
+    }
+
+    // NORMALIZACIÓN: extraer IDs tanto de array como de objeto.
+    let ids = [];
     if (Array.isArray(datos)) {
-      return datos.map((item) => String(item));
-    }
-    if (datos && typeof datos === 'object') {
-      return Object.entries(datos)
+      ids = datos.map((item) => String(item));
+    } else {
+      ids = Object.entries(datos)
         .filter(([, seleccionado]) => Boolean(seleccionado))
-        .map(([nombre]) => nombre);
+        .map(([clave]) => String(clave));
     }
-    return [];
+
+    // RESOLUCIÓN: ID → "Nombre ($precio USD)"; si no está en el catálogo
+    // (formato legible antiguo) se devuelve el texto tal cual.
+    return ids.map((id) => {
+      const experiencia = EXPERIENCIAS_CATALOGO.find((item) => item.id === id);
+      return experiencia
+        ? `${experiencia.nombre} ($${experiencia.precio.toLocaleString('en-US')} USD)`
+        : id;
+    });
   } catch (error) {
     console.warn('[Cosmos Tour] Error al leer experiencias extras:', error);
     return [];
@@ -1018,18 +1098,79 @@ function obtenerExperienciasExtras() {
 }
 
 /**
- * Oculta el formulario y muestra el panel personalizado de pasajero
- * convertido: saludo, destino con ícono, código de misión, ventana de
- * despegue, experiencias extras y botones de descarga/nueva reserva.
+ * Consulta el catálogo DESTINATION_FILES para obtener la distancia y la
+ * duración del destino (campos requeridos en la credencial AST-2026).
+ * @param {string} destino - Nombre de la expedición.
+ * @returns {{dist: string, duration: string}} Datos del catálogo.
+ */
+function obtenerInfoDestino(destino) {
+  // MAPEO: nombre del <option> → clave del catálogo (luna | marte | iss).
+  const claves = {
+    'La Luna': 'luna',
+    'Marte': 'marte',
+    'Estación Espacial Internacional': 'iss'
+  };
+  const archivo = DESTINATION_FILES[claves[destino]];
+  return {
+    dist: archivo ? archivo.dist : '—',
+    duration: archivo ? archivo.duration : '—'
+  };
+}
+
+/**
+ * OCULTA todos los elementos de reserva cuando el usuario ya es convertido:
+ * el formulario, los CTAs que apuntan a #registro (nav y footer), el botón
+ * "Iniciar Despegue", el escaneo biométrico y la credencial del flujo previo.
+ * @returns {void}
+ */
+function ocultarFormularioYCtasReserva() {
+  // OCULTAR 1: el formulario completo (display none + clase .hidden).
+  if (DOM.form) {
+    DOM.form.style.display = 'none';
+    DOM.form.classList.add('hidden');
+  }
+
+  // OCULTAR 2: cualquier CTA que apunte al formulario (#registro):
+  // enlaces "Tripulación" y "Reservar Misión" del nav y del footer.
+  document.querySelectorAll('a[href="#registro"]').forEach((link) => {
+    link.classList.add('hidden');
+  });
+
+  // OCULTAR 3: botón "Iniciar Despegue" (entrada principal del embudo).
+  const btnInitiateLaunch = document.getElementById('btn-initiate-launch');
+  if (btnInitiateLaunch) {
+    btnInitiateLaunch.classList.add('hidden');
+  }
+
+  // OCULTAR 4: escaneo biométrico, boarding pass del flujo anterior y
+  // carrito de experiencias (evita duplicados y el carrito ya se snapshotó).
+  ['biometric-scanner-box', 'boarding-pass-result', 'experiencias-carrito'].forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.classList.add('hidden');
+    }
+  });
+
+  // OCULTAR 5: notificación de restauración (ya no aplica hay conversión).
+  const notification = document.getElementById('restore-notification');
+  if (notification) {
+    notification.hidden = true;
+  }
+}
+
+/**
+ * Muestra el bloque #credencial-embarque relleno con los datos del registro:
+ * nombre, código, destino con ícono y telemetría, ventana, suite y extras.
  * @param {Object} registro - Registro de 'cosmostour_pasajero_convertido'.
  * @returns {void}
  */
 function mostrarMensajeConvertido(registro) {
-  const panel = document.getElementById('convertido-panel');
-  if (!panel) {
+  const credencial = document.getElementById('credencial-embarque');
+  if (!credencial) {
     return;
   }
 
+  // Utilidad local: escribe texto en un campo de la credencial.
   const setText = (id, value) => {
     const element = document.getElementById(id);
     if (element) {
@@ -1037,67 +1178,88 @@ function mostrarMensajeConvertido(registro) {
     }
   };
 
-  // DATO 1: nombre del pasajero en el saludo.
-  setText('convertido-greeting', `Bienvenido Comandante ${registro.nombrePasajero}`);
+  // DATO 1: nombre del pasajero.
+  setText('cred-nombre', registro.nombrePasajero || '—');
 
-  // DATO 2: destino confirmado precedido de su ícono temático.
+  // DATO 2: código de misión único.
+  setText('cred-codigo', registro.codigoMision || '—');
+
+  // DATO 3: destino con ícono temático + distancia y duración del catálogo.
   const iconoDestino = obtenerIconoDestino(registro.destinoConfirmado);
+  const infoDestino = obtenerInfoDestino(registro.destinoConfirmado);
   setText(
-    'convertido-credencial',
-    `Tu credencial de embarque para ${iconoDestino} ${registro.destinoConfirmado} ha sido emitida.`
+    'cred-destino',
+    `${iconoDestino} ${registro.destinoConfirmado} (${infoDestino.dist}, ${infoDestino.duration})`
   );
 
-  // DATO 3: código de misión único generado en la confirmación.
-  setText('convertido-codigo', registro.codigoMision);
-
   // DATO 4: ventana temporal de despegue.
-  setText('convertido-ventana', registro.ventanaDespegue);
+  setText('cred-ventana', registro.ventanaDespegue || '—');
 
-  // DATO 5: lista de experiencias extras (solo si hay alguna persistida).
-  const extrasBloque = document.getElementById('convertido-extras');
-  const extrasLista = document.getElementById('convertido-extras-lista');
-  const experiencias = obtenerExperienciasExtras();
-  if (extrasBloque && extrasLista) {
-    extrasLista.innerHTML = '';
-    if (experiencias.length > 0) {
-      experiencias.forEach((nombre) => {
-        const item = document.createElement('li');
-        item.textContent = nombre;
-        extrasLista.appendChild(item);
-      });
-      extrasBloque.hidden = false;
-    } else {
-      extrasBloque.hidden = true;
-    }
-  }
+  // DATO 5: categoría de suite (persistida en el registro al convertir).
+  setText('cred-suite', registro.categoriaSuite || '—');
 
-  // DATO 6: botón "Descargar Credencial" (simulado con alert para la demo).
-  const btnDescargar = document.getElementById('btn-descargar-credencial');
-  if (btnDescargar && !btnDescargar.dataset.bound) {
-    btnDescargar.dataset.bound = '1';
-    btnDescargar.addEventListener('click', () => {
-      window.alert(
-        `🛰️ CREDENCIAL DE EMBARQUE AST-2026\n\n` +
-        `Pasajero: ${registro.nombrePasajero}\n` +
-        `Destino: ${iconoDestino} ${registro.destinoConfirmado}\n` +
-        `Código de Misión: ${registro.codigoMision}\n` +
-        `Ventana de Despegue: ${registro.ventanaDespegue}\n\n` +
-        `(Descarga simulada — demostración académica)`
-      );
-    });
-  }
+  // DATO 6: experiencias adicionales (snapshot del registro; si el registro
+  // es antiguo y no lo tiene, se intenta leer de localStorage como respaldo).
+  const experiencias =
+    Array.isArray(registro.experienciasExtras) && registro.experienciasExtras.length
+      ? registro.experienciasExtras
+      : obtenerExperienciasExtras();
+  setText('cred-experiencias', experiencias.length ? experiencias.join(' · ') : 'Ninguna');
 
-  // OCULTAR formulario y notificación de restauración si estaban visibles.
-  if (DOM.form) {
-    DOM.form.style.display = 'none';
-  }
-  const notification = document.getElementById('restore-notification');
-  if (notification) {
-    notification.hidden = true;
-  }
+  // PASO FINAL: ocultar formulario/CTAs y revelar la credencial AST-2026.
+  ocultarFormularioYCtasReserva();
+  credencial.hidden = false;
+  credencial.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
-  panel.hidden = false;
-  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+/**
+ * ACCIÓN SIMULADA: descarga del credencial PDF (alert con código de misión).
+ * Se invoca desde el atributo onclick del botón del HTML.
+ * Mensaje: "Credencial [código] generada. Revisa tu correo."
+ * @returns {void}
+ */
+function descargarCredencial() {
+  try {
+    // LECTURA + VALIDACIÓN JSON del registro convertido.
+    const raw = readStorage(PASAJERO_CONVERTIDO_KEY);
+    const registro = parsearJSONSeguro(raw, 'pasajero_convertido') || {};
+    const codigo = registro.codigoMision || 'CT-2026-ORB';
+
+    // SIMULACIÓN de descarga con confirmación por correo.
+    window.alert(`Credencial ${codigo} generada. Revisa tu correo.`);
+    console.log(`🛰️ [CREDENCIAL] Descarga simulada de ${codigo} solicitada`);
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al descargar la credencial:', error);
+  }
+}
+
+/**
+ * ACCIÓN: contacto con el concierge espacial vía mailto: con asunto
+ * "Consulta Misión [código]". Se invoca desde el onclick del HTML.
+ * @returns {void}
+ */
+function contactarConcierge() {
+  try {
+    // LECTURA + VALIDACIÓN JSON del registro convertido.
+    const raw = readStorage(PASAJERO_CONVERTIDO_KEY);
+    const registro = parsearJSONSeguro(raw, 'pasajero_convertido') || {};
+    const codigo = registro.codigoMision || 'CT-2026-ORB';
+
+    // CONSTRUCCIÓN del mailto con asunto y cuerpo codificados (encodeURIComponent).
+    const asunto = encodeURIComponent(`Consulta Misión ${codigo}`);
+    const cuerpo = encodeURIComponent(
+      `Hola Concierge Espacial,\n\n` +
+      `Quiero consultar los detalles de la misión ${codigo}.\n\n` +
+      `Pasajero: ${registro.nombrePasajero || '—'}\n\n` +
+      `Atentamente.`
+    );
+
+    // APERTURA del cliente de correo (no recarga la página).
+    window.location.href = `mailto:concierge@cosmos-tour.space?subject=${asunto}&body=${cuerpo}`;
+    console.log(`🛰️ [CONCIERGE] Abriendo mailto: asunto "Consulta Misión ${codigo}"`);
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al contactar al concierge:', error);
+  }
 }
 
 // BLOQUE 11: DETECCIÓN DE USUARIO YA CONVERTIDO
@@ -1241,6 +1403,410 @@ function initPersistenciaReservas() {
 
   // BLOQUE 13.3: monitor de demostración (DevTools) cada 2 segundos.
   iniciarMonitorAutoguardado();
+}
+
+// BLOQUE 14: SISTEMA DE CARRITO DE EXPERIENCIAS EXTRAS (REQUERIMIENTO 2)
+// Catálogo de 5 experiencias premium con precio; checkboxes en el HTML
+// persisten sus IDs en 'cosmostour_experiencias_extras' (array JSON),
+// el total se recalcula automáticamente y todo se restaura al cargar.
+
+/** Catálogo canónico de experiencias premium (id, nombre y precio USD). */
+const EXPERIENCIAS_CATALOGO = [
+  { id: 'cena-molecular', nombre: 'Cena Molecular con Chef Michelin', precio: 15000 },
+  { id: 'cupola-panoramica', nombre: 'Sesión Privada en Cupola Panorámica', precio: 8500 },
+  { id: 'eva-personalizado', nombre: 'Entrenamiento EVA Personalizado', precio: 22000 },
+  { id: 'fotografia-zero-g', nombre: 'Fotografía Profesional en Gravedad Cero', precio: 5000 },
+  { id: 'suite-upgrade', nombre: 'Suite Celestial Sovereign Upgrade', precio: 50000 }
+];
+
+/**
+ * CARRITO: lee 'cosmostour_experiencias_extras' con validación JSON y
+ * filtra los IDs para que solo se admitan los del catálogo vigente.
+ * @returns {string[]} Array de IDs seleccionados (o array vacío).
+ */
+function leerIdsCarrito() {
+  try {
+    const raw = readStorage(EXPERIENCIAS_EXTRAS_KEY);
+    if (!raw) {
+      return [];
+    }
+    const datos = parsearJSONSeguro(raw, 'experiencias_extras');
+    if (!datos) {
+      return [];
+    }
+    if (!Array.isArray(datos)) {
+      return [];
+    }
+    // SANITIZACIÓN: únicamente IDs conocidos del catálogo.
+    return datos.filter((id) =>
+      EXPERIENCIAS_CATALOGO.some((item) => item.id === id)
+    );
+  } catch (error) {
+    console.warn('[Cosmos Tour] Error al leer el carrito:', error);
+    return [];
+  }
+}
+
+/**
+ * CARRITO: persiste el array de IDs seleccionados en localStorage.
+ * @param {string[]} ids - IDs de experiencias seleccionadas.
+ * @returns {boolean} true si se guardó correctamente.
+ */
+function guardarIdsCarrito(ids) {
+  try {
+    return writeStorage(EXPERIENCIAS_EXTRAS_KEY, JSON.stringify(ids));
+  } catch (error) {
+    console.error('[Cosmos Tour] Error al guardar el carrito:', error);
+    return false;
+  }
+}
+
+/**
+ * CARRITO: suma los precios del catálogo para los IDs seleccionados.
+ * @param {string[]} ids - IDs seleccionados.
+ * @returns {number} Total en USD (0 si no hay selección).
+ */
+function calcularTotalCarrito(ids) {
+  return ids.reduce((total, id) => {
+    const experiencia = EXPERIENCIAS_CATALOGO.find((item) => item.id === id);
+    return total + (experiencia ? experiencia.precio : 0);
+  }, 0);
+}
+
+/**
+ * CARRITO: formatea un monto como "$15,000 USD".
+ * @param {number} monto - Monto en USD.
+ * @returns {string} Monto formateado.
+ */
+function formatearMontoUSD(monto) {
+  return `$${monto.toLocaleString('en-US')} USD`;
+}
+
+/**
+ * CARRITO: sincroniza la UI (checkboxes, contador y total) con el estado
+ * persistido en localStorage. Se usa al cargar y tras cada cambio.
+ * @returns {void}
+ */
+function sincronizarUICarrito() {
+  const ids = leerIdsCarrito();
+
+  // PASO 1: marcar/desmarcar cada checkbox según los IDs guardados.
+  document.querySelectorAll('.carrito-check').forEach((checkbox) => {
+    checkbox.checked = ids.includes(checkbox.dataset.expId);
+  });
+
+  // PASO 2: actualizar contador y total calculado desde el catálogo.
+  const total = calcularTotalCarrito(ids);
+  const countElement = document.getElementById('carrito-count');
+  const totalElement = document.getElementById('carrito-total-monto');
+  if (countElement) {
+    countElement.textContent =
+      ids.length === 1 ? '1 experiencia seleccionada' : `${ids.length} experiencias seleccionadas`;
+  }
+  if (totalElement) {
+    totalElement.textContent = formatearMontoUSD(total);
+  }
+}
+
+/**
+ * CARRITO: manejador de cada cambio de checkbox: persiste los IDs,
+ * recalcula el total y emite el log de demostración en DevTools.
+ * @returns {void}
+ */
+function manejarCambioExperiencia() {
+  // PASO 1: recolectar IDs de todos los checkboxes marcados.
+  const seleccionados = Array.from(
+    document.querySelectorAll('.carrito-check:checked')
+  ).map((checkbox) => checkbox.dataset.expId);
+
+  // PASO 2: persistir array de IDs + actualizar UI.
+  guardarIdsCarrito(seleccionados);
+  sincronizarUICarrito();
+
+  // PASO 3: LOG DE DEMOSTRACIÓN con array y total.
+  const total = calcularTotalCarrito(seleccionados);
+  console.log(
+    `🛸 [CARRITO] Experiencias seleccionadas: [${seleccionados.join(', ')}] | Total: $${total.toLocaleString('en-US')}`
+  );
+}
+
+/**
+ * CARRITO: inicialización — restaura la selección previa, pinta el total
+ * y conecta el listener 'change' por delegación sobre la grilla.
+ * @returns {void}
+ */
+function initCarritoExperiencias() {
+  const grid = document.getElementById('carrito-grid');
+  if (!grid) {
+    return;
+  }
+
+  // EVENTO: un solo listener 'change' para todos los checkboxes (delegación).
+  grid.addEventListener('change', manejarCambioExperiencia);
+
+  // RESTAURACIÓN al cargar + log con el estado recuperado.
+  sincronizarUICarrito();
+  const idsPrevios = leerIdsCarrito();
+  if (idsPrevios.length > 0) {
+    const total = calcularTotalCarrito(idsPrevios);
+    console.log(
+      `🛸 [CARRITO] Restauradas: [${idsPrevios.join(', ')}] | Total: $${total.toLocaleString('en-US')}`
+    );
+  }
+}
+
+// BLOQUE 15: VISOR ORBITAL 3D — PERSISTENCIA CON sessionStorage (REQ. 3)
+// El visor del hero (canvas + HUD con altitud/velocidad/período + selector
+// de destino) guarda su estado en sessionStorage en cada interacción:
+// arrastre (rotar), rueda (zoom → cambia altitud) y cambio de destino.
+
+/** Clave de sessionStorage para el estado del visor orbital. */
+const VISOR_SESSION_KEY = 'cosmostour_visor_orbital';
+
+/** Valores nominales de referencia (órbita LEO de la Tierra). */
+const VISOR_VALORES_BASE = { altitud: 420.5, velocidad: 7.66, periodo: 92.68 };
+
+/** Radio terrestre en km (para las aproximaciones de órbita circular). */
+const RADIO_TERRESTRE_KM = 6371;
+
+/** Control del throttle del guardado durante el arrastre (ms). */
+let visorArrastreThrottleId = null;
+
+/**
+ * LEE la métrica numérica actual de un .metric-value del HUD.
+ * @param {HTMLElement} metric - Elemento .metric-value.
+ * @returns {number} Valor numérico (0 si no se pudo leer).
+ */
+function leerValorMetrica(metric) {
+  const valor = parseFloat(metric ? metric.textContent : '');
+  return Number.isNaN(valor) ? 0 : valor;
+}
+
+/**
+ * ESCRIBE un valor numérico en un .metric-value conservando su unidad.
+ * @param {HTMLElement} metric - Elemento .metric-value.
+ * @param {number} valor - Nuevo valor numérico.
+ * @returns {void}
+ */
+function escribirValorMetrica(metric, valor) {
+  if (!metric) {
+    return;
+  }
+  const unidad = metric.querySelector('.metric-unit');
+  metric.innerHTML =
+    `${valor}${unidad ? ` <span class="metric-unit">${unidad.textContent}</span>` : ''}`;
+}
+
+/**
+ * VISOR: deriva velocidad y período desde una altitud (aproximación
+ * didáctica de órbita circular de la Tierra, leyes de Kepler).
+ * @param {number} altitud - Altitud orbital en km.
+ * @returns {{velocidad: number, periodo: number}} Métricas derivadas.
+ */
+function derivarMétricasVisor(altitud) {
+  const radioBase = RADIO_TERRESTRE_KM + VISOR_VALORES_BASE.altitud;
+  const radioActual = RADIO_TERRESTRE_KM + Math.max(altitud, 1);
+  const velocidad = VISOR_VALORES_BASE.velocidad * Math.sqrt(radioBase / radioActual);
+  const periodo = VISOR_VALORES_BASE.periodo * Math.pow(radioActual / radioBase, 1.5);
+  return {
+    velocidad: Number(velocidad.toFixed(2)),
+    periodo: Number(periodo.toFixed(2))
+  };
+}
+
+/**
+ * VISOR: captura el estado actual (métricas del HUD + destino activo).
+ * @param {Object} sobrescribir - Campos a forzar en la captura.
+ * @returns {Object} Estado completo { altitud, velocidad, periodo,
+ *                    destinoActivo, timestamp }.
+ */
+function capturarEstadoVisor(sobrescribir = {}) {
+  const metricas = document.querySelectorAll('.hud-metrics .metric-value');
+  const destinoActivo =
+    document.body.dataset.planet ||
+    (DOM.canvas ? DOM.canvas.dataset.planet : '') ||
+    'earth';
+
+  return {
+    altitud: leerValorMetrica(metricas[0]) || VISOR_VALORES_BASE.altitud,
+    velocidad: leerValorMetrica(metricas[1]) || VISOR_VALORES_BASE.velocidad,
+    periodo: leerValorMetrica(metricas[2]) || VISOR_VALORES_BASE.periodo,
+    destinoActivo: String(destinoActivo),
+    // FECHA/HORA LEGIBLE del momento de la interacción.
+    timestamp: formatDate(new Date()),
+    ...sobrescribir
+  };
+}
+
+/**
+ * VISOR: persiste el estado en sessionStorage con try/catch.
+ * @param {Object} sobrescribir - Campos a forzar antes de guardar.
+ * @returns {Object|null} Estado guardado o null si falló.
+ */
+function guardarEstadoVisor(sobrescribir = {}) {
+  try {
+    const estado = capturarEstadoVisor(sobrescribir);
+    const guardado = writeSession(VISOR_SESSION_KEY, JSON.stringify(estado));
+    if (guardado) {
+      console.log('🔭 [VISOR] Estado guardado:', estado);
+    }
+    return guardado ? estado : null;
+  } catch (error) {
+    console.warn('[Cosmos Tour] Error al guardar el estado del visor:', error);
+    return null;
+  }
+}
+
+/**
+ * VISOR: aplica el destino activo restaurado al selector de planetas,
+ * al canvas (data-planet) y a <body> (data-planet).
+ * @param {string} destino - Clave: earth | mars | luna | jupiter | saturno.
+ * @returns {void}
+ */
+function aplicarDestinoVisor(destino) {
+  // SELECTOR: alternar la clase .active en los botones segmentados.
+  const botones = document.querySelectorAll('.segmented-btn[data-planet-target]');
+  let encontrado = false;
+  botones.forEach((button) => {
+    const activo = button.dataset.planetTarget === destino;
+    button.classList.toggle('active', activo);
+    if (activo) {
+      encontrado = true;
+    }
+  });
+
+  // Si el destino guardado no existe en el selector, no se alterna nada.
+  if (!encontrado) {
+    return;
+  }
+
+  // CANVAS + BODY: sincronizar el atributo data-planet.
+  if (DOM.canvas) {
+    DOM.canvas.dataset.planet = destino;
+  }
+  document.body.dataset.planet = destino;
+}
+
+/**
+ * VISOR: restaura el estado desde sessionStorage al cargar la página.
+ * Valida el JSON y los tipos antes de aplicar los valores al HUD.
+ * Ejecuta ANTES de initHeroCounters para que los contadores animen hasta
+ * los valores restaurados en lugar de los valores por defecto.
+ * @returns {boolean} true si se restauró algún estado.
+ */
+function restaurarEstadoVisor() {
+  try {
+    // PASO 1: lectura segura + validación de JSON.
+    const raw = readSession(VISOR_SESSION_KEY);
+    const estado = parsearJSONSeguro(raw, 'visor_orbital');
+    if (!estado) {
+      return false;
+    }
+
+    // PASO 2: validación de tipos de cada campo de la estructura.
+    const esValido =
+      typeof estado.altitud === 'number' && Number.isFinite(estado.altitud) &&
+      typeof estado.velocidad === 'number' && Number.isFinite(estado.velocidad) &&
+      typeof estado.periodo === 'number' && Number.isFinite(estado.periodo) &&
+      typeof estado.destinoActivo === 'string';
+    if (!esValido) {
+      console.warn('[Cosmos Tour] Visor: estructura inválida en sessionStorage.');
+      return false;
+    }
+
+    // PASO 3: aplicar métricas al HUD (los contadores aún no se inicializan).
+    const metricas = document.querySelectorAll('.hud-metrics .metric-value');
+    escribirValorMetrica(metricas[0], estado.altitud);
+    escribirValorMetrica(metricas[1], estado.velocidad);
+    escribirValorMetrica(metricas[2], estado.periodo);
+
+    // PASO 4: aplicar el destino activo al selector/canvas/body.
+    if (estado.destinoActivo) {
+      aplicarDestinoVisor(estado.destinoActivo);
+    }
+
+    // LOG DE DEMOSTRACIÓN obligatorio.
+    console.log('🔭 [VISOR] Estado restaurado:', estado);
+    return true;
+  } catch (error) {
+    console.warn('[Cosmos Tour] Error al restaurar el visor:', error);
+    return false;
+  }
+}
+
+/**
+ * VISOR: inicializa restauración + interacciones (zoom, arrastre y
+ * cambio de destino), cada una persistiendo el estado en sessionStorage.
+ * @returns {void}
+ */
+function initVisorOrbital() {
+  // INTERACCIÓN 0: restauración previa del estado guardado.
+  restaurarEstadoVisor();
+
+  const canvas = document.getElementById('universe-canvas');
+  if (!canvas) {
+    return;
+  }
+
+  // INTERACCIÓN 1: RUEDA = zoom orbital → recalcula altitud/velocidad/período.
+  canvas.addEventListener(
+    'wheel',
+    (event) => {
+      try {
+        const metricas = document.querySelectorAll('.hud-metrics .metric-value');
+        const altitudActual = leerValorMetrica(metricas[0]) || VISOR_VALORES_BASE.altitud;
+
+        // Zoom: rueda hacia arriba acerca (baja altitud), hacia atrás aleja.
+        const altitudNueva = Math.min(Math.max(altitudActual - event.deltaY * 0.5, 160), 2000);
+        const derivadas = derivarMétricasVisor(altitudNueva);
+
+        escribirValorMetrica(metricas[0], Number(altitudNueva.toFixed(1)));
+        escribirValorMetrica(metricas[1], derivadas.velocidad);
+        escribirValorMetrica(metricas[2], derivadas.periodo);
+
+        guardarEstadoVisor({
+          altitud: Number(altitudNueva.toFixed(1)),
+          velocidad: derivadas.velocidad,
+          periodo: derivadas.periodo
+        });
+      } catch (error) {
+        console.warn('[Cosmos Tour] Error en zoom del visor:', error);
+      }
+    },
+    { passive: true }
+  );
+
+  // INTERACCIÓN 2: ARRASTRE = rotación del visor → guarda con throttle 400ms.
+  let arrastrando = false;
+  canvas.addEventListener('pointerdown', () => {
+    arrastrando = true;
+  });
+  canvas.addEventListener('pointerup', () => {
+    arrastrando = false;
+  });
+  canvas.addEventListener('pointerleave', () => {
+    arrastrando = false;
+  });
+  canvas.addEventListener('pointermove', () => {
+    if (!arrastrando) {
+      return;
+    }
+    // THROTTLE: como máximo un guardado cada 400 ms durante el arrastre.
+    if (visorArrastreThrottleId !== null) {
+      return;
+    }
+    visorArrastreThrottleId = setTimeout(() => {
+      visorArrastreThrottleId = null;
+      guardarEstadoVisor();
+    }, 400);
+  });
+
+  // INTERACCIÓN 3: CAMBIO DE DESTINO → persiste destinoActivo seleccionado.
+  document.querySelectorAll('.segmented-btn[data-planet-target]').forEach((button) => {
+    button.addEventListener('click', () => {
+      guardarEstadoVisor({ destinoActivo: button.dataset.planetTarget });
+    });
+  });
 }
 
 /* ================= 5. ANIMACIONES SCROLL / OBSERVER (F2) ================== */
@@ -2824,6 +3390,8 @@ function init() {
   safeInit('cabecera sticky + progreso', initHeaderAndScrollIndicator);
   safeInit('validación de formulario', initFormValidation);
   safeInit('persistencia de reservas (autoguardado + Formspree)', initPersistenciaReservas);
+  safeInit('carrito de experiencias extras', initCarritoExperiencias);
+  safeInit('visor orbital (sessionStorage)', initVisorOrbital);
   safeInit('animaciones de scroll', initScrollAnimations);
   safeInit('contadores del hero', initHeroCounters);
   safeInit('selector de planeta', initPlanetSelector);

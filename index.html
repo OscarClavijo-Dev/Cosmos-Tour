@@ -1048,6 +1048,65 @@
             <!-- Notificación discreta de restauración de reserva (la genera script.js) -->
             <div id="restore-notification" class="restore-notification" role="status" aria-live="polite" hidden></div>
 
+            <!-- BLOQUE: CARRITO DE EXPERIENCIAS PREMIUM (REQUERIMIENTO 2)
+                 Cada checkbox persiste su ID en 'cosmostour_experiencias_extras';
+                 el total se recalcula automáticamente desde el catálogo. -->
+            <section class="experiencias-carrito" id="experiencias-carrito" aria-labelledby="carrito-title">
+              <div class="carrito-header">
+                <h3 id="carrito-title" class="carrito-title">🚀 Experiencias Premium a Bordo</h3>
+                <p class="carrito-subtitle">
+                  Añade vivencias exclusivas a tu manifiesto de vuelo
+                </p>
+              </div>
+
+              <div class="carrito-grid" id="carrito-grid">
+                <label class="carrito-item" for="exp-cena-molecular">
+                  <input type="checkbox" id="exp-cena-molecular" class="carrito-check" data-exp-id="cena-molecular" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Cena Molecular con Chef Michelin</span>
+                    <span class="carrito-precio">$15,000 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-cupola-panoramica">
+                  <input type="checkbox" id="exp-cupola-panoramica" class="carrito-check" data-exp-id="cupola-panoramica" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Sesión Privada en Cupola Panorámica</span>
+                    <span class="carrito-precio">$8,500 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-eva-personalizado">
+                  <input type="checkbox" id="exp-eva-personalizado" class="carrito-check" data-exp-id="eva-personalizado" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Entrenamiento EVA Personalizado</span>
+                    <span class="carrito-precio">$22,000 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-fotografia-zero-g">
+                  <input type="checkbox" id="exp-fotografia-zero-g" class="carrito-check" data-exp-id="fotografia-zero-g" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Fotografía Profesional en Gravedad Cero</span>
+                    <span class="carrito-precio">$5,000 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-suite-upgrade">
+                  <input type="checkbox" id="exp-suite-upgrade" class="carrito-check" data-exp-id="suite-upgrade" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Suite Celestial Sovereign Upgrade</span>
+                    <span class="carrito-precio">$50,000 USD</span>
+                  </span>
+                </label>
+              </div>
+
+              <div class="carrito-total">
+                <span id="carrito-count" class="carrito-count">0 experiencias seleccionadas</span>
+                <strong id="carrito-total-monto" class="carrito-total-monto">$0 USD</strong>
+              </div>
+            </section>
+
             <!-- Formulario de Manifiesto (envío asíncrono a Formspree vía fetch) -->
             <form id="manifest-form" action="https://formspree.io/f/[ID_DE_FORMSPREE]" method="POST">
               <div class="form-grid">
@@ -1135,35 +1194,25 @@
               </div>
             </form>
 
-            <!-- Panel de pasajero ya convertido: reemplaza al formulario cuando
-                 existe 'cosmostour_pasajero_convertido' en localStorage -->
-            <div id="convertido-panel" class="convertido-panel" role="status" hidden>
-              <div class="convertido-icon" aria-hidden="true">🚀</div>
-              <h3 id="convertido-greeting" class="convertido-greeting"></h3>
-              <p id="convertido-credencial" class="convertido-credencial"></p>
-              <div class="convertido-grid">
-                <div class="convertido-cell">
-                  <span class="convertido-label">Código de Misión</span>
-                  <span id="convertido-codigo" class="convertido-value"></span>
-                </div>
-                <div class="convertido-cell">
-                  <span class="convertido-label">Ventana de Despegue</span>
-                  <span id="convertido-ventana" class="convertido-value"></span>
-                </div>
+            <!-- Bloque de credencial AST-2026: se muestra en lugar del formulario
+                 cuando existe 'cosmostour_pasajero_convertido' en localStorage -->
+            <div id="credencial-embarque" class="credencial-ast2026" role="status" hidden>
+              <div class="header-credencial">
+                <h2>✈️ TARJETA OFICIAL DE EMBARQUE ESPACIAL</h2>
+                <p class="subtitulo">COSMOS TOUR CREW ACCREDITATION · PROTOCOLO AST-2026</p>
               </div>
-              <!-- Lista de experiencias extras: solo visible si hay datos en
-                   'cosmostour_experiencias_extras' al momento de la conversión -->
-              <div id="convertido-extras" class="convertido-extras" hidden>
-                <span class="convertido-label">Experiencias Extras Seleccionadas</span>
-                <ul id="convertido-extras-lista" class="convertido-extras-lista"></ul>
+              <div class="datos-pasajero">
+                <p><strong>ESTADO:</strong> <span class="status">● BIO-CLEARED</span></p>
+                <p><strong>NOMBRE DEL PASAJERO:</strong> <span id="cred-nombre">—</span></p>
+                <p><strong>CÓDIGO DE MISIÓN:</strong> <span id="cred-codigo">—</span></p>
+                <p><strong>DESTINO:</strong> <span id="cred-destino">—</span></p>
+                <p><strong>VENTANA DE DESPEGUE:</strong> <span id="cred-ventana">—</span></p>
+                <p><strong>CATEGORÍA DE SUITE:</strong> <span id="cred-suite">—</span></p>
+                <p><strong>EXPERIENCIAS ADICIONALES:</strong> <span id="cred-experiencias">Ninguna</span></p>
               </div>
-              <p class="convertido-note">
-                Revisa tu correo electrónico confidencial para los detalles de tu expedición.
-              </p>
-              <div class="convertido-actions">
-                <button type="button" id="btn-descargar-credencial" class="btn-primary btn-pass-sm">
-                  Descargar Credencial
-                </button>
+              <div class="acciones">
+                <button type="button" onclick="descargarCredencial()">📥 Descargar Credencial PDF</button>
+                <button type="button" onclick="contactarConcierge()">📞 Contactar Concierge Espacial</button>
                 <button type="button" id="btn-nueva-reserva" class="btn-cancel-reserva">
                   Registrar otra expedición
                 </button>

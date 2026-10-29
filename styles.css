@@ -4735,108 +4735,92 @@ body.legal-page {
   transform: translateY(0);
 }
 
-/* --- Panel de pasajero convertido (reemplaza al formulario) --- */
-.convertido-panel {
-  text-align: center;
-  padding: var(--space-2) var(--space-15);
+/* --- Utilidad global .hidden: oculta elementos del DOM de forma forzada --- */
+.hidden {
+  display: none !important;
+}
+
+/* --- Credencial AST-2026 de pasajero convertido (reemplaza al formulario) --- */
+.credencial-ast2026 {
   background: var(--fondo-tarjeta);
   border: 1px solid var(--border-gold);
   border-radius: var(--radius-lg);
   box-shadow: 0 0 40px var(--color-gold-glow);
+  padding: var(--space-15);
 }
-.convertido-icon {
-  font-size: 2.4rem;
-  line-height: 1;
-  margin-bottom: var(--space-075);
-}
-.convertido-greeting {
-  font-size: clamp(1.3rem, 3vw, 1.7rem);
-  color: var(--text-pure);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: var(--space-05);
-}
-.convertido-credencial {
-  color: var(--text-muted);
-  font-size: 0.95rem;
+.header-credencial {
+  text-align: center;
+  padding-bottom: var(--space-09);
   margin-bottom: var(--space-125);
+  border-bottom: 1px dashed var(--border-gold);
 }
-.convertido-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-075);
-  max-width: 520px;
-  margin: 0 auto var(--space-125);
+.header-credencial h2 {
+  font-size: clamp(1.05rem, 3vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
-.convertido-cell {
+.header-credencial .subtitulo {
+  margin-top: var(--space-04);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-neon-cyan);
+}
+.datos-pasajero {
   display: flex;
   flex-direction: column;
-  gap: var(--space-02);
-  padding: var(--space-075) var(--space-09);
-  background: var(--fondo-resumen);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  gap: var(--space-05);
+  margin-bottom: var(--space-15);
 }
-.convertido-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-.convertido-value {
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-gold);
-}
-.convertido-note {
-  font-size: 0.83rem;
-  color: var(--text-muted);
-  margin-bottom: var(--space-125);
-}
-
-/* --- Lista de experiencias extras del panel convertido --- */
-.convertido-extras {
-  max-width: 520px;
-  margin: 0 auto var(--space-125);
-  padding: var(--space-075) var(--space-09);
-  background: var(--fondo-resumen);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-045);
-  text-align: left;
-}
-.convertido-extras-lista {
-  list-style: none;
+.datos-pasajero p {
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-02);
-}
-.convertido-extras-lista li {
-  position: relative;
-  padding-left: var(--space-115);
-  font-size: 0.83rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
   color: var(--text-lectura);
 }
-.convertido-extras-lista li::before {
-  content: "\2022";
-  position: absolute;
-  left: 0;
-  color: var(--color-gold);
+.datos-pasajero strong {
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+}
+.datos-pasajero .status {
+  color: var(--exito);
+  font-weight: 700;
 }
 
-/* --- Acciones del panel convertido (descargar + nueva reserva) --- */
-.convertido-actions {
+/* --- Acciones de la credencial (descargar + concierge + nueva reserva) --- */
+.credencial-ast2026 .acciones {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: var(--space-125);
+  gap: var(--space-075);
   flex-wrap: wrap;
+}
+.credencial-ast2026 .acciones button:not(.btn-cancel-reserva) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.2rem;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--texto-boton);
+  background: linear-gradient(135deg, var(--oro), var(--oro-claro));
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.credencial-ast2026 .acciones button:not(.btn-cancel-reserva):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--color-gold-glow);
+}
+.credencial-ast2026 .acciones button:not(.btn-cancel-reserva):nth-child(2) {
+  background: transparent;
+  color: var(--color-neon-cyan);
+  border-color: var(--color-neon-cyan);
 }
 
 /* --- Botón discreto "Cancelar Reserva" --- */
@@ -4866,16 +4850,123 @@ body.legal-page {
   flex-wrap: wrap;
 }
 
-/* --- Responsive del panel convertido --- */
+/* --- Responsive de la credencial AST-2026 --- */
 @media (max-width: 599px) {
-  .convertido-panel {
+  .credencial-ast2026 {
     padding: var(--space-125) var(--space-1);
   }
-  .convertido-grid {
-    grid-template-columns: 1fr;
+  .datos-pasajero p {
+    font-size: 0.75rem;
+  }
+  .credencial-ast2026 .acciones {
+    flex-direction: column;
+    align-items: stretch;
   }
   .form-footer-actions {
     justify-content: flex-end;
     width: 100%;
+  }
+}
+
+/* ==========================================================================
+   17. CARRITO DE EXPERIENCIAS PREMIUM (REQUERIMIENTO 2)
+   ========================================================================== */
+.experiencias-carrito {
+  margin-bottom: var(--space-15);
+  padding: var(--space-125);
+  background: var(--fondo-resumen);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+.carrito-header {
+  margin-bottom: var(--space-1);
+}
+.carrito-title {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.carrito-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: var(--space-02);
+}
+.carrito-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-06);
+}
+.carrito-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-06);
+  padding: var(--space-075) var(--space-09);
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.carrito-item:hover {
+  border-color: var(--border-light);
+}
+.carrito-item:has(.carrito-check:checked) {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 16px var(--color-gold-glow);
+}
+.carrito-check {
+  margin-top: 0.15rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--color-gold);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.carrito-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.carrito-nombre {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+.carrito-precio {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-gold);
+}
+.carrito-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-075);
+  margin-top: var(--space-1);
+  padding-top: var(--space-09);
+  border-top: 1px dashed var(--border-light);
+  flex-wrap: wrap;
+}
+.carrito-count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.carrito-total-monto {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  color: var(--color-gold);
+}
+@media (max-width: 599px) {
+  .experiencias-carrito {
+    padding: var(--space-09);
+  }
+  .carrito-total {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
