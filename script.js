@@ -1402,11 +1402,15 @@ function enviarReservaFormspree(data) {
   });
 
   // CAMPOS FORMSPREE (guía Basic HTML / AJAX): hacen que la notificación
-  // llegue correctamente a tu correo:
+  // llegue correctamente a tu correo y al del visitante:
   //  - 'email': Formspree lo usa como Reply-To (responder al visitante).
+  //  - '_cc': copia de la reserva DIRECTAMENTE al correo introducido en el
+  //    formulario (gmail, outlook, etc.) — cualquier email válido que pase
+  //    nuestra validación EMAIL_REGEX recibe la confirmación.
   //  - '_subject': asunto reconocible por reserva en tu bandeja.
   //  - '_template': plantilla tabular legible del contenido de la reserva.
   body.append('email', data.correoElectronico || '');
+  body.append('_cc', data.correoElectronico || '');
   body.append('_subject', `Nueva reserva Cosmos Tour — ${data.expedicionSeleccionada}`);
   body.append('_template', 'table');
 
