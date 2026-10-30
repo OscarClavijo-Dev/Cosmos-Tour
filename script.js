@@ -798,12 +798,15 @@ function guardarReservaAutoguardado() {
     const draft = collectReservaDraft();
     const guardado = writeStorage(RESERVA_ACTIVA_KEY, JSON.stringify(draft));
     if (guardado) {
-      // LOG DE DEMOSTRACIÓN: confirma en consola cada autoguardado exitoso.
-      console.log('🛰️ [AUTOGUARDADO] Datos guardados en cosmostour_reserva_activa', draft);
+      if (window.COSMOS_DEBUG) {
+        console.log('🛰️ [AUTOGUARDADO] Datos guardados en cosmostour_reserva_activa', draft);
+      }
       toggleBotonCancelarReserva(true);
     }
   } catch (error) {
-    console.error('[Cosmos Tour] Error al autoguardar la reserva:', error);
+    if (window.COSMOS_DEBUG) {
+      console.error('[Cosmos Tour] Error al autoguardar la reserva:', error);
+    }
   }
 }
 
@@ -845,15 +848,19 @@ function restaurarReservaAutoguardada() {
       restaurado = true;
     });
 
-    // PASO 4: feedback visual + log completo del objeto recuperado.
+    // PASO 4: feedback visual + log opcional si modo debug está activo.
     if (restaurado) {
-      console.log('🛰️ [RESTAURACIÓN] Datos recuperados:', draft);
+      if (window.COSMOS_DEBUG) {
+        console.log('🛰️ [RESTAURACIÓN] Datos recuperados:', draft);
+      }
       mostrarNotificacionRestauracion(draft.timestamp);
       toggleBotonCancelarReserva(true);
     }
     return restaurado;
   } catch (error) {
-    console.error('[Cosmos Tour] Error al restaurar la reserva:', error);
+    if (window.COSMOS_DEBUG) {
+      console.error('[Cosmos Tour] Error al restaurar la reserva:', error);
+    }
     return false;
   }
 }
@@ -1038,15 +1045,15 @@ function validarManifiestoParaEnvio() {
     appState.formValidation[rule.id] = esValido;
 
     if (!esValido) {
-      // LOG POR CAMPO exigido: "❌ [VALIDACIÓN FALLIDA] Campo: X | Error: Y"
-      const nombreCampo = field.name || rule.id;
-      console.log(`❌ [VALIDACIÓN FALLIDA] Campo: ${nombreCampo} | Error: ${mensaje}`);
+      if (window.COSMOS_DEBUG) {
+        const nombreCampo = field.name || rule.id;
+        console.log(`❌ [VALIDACIÓN FALLIDA] Campo: ${nombreCampo} | Error: ${mensaje}`);
+      }
       errores.push({ campo: rule.id, mensaje });
     }
   });
 
-  // LOG DE DEMOSTRACIÓN: reporte agregado en la consola de DevTools.
-  if (errores.length > 0) {
+  if (errores.length > 0 && window.COSMOS_DEBUG) {
     console.warn('⚠️ [VALIDACIÓN] Errores encontrados:', errores);
   }
 
@@ -1154,7 +1161,9 @@ function obtenerExperienciasExtras() {
         : id;
     });
   } catch (error) {
-    console.warn('[Cosmos Tour] Error al leer experiencias extras:', error);
+    if (window.COSMOS_DEBUG) {
+      console.warn('[Cosmos Tour] Error al leer experiencias extras:', error);
+    }
     return [];
   }
 }
@@ -1168,7 +1177,9 @@ function obtenerTotalExperienciasUSD() {
   try {
     return calcularTotalCarrito(leerIdsCarrito());
   } catch (error) {
-    console.warn('[Cosmos Tour] Error al calcular el total de extras:', error);
+    if (window.COSMOS_DEBUG) {
+      console.warn('[Cosmos Tour] Error al calcular el total de extras:', error);
+    }
     return 0;
   }
 }
@@ -1310,10 +1321,14 @@ function descargarCredencial() {
     const codigo = registro.codigoMision || 'CT-2026-ORB';
 
     // SIMULACIÓN de descarga con confirmación por correo.
-    window.alert(`Credencial ${codigo} generada. Revisa tu correo.`);
-    console.log(`🛰️ [CREDENCIAL] Descarga simulada de ${codigo} solicitada`);
+    showToast(`Credencial ${codigo} generada. Revisa tu correo.`, 'success');
+    if (window.COSMOS_DEBUG) {
+      console.log(`🛰️ [CREDENCIAL] Descarga simulada de ${codigo} solicitada`);
+    }
   } catch (error) {
-    console.error('[Cosmos Tour] Error al descargar la credencial:', error);
+    if (window.COSMOS_DEBUG) {
+      console.error('[Cosmos Tour] Error al descargar la credencial:', error);
+    }
   }
 }
 
@@ -1340,9 +1355,13 @@ function contactarConcierge() {
 
     // APERTURA del cliente de correo (no recarga la página).
     window.location.href = `mailto:concierge@cosmos-tour.space?subject=${asunto}&body=${cuerpo}`;
-    console.log(`🛰️ [CONCIERGE] Abriendo mailto: asunto "Consulta Misión ${codigo}"`);
+    if (window.COSMOS_DEBUG) {
+      console.log(`🛰️ [CONCIERGE] Abriendo mailto: asunto "Consulta Misión ${codigo}"`);
+    }
   } catch (error) {
-    console.error('[Cosmos Tour] Error al contactar al concierge:', error);
+    if (window.COSMOS_DEBUG) {
+      console.error('[Cosmos Tour] Error al contactar al concierge:', error);
+    }
   }
 }
 
@@ -1369,12 +1388,16 @@ function verificarUsuarioConvertido() {
       return false;
     }
 
-    // PASO 3: log de demostración + render del panel de credencial.
-    console.log('🛰️ [USUARIO CONVERTIDO] Mostrando credencial de embarque', registro);
+    // PASO 3: render del panel de credencial.
+    if (window.COSMOS_DEBUG) {
+      console.log('🛰️ [USUARIO CONVERTIDO] Mostrando credencial de embarque', registro);
+    }
     mostrarMensajeConvertido(registro);
     return true;
   } catch (error) {
-    console.error('[Cosmos Tour] Error al verificar pasajero convertido:', error);
+    if (window.COSMOS_DEBUG) {
+      console.error('[Cosmos Tour] Error al verificar pasajero convertido:', error);
+    }
     return false;
   }
 }
@@ -1391,11 +1414,13 @@ function verificarUsuarioConvertido() {
  * @returns {Promise<Response>} Respuesta HTTP de Formspree.
  */
 function enviarReservaFormspree(data) {
-  // LOG DE DEMOSTRACIÓN: marca visible del inicio del POST en DevTools.
-  console.log('🛰️ [ENVÍO] Iniciando POST a Formspree...', {
-    endpoint: FORMSPREE_ENDPOINT,
-    datos: data
-  });
+  // LOG DE DEMOSTRACIÓN: marca visible del inicio del POST en DevTools (solo si COSMOS_DEBUG).
+  if (window.COSMOS_DEBUG) {
+    console.log('🛰️ [ENVÍO] Iniciando POST a Formspree...', {
+      endpoint: FORMSPREE_ENDPOINT,
+      datos: data
+    });
+  }
 
   // CONSTRUCCIÓN del cuerpo multipart con todos los campos del manifiesto.
   const body = new FormData();
@@ -1460,7 +1485,9 @@ function initBotonReintento() {
     return;
   }
   button.addEventListener('click', () => {
-    console.log('🛰️ [ENVÍO] Reintento manual solicitado por el usuario.');
+    if (window.COSMOS_DEBUG) {
+      console.log('🛰️ [ENVÍO] Reintento manual solicitado por el usuario.');
+    }
     procesarEnvioReserva();
   });
 }
@@ -1491,10 +1518,12 @@ async function procesarEnvioReserva() {
       submitButton.innerHTML =
         '<span class="spinner" aria-hidden="true"></span>🚀 Procesando tu reserva en Cosmos Tour...';
     }
-    console.log('📡 [ENVÍO EN PROGRESO] POST a Formspree...', {
-      endpoint: FORMSPREE_ENDPOINT,
-      datos: data
-    });
+    if (window.COSMOS_DEBUG) {
+      console.log('📡 [ENVÍO EN PROGRESO] POST a Formspree...', {
+        endpoint: FORMSPREE_ENDPOINT,
+        datos: data
+      });
+    }
 
     // PASO 2: petición POST a Formspree.
     const response = await enviarReservaFormspree(data);
@@ -1515,10 +1544,12 @@ async function procesarEnvioReserva() {
 
     // PASO 3 (ÉXITO): registrar conversión ANTES de limpiar (usa los datos).
     const registro = registrarPasajeroConvertido(data);
-    console.log(
-      `✅ [ENVÍO EXITOSO] Reserva confirmada. Generando credencial... (${registro.codigoMision}, ${formatDate(new Date(), 'fecha_mision')})`,
-      registro
-    );
+    if (window.COSMOS_DEBUG) {
+      console.log(
+        `✅ [ENVÍO EXITOSO] Reserva confirmada. Generando credencial... (${registro.codigoMision}, ${formatDate(new Date(), 'fecha_mision')})`,
+        registro
+      );
+    }
     showToast('¡Reserva Confirmada! Tu credencial AST-2026 está lista.', 'success');
     mostrarMensajeExitoEnvio();
 
@@ -1530,16 +1561,20 @@ async function procesarEnvioReserva() {
     // DISTINCIÓN: TypeError = fallo de red (fetch rechazado); Error = HTTP.
     const esErrorDeRed = error instanceof TypeError;
     if (esErrorDeRed) {
-      console.error(
-        '🌐 [ERROR DE RED] No se pudo enviar la reserva. Reintentando...',
-        error
-      );
+      if (window.COSMOS_DEBUG) {
+        console.error(
+          '🌐 [ERROR DE RED] No se pudo enviar la reserva. Reintentando...',
+          error
+        );
+      }
       showToast(
         'Error de conexión. Tu reserva está guardada localmente. Intenta nuevamente.',
         'error'
       );
     } else {
-      console.error('[Cosmos Tour] Error al enviar la reserva a Formspree:', error);
+      if (window.COSMOS_DEBUG) {
+        console.error('[Cosmos Tour] Error al enviar la reserva a Formspree:', error);
+      }
 
       // ERRORES POR CAMPO de Formspree (respuesta 422) → pintarlos inline
       // con nuestro formato (.error + .error-message), como hace la guía.
@@ -1604,8 +1639,8 @@ function initPersistenciaReservas() {
   const hayBorrador = restaurarReservaAutoguardada();
 
   // EDGE CASE (borrador borrado manualmente): si no hay datos guardados,
-  // el formulario queda vacío "como nuevo" y se deja constancia en consola.
-  if (!hayBorrador) {
+  // el formulario queda vacío "como nuevo".
+  if (!hayBorrador && window.COSMOS_DEBUG) {
     console.log('📋 [NUEVA SESIÓN] No hay datos guardados');
   }
   initBotonCancelarReserva();
@@ -1682,7 +1717,9 @@ function reiniciarParaNuevaReserva() {
   // PASO 5: vaciar el carrito visual (el storage ya se borró en el PASO 1).
   sincronizarUICarrito();
 
-  console.log('🔁 [NUEVA RESERVA] Datos borrados. Formulario restaurado para una nueva expedición.');
+  if (window.COSMOS_DEBUG) {
+    console.log('🔁 [NUEVA RESERVA] Datos borrados. Formulario restaurado para una nueva expedición.');
+  }
   scrollToSectionById('registro');
 }
 
@@ -1826,11 +1863,13 @@ function manejarCambioExperiencia() {
   guardarIdsCarrito(seleccionados);
   sincronizarUICarrito();
 
-  // PASO 3: LOG DE DEMOSTRACIÓN con array y total.
-  const total = calcularTotalCarrito(seleccionados);
-  console.log(
-    `🛸 [CARRITO] Experiencias seleccionadas: [${seleccionados.join(', ')}] | Total: $${total.toLocaleString('en-US')}`
-  );
+  // PASO 3: LOG DE DEMOSTRACIÓN opcional en modo debug.
+  if (window.COSMOS_DEBUG) {
+    const total = calcularTotalCarrito(seleccionados);
+    console.log(
+      `🛸 [CARRITO] Experiencias seleccionadas: [${seleccionados.join(', ')}] | Total: $${total.toLocaleString('en-US')}`
+    );
+  }
 }
 
 /**
@@ -1854,14 +1893,16 @@ function initCarritoExperiencias() {
     checkbox.addEventListener('click', manejarCambioExperiencia);
   });
 
-  // RESTAURACIÓN al cargar + log con el estado recuperado.
+  // RESTAURACIÓN al cargar.
   sincronizarUICarrito();
-  const idsPrevios = leerIdsCarrito();
-  if (idsPrevios.length > 0) {
-    const total = calcularTotalCarrito(idsPrevios);
-    console.log(
-      `🛸 [CARRITO] Restauradas: [${idsPrevios.join(', ')}] | Total: $${total.toLocaleString('en-US')}`
-    );
+  if (window.COSMOS_DEBUG) {
+    const idsPrevios = leerIdsCarrito();
+    if (idsPrevios.length > 0) {
+      const total = calcularTotalCarrito(idsPrevios);
+      console.log(
+        `🛸 [CARRITO] Restauradas: [${idsPrevios.join(', ')}] | Total: $${total.toLocaleString('en-US')}`
+      );
+    }
   }
 }
 
@@ -1957,12 +1998,11 @@ function guardarEstadoVisor(sobrescribir = {}) {
   try {
     const estado = capturarEstadoVisor(sobrescribir);
     const guardado = writeSession(VISOR_SESSION_KEY, JSON.stringify(estado));
-    if (guardado) {
+    if (guardado && window.COSMOS_DEBUG) {
       console.log('🔭 [VISOR] Estado guardado:', estado);
     }
     return guardado ? estado : null;
   } catch (error) {
-    console.warn('[Cosmos Tour] Error al guardar el estado del visor:', error);
     return null;
   }
 }
@@ -2020,7 +2060,6 @@ function restaurarEstadoVisor() {
       typeof estado.periodo === 'number' && Number.isFinite(estado.periodo) &&
       typeof estado.destinoActivo === 'string';
     if (!esValido) {
-      console.warn('[Cosmos Tour] Visor: estructura inválida en sessionStorage.');
       return false;
     }
 
@@ -2035,11 +2074,11 @@ function restaurarEstadoVisor() {
       aplicarDestinoVisor(estado.destinoActivo);
     }
 
-    // LOG DE DEMOSTRACIÓN obligatorio.
-    console.log('🔭 [VISOR] Estado restaurado:', estado);
+    if (window.COSMOS_DEBUG) {
+      console.log('🔭 [VISOR] Estado restaurado:', estado);
+    }
     return true;
   } catch (error) {
-    console.warn('[Cosmos Tour] Error al restaurar el visor:', error);
     return false;
   }
 }
@@ -3722,11 +3761,11 @@ function limpiarBackupsAntiguos(dias = 30) {
       .map((item) => item.clave);
 
     clavesAEliminar.forEach((clave) => removeStorage(clave));
-    if (clavesAEliminar.length > 0) {
+    if (clavesAEliminar.length > 0 && window.COSMOS_DEBUG) {
       console.log(`🧹 [BACKUP] ${clavesAEliminar.length} respaldo(s) antiguo(s) eliminados.`);
     }
   } catch (error) {
-    console.warn('[Cosmos Tour] Error al purgar respaldos antiguos:', error);
+    // Silencioso
   }
 }
 
@@ -3744,11 +3783,13 @@ function crearBackupReserva() {
     const claveBackup = `${BACKUP_RESERVA_PREFIX}${Date.now()}`;
     const guardado = writeStorage(claveBackup, raw);
     if (guardado) {
-      console.log('💾 [BACKUP] Reserva respaldada automáticamente', { clave: claveBackup });
+      if (window.COSMOS_DEBUG) {
+        console.log('💾 [BACKUP] Reserva respaldada automáticamente', { clave: claveBackup });
+      }
       limpiarBackupsAntiguos(30);
     }
   } catch (error) {
-    console.warn('[Cosmos Tour] Error al crear el respaldo automático:', error);
+    // Silencioso
   }
 }
 
@@ -3818,7 +3859,9 @@ function preseleccionarDestinoEnFormulario(nombreDestino) {
     );
     if (existe) {
       select.value = nombreDestino;
-      console.log(`🛸 [RESERVA] Destino preseleccionado en el formulario: ${nombreDestino}`);
+      if (window.COSMOS_DEBUG) {
+        console.log(`🛸 [RESERVA] Destino preseleccionado en el formulario: ${nombreDestino}`);
+      }
     }
   }
   scrollToSectionById('registro');
@@ -4379,6 +4422,7 @@ window.CosmosTour.FormManager = (() => {
     getExtrasTotalUSD: () => obtenerTotalExperienciasUSD(),
     submitToFormspree: (payload) => enviarReservaFormspree(payload),
     processSubmission: () => processSafeSubmission(),
+    startAutosave: () => start30sAutosave(),
     isSubmitting: () => isSubmittingLock,
     init: () => {
       initFormValidation();
@@ -4469,7 +4513,9 @@ function safeInit(label, initializer) {
   try {
     initializer();
   } catch (error) {
-    console.error(`[Cosmos Tour] Error al inicializar ${label}:`, error);
+    if (window.COSMOS_DEBUG) {
+      console.error(`[Cosmos Tour] Error al inicializar ${label}:`, error);
+    }
   }
 }
 
@@ -4491,7 +4537,7 @@ function init() {
   safeInit('cabecera sticky + progreso', initHeaderAndScrollIndicator);
   safeInit('validación de formulario', initFormValidation);
   safeInit('persistencia de reservas (autoguardado + Formspree)', initPersistenciaReservas);
-  safeInit('autoguardado periódico (30s)', () => window.CosmosTour.FormManager.saveDraft());
+  safeInit('autoguardado periódico (30s)', () => window.CosmosTour.FormManager.startAutosave());
   safeInit('carrito de experiencias extras', initCarritoExperiencias);
   safeInit('visor orbital (sessionStorage)', initVisorOrbital);
   safeInit('sincronización entre pestañas', initSincronizacionEntrePestanas);
