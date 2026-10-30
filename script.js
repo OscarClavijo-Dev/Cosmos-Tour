@@ -4098,6 +4098,84 @@ function initBotonesReserva() {
   window.initCtTestimonials = initCtTestimonials;
 })();
 
+/* ============================================================================
+   BLOQUE ct-faq — ACORDEÓN DE PREGUNTAS FRECUENTES (IIFE)
+   ----------------------------------------------------------------------------
+   Encapsulado en IIFE sin contaminar el ámbito global y sin errores/logs.
+   - Event delegation sobre el contenedor .ct-faq.
+   - Solo un .ct-faq-item abierto a la vez (cierra los demás automáticamente).
+   - Toggle de clases "active" y "open" + sincronización de atributos ARIA.
+   ============================================================================ */
+(() => {
+  'use strict';
+
+  let faqInitialized = false;
+
+  /** Cierra o abre un ítem del acordeón sincronizando clases y ARIA. */
+  const setFaqItemState = (item, shouldOpen) => {
+    const button = item.querySelector('.ct-faq-question');
+    const answer = item.querySelector('.ct-faq-answer');
+
+    item.classList.toggle('active', shouldOpen);
+    item.classList.toggle('open', shouldOpen);
+
+    if (button) {
+      button.setAttribute('aria-expanded', String(shouldOpen));
+    }
+    if (answer) {
+      answer.setAttribute('aria-hidden', String(!shouldOpen));
+    }
+  };
+
+  /** Inicializa el acordeón .ct-faq mediante delegación de eventos. */
+  const initCtFaq = () => {
+    if (faqInitialized) {
+      return;
+    }
+
+    const faqContainer = document.querySelector('.ct-faq');
+    if (!faqContainer) {
+      return;
+    }
+
+    const items = Array.from(faqContainer.querySelectorAll('.ct-faq-item'));
+    if (!items.length) {
+      return;
+    }
+
+    faqInitialized = true;
+
+    // Event delegation: un único listener de click en el contenedor .ct-faq
+    faqContainer.addEventListener('click', (event) => {
+      const triggerBtn = event.target.closest('.ct-faq-question');
+      if (!triggerBtn || !faqContainer.contains(triggerBtn)) {
+        return;
+      }
+
+      const currentItem = triggerBtn.closest('.ct-faq-item');
+      if (!currentItem) {
+        return;
+      }
+
+      const isCurrentlyOpen =
+        currentItem.classList.contains('active') ||
+        currentItem.classList.contains('open');
+
+      // Cerrar todos los demás ítems para garantizar solo 1 abierto a la vez
+      items.forEach((item) => {
+        if (item !== currentItem) {
+          setFaqItemState(item, false);
+        }
+      });
+
+      // Alternar el estado del ítem clicado
+      setFaqItemState(currentItem, !isCurrentlyOpen);
+    });
+  };
+
+  window.initCtFaq = initCtFaq;
+})();
+
 function safeInit(label, initializer) {
   try {
     initializer();
@@ -4133,6 +4211,7 @@ function init() {
   safeInit('botón registrar otra expedición', initBotonNuevaReserva);
   safeInit('bloque ct-countdown (cuenta regresiva)', window.initCtCountdown);
   safeInit('carrusel de testimonios (ct-testimonials)', window.initCtTestimonials);
+  safeInit('preguntas frecuentes (ct-faq)', window.initCtFaq);
   safeInit('animaciones de scroll', initScrollAnimations);
   safeInit('contadores del hero', initHeroCounters);
   safeInit('selector de planeta', initPlanetSelector);

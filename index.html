@@ -1036,6 +1036,172 @@
       </section>
 
       <!-- ====================================================================
+           BLOQUE ct-faq (convención de nombres "ct-") · Preguntas Frecuentes
+           Acordeón exclusivo (solo 1 pregunta abierta a la vez), event delegation
+           en IIFE (initCtFaq) y atributos ARIA de accesibilidad.
+           ==================================================================== -->
+      <section id="faq" class="ct-faq" aria-labelledby="ct-faq-title">
+        <div class="container">
+          <header class="section-header ct-faq-header">
+            <div>
+              <div class="section-kicker">Centro de Información Orbital · Despacho de Dudas</div>
+              <h2 id="ct-faq-title" class="section-title">Preguntas Frecuentes sobre Expediciones</h2>
+            </div>
+            <p class="section-intro">
+              Resolvemos las consultas clave sobre preparación física, seguridad aeroespacial, cobertura de suites y políticas de reserva.
+            </p>
+          </header>
+
+          <div class="ct-faq-list" data-ct-faq-list>
+            <!-- Pregunta 1 (abierta por defecto) -->
+            <article class="ct-faq-item active open" data-ct-faq-item>
+              <h3 class="ct-faq-heading">
+                <button
+                  type="button"
+                  id="ct-faq-btn-1"
+                  class="ct-faq-question"
+                  aria-expanded="true"
+                  aria-controls="ct-faq-panel-1"
+                >
+                  <span class="ct-faq-question-text">¿Necesito entrenamiento especial?</span>
+                  <span class="ct-faq-icon" aria-hidden="true">+</span>
+                </button>
+              </h3>
+              <div
+                id="ct-faq-panel-1"
+                class="ct-faq-answer"
+                role="region"
+                aria-labelledby="ct-faq-btn-1"
+                aria-hidden="false"
+              >
+                <div class="ct-faq-answer-inner">
+                  <p>
+                    Sí, pero está diseñado para civiles sin experiencia aeroespacial previa. Incluye un programa de preparación de 14 días en nuestra Academia de Cosmopuerto con vuelos parabólicos de adaptación a gravedad cero, simulador de centrífuga suave y protocolos de cabina presurizada guiados por ex-comandantes de la ISS.
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Pregunta 2 -->
+            <article class="ct-faq-item" data-ct-faq-item>
+              <h3 class="ct-faq-heading">
+                <button
+                  type="button"
+                  id="ct-faq-btn-2"
+                  class="ct-faq-question"
+                  aria-expanded="false"
+                  aria-controls="ct-faq-panel-2"
+                >
+                  <span class="ct-faq-question-text">¿Cuál es la duración promedio del tour?</span>
+                  <span class="ct-faq-icon" aria-hidden="true">+</span>
+                </button>
+              </h3>
+              <div
+                id="ct-faq-panel-2"
+                class="ct-faq-answer"
+                role="region"
+                aria-labelledby="ct-faq-btn-2"
+                aria-hidden="true"
+              >
+                <div class="ct-faq-answer-inner">
+                  <p>
+                    La duración depende del destino seleccionado: la Expedición Lunar Artemisa Prime dura 6 días terrestres, la residencia orbital en la Estación Espacial Internacional (Apex Cupola) abarca 10 días en órbita baja, y la Odisea Interplanetaria a Marte contempla una travesía de 180 días con gravedad centrífuga.
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Pregunta 3 -->
+            <article class="ct-faq-item" data-ct-faq-item>
+              <h3 class="ct-faq-heading">
+                <button
+                  type="button"
+                  id="ct-faq-btn-3"
+                  class="ct-faq-question"
+                  aria-expanded="false"
+                  aria-controls="ct-faq-panel-3"
+                >
+                  <span class="ct-faq-question-text">¿Qué incluye el paquete?</span>
+                  <span class="ct-faq-icon" aria-hidden="true">+</span>
+                </button>
+              </h3>
+              <div
+                id="ct-faq-panel-3"
+                class="ct-faq-answer"
+                role="region"
+                aria-labelledby="ct-faq-btn-3"
+                aria-hidden="true"
+              >
+                <div class="ct-faq-answer-inner">
+                  <p>
+                    Todas las tarifas incluyen alojamiento en suite presurizada privada, alta gastronomía molecular diseñada por chefs con estrella Michelin, traje espacial presurizado confeccionado a medida, enlace cuántico continuo 24/7 con la Tierra, telemetría médica personalizada y seguro interplanetario integral respaldado por Lloyd's.
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Pregunta 4 -->
+            <article class="ct-faq-item" data-ct-faq-item>
+              <h3 class="ct-faq-heading">
+                <button
+                  type="button"
+                  id="ct-faq-btn-4"
+                  class="ct-faq-question"
+                  aria-expanded="false"
+                  aria-controls="ct-faq-panel-4"
+                >
+                  <span class="ct-faq-question-text">¿Es seguro viajar al espacio?</span>
+                  <span class="ct-faq-icon" aria-hidden="true">+</span>
+                </button>
+              </h3>
+              <div
+                id="ct-faq-panel-4"
+                class="ct-faq-answer"
+                role="region"
+                aria-labelledby="ct-faq-btn-4"
+                aria-hidden="true"
+              >
+                <div class="ct-faq-answer-inner">
+                  <p>
+                    Nuestra flota opera con triple redundancia en soporte vital, blindaje magnético activo contra radiación cósmica y sistemas de escape balístico certificados en cada fase del ascenso. Además, un equipo médico aeroespacial acompaña a la tripulación durante toda la misión.
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Pregunta 5 -->
+            <article class="ct-faq-item" data-ct-faq-item>
+              <h3 class="ct-faq-heading">
+                <button
+                  type="button"
+                  id="ct-faq-btn-5"
+                  class="ct-faq-question"
+                  aria-expanded="false"
+                  aria-controls="ct-faq-panel-5"
+                >
+                  <span class="ct-faq-question-text">¿Puedo cancelar mi reserva?</span>
+                  <span class="ct-faq-icon" aria-hidden="true">+</span>
+                </button>
+              </h3>
+              <div
+                id="ct-faq-panel-5"
+                class="ct-faq-answer"
+                role="region"
+                aria-labelledby="ct-faq-btn-5"
+                aria-hidden="true"
+              >
+                <div class="ct-faq-answer-inner">
+                  <p>
+                    Sí. Puedes cancelar o reprogramar tu ventana de lanzamiento sin penalización hasta 90 días antes del despegue con reembolso del 100 % del depósito fiduciario, o transferir tu plaza acreditada a otra ventana orbital de la temporada 2026-2027.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
            SECCIÓN F: RESERVA Y CONTACTO (La Hoja de Registro de Tripulación)
            ==================================================================== -->
       <section id="registro" class="section-tripulacion" aria-labelledby="registro-title">
