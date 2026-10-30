@@ -1,72 +1,37 @@
-[![Deploy status](https://img.shields.io/github/deployments/oscarclavijo-dev/Cosmos-Tour/github-pages)](https://oscarclavijo-dev.github.io/Cosmos-Tour/)
+# Cosmos Tour | Turismo Espacial de Lujo (React + TypeScript + Vite)
 
-# 🚀 Cosmos Tour - Agencia de Turismo Espacial de Lujo
+Plataforma web interactiva de **Cosmos Tour**, agencia de turismo espacial de alto lujo y experiencias inmersivas con expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional.
 
-**Experiencias inmersivas más allá de la atmósfera terrestre**
+## Stack Tecnológico
 
- **Sitio web:** https://oscarclavijo-dev.github.io/Cosmos-Tour/
+- **Framework:** React 19 + TypeScript
+- **Bundler & Dev Server:** Vite 6 (puerto `3000`)
+- **Estilos:** Tailwind CSS v4 + Sistema de diseño aeroespacial original (`src/index.css`) con soporte de tema claro/oscuro (`data-theme="dark" | "light"`).
 
-URL: https://agencia-cosmos-tour-uptc.vercel.app/
+## Características Principales
 
-## 📸 Vista del Sitio
+- **Visor Orbital Interactivo (Hero):** Telemetría orbital en tiempo real (Altitud, Velocidad, Período) y fichas técnicas modales para Tierra, Marte, La Luna, Júpiter y Saturno con persistencia en `sessionStorage`.
+- **Expediciones Orbitales:** Catálogo de misiones (Órbita Terrestre, La Luna, Marte) con Dossier de Navegación "Salto Warp" y preselección directa en el manifiesto de reserva.
+- **Simulación de Vuelo en 3 Etapas:**
+  1. **Secuencia de Ignición:** Simulación en bucle `requestAnimationFrame` con telemetría de velocidad, altitud y empuje, sacudida de cámara y aborto de misión.
+  2. **Entrenamiento en Gravedad Cero (0G):** Arena física interactiva con rebote elástico y restitución en paredes.
+  3. **Mirador de Estrellas (Cúpula):** Ventana de observación con paralaje táctil/ratón y puntos de interés astronómicos (Pléyades, Nebulosa de Orión, Aurora Australis).
+- **Amenidades y Matriz Comparativa:** Filtrado por categorías (`Todo`, `Suites`, `Gastronomía`, `Mirador`, `Academia`), fichas técnicas desplegables y tabla comparativa interactiva frente a aerolíneas Primera Clase y competidores suborbitales.
+- **Cuenta Regresiva T-Minus:** Reloj en vivo hacia el lanzamiento del 15 de noviembre de 2026 (`AST-2026`).
+- **Manifiesto de Embarque y Carrito de Experiencias Extras:**
+  - Selección de experiencias adicionales con persistencia en `localStorage` y sincronización entre pestañas.
+  - Autoguardado en tiempo real, copias de seguridad automáticas cada 5 minutos, envío a Formspree y generación de credencial de embarque (`AST-2026`).
+- **Política de Privacidad y Protección de Datos:** Vista legal integrada con navegación directa desde el pie de página y el formulario.
 
-![Captura de Cosmos Tour] (docs/captura-pantalla.png)
+## Scripts de Desarrollo
 
-## 🛠️ Tecnologías Utilizadas
+```bash
+# Iniciar servidor de desarrollo en http://0.0.0.0:3000
+npm run dev
 
-- **HTML5** - Estructura semántica
-- **CSS3** - Estilos y animaciones avanzadas
-- **JavaScript ES6+** - Interactividad y dinamismo
-- **Google AI Studio / Gemini** - Asistencia en desarrollo con IA
-- **GitHub Pages** - Despliegue y hosting
-- **OpenCode** - Desarrollo asistido por IA
+# Compilar para producción
+npm run build
 
-## 📋 Metodología de Desarrollo (5 Fases)
-
-### Fase 1: Investigación y Análisis
-- Definición de buyer personas (Pionero Empresario, Ejecutiva Científica)
-- Análisis de competencia en turismo de lujo
-- Estudio de tendencias en diseño inmersivo
-
-### Fase 2: Diseño y Prototipado
-- Creación de narrativa interactiva (viaje espacial)
-- Definición de paleta de colores (oscuro + neón)
-- Wireframes de secciones clave
-
-### Fase 3: Desarrollo
-- Implementación de HTML semántico
-- Estilización con CSS3 y variables personalizadas
-- Programación de interacciones en JavaScript
-
-### Fase 4: Pruebas y Optimización
-- Testing de accesibilidad (WCAG)
-- Optimización SEO (meta tags, Open Graph)
-- Mejora de rendimiento (lazy loading, compresión)
-
-### Fase 5: Despliegue y Documentación
-- Configuración de GitHub Pages
-- Creación de README profesional
-- Reflexión sobre el proceso de aprendizaje
-
-##  Instrucciones de Personalización
-
-### Instalación local:
-1. Clona el repositorio: `git clone https://github.com/OscarClavijo-Dev/Cosmos-Tour.git`
-2. Abre el archivo `index.html` en tu navegador
-3. Para modificar estilos, edita `styles.css` (las variables están en `:root`)
-4. Para cambiar contenido, edita `index.html`
-
-### Personalización rápida:
-- **Colores:** Modifica las variables en `:root` (líneas 1-10 de styles.css)
-- **Imágenes:** Reemplaza archivos en la carpeta `assets/imagenes/`
-- **Textos:** Edita directamente el HTML
-
-## 👥 Créditos
-
-**Desarrollado por:**
-- Oscar Clavijo 
-- Lesly Villamizar 
-- Sharol Burgos 
-
-**Proyecto académico:** UPTC FESAD - Electiva de Landing Page e IA
-**Fecha:** Octubre 2026
+# Verificación de tipos TypeScript
+npm run lint
+```

@@ -1,0 +1,8 @@
+{
+  "name": "Cosmos Tour",
+  "description": "Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
