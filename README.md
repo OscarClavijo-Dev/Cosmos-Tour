@@ -10,7 +10,7 @@ URL: https://agencia-cosmos-tour-uptc.vercel.app/
 
 ## 📸 Vista del Sitio
 
-![Captura de Cosmos Tour](docs/captura_pantalla.png)
+![Captura de Cosmos Tour](docs/capturas/captura_pantalla.png)
 
 ## 🛠️ Tecnologías Utilizadas
 
