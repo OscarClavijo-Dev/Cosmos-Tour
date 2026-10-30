@@ -5724,4 +5724,37 @@ body.legal-page {
   }
 }
 
+/* ==========================================================================
+   23. BREAKPOINTS ESTÁNDAR DE AUDITORÍA RESPONSIVE (375px · 768px · 1280px)
+   ========================================================================== */
+@media (min-width: 375px) {
+  .container {
+    width: min(1200px, 92%);
+  }
+  .ct-countdown-grid {
+    gap: var(--space-06);
+  }
+}
+
+@media (min-width: 768px) {
+  .ct-faq-question {
+    padding: calc(var(--spacing-md) * 1.1) calc(var(--spacing-md) * 1.5);
+  }
+  .ct-faq-answer-inner p {
+    padding-left: calc(var(--spacing-md) * 1.5);
+    padding-right: calc(var(--spacing-md) * 1.5);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    width: min(1240px, 90%);
+  }
+  .ct-testimonials {
+    --ct-cards-per-view: 3;
+    --ct-carousel-gap: 1.75rem;
+  }
+}
+
+
 

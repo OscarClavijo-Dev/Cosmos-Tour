@@ -963,8 +963,9 @@ function initAutoguardadoEnTiempoReal() {
  * @returns {void}
  */
 function iniciarMonitorAutoguardado() {
-  // EVITAR DUPLICADOS: solo se crea un intervalo.
-  if (monitorAutoguardadoId !== null) {
+  // EVITAR DUPLICADOS y evitar penalización de Lighthouse en producción:
+  // solo corre el intervalo de consola si window.COSMOS_DEBUG === true.
+  if (monitorAutoguardadoId !== null || !window.COSMOS_DEBUG) {
     return;
   }
 
@@ -4176,6 +4177,145 @@ function initBotonesReserva() {
   window.initCtFaq = initCtFaq;
 })();
 
+/* ============================================================================
+   PROTOCOLO DE NAMESPACING OFICIAL COSMOS TOUR (3 MÓDULOS IIFE ES6+)
+   ----------------------------------------------------------------------------
+   1. CosmosTour.DataManager : Gestión de catálogos (destinos, planetas, POIs,
+                               experiencias extras y testimonios).
+   2. CosmosTour.FormManager : Validación declarativa, persistencia en
+                               localStorage, backups y envío a Formspree.
+   3. CosmosTour.UIModule    : Interacciones UI, tema, modales, cuenta
+                               regresiva, carrusel y acordeón FAQ.
+   ============================================================================ */
+window.CosmosTour = window.CosmosTour || {};
+
+/**
+ * 1. Namespace: CosmosTour.DataManager (IIFE)
+ * Centraliza el acceso de solo lectura a los datos de destinos, experiencias
+ * y testimonios de exploradores espaciales.
+ */
+window.CosmosTour.DataManager = (() => {
+  'use strict';
+
+  const TESTIMONIALS_CATALOG = [
+    {
+      id: 'ct-2026-lun-014',
+      name: 'Isabela Fontaine Rivas',
+      role: 'Directora de Arte · Ciudad de México, México',
+      rating: 5,
+      tour: 'Expedición Lunar Artemisa Prime',
+      mission: 'MISIÓN CT-2026-LUN-014',
+      quote:
+        'El instante en que la Tierra reapareció tras el ventanal de cuarzo de zafiro no se compara con nada que haya vivido. La suite presurizada y el amanecer sobre el cráter Shackleton superaron cada expectativa.'
+    },
+    {
+      id: 'ct-2026-eei-087',
+      name: 'Rafael Augusto Miranda Cardona',
+      role: 'CEO de Fintech Andina · Bogotá, Colombia',
+      rating: 5,
+      tour: 'Estación Espacial Apex Cupola',
+      mission: 'MISIÓN CT-2026-EEI-087',
+      quote:
+        'Diez días en microgravedad reordenan por completo la mente. El equipo médico estuvo presente en cada fase y la Cupola Panorámica convirtió cada órbita en una cena privada frente al planeta.'
+    },
+    {
+      id: 'ct-2027-mar-006',
+      name: 'Claire Bouchard Lefèvre',
+      role: 'Cirujana Cardiovascular Consultora · Lyon, Francia',
+      rating: 5,
+      tour: 'Odisea Marte Valles Marineris',
+      mission: 'MISIÓN CT-2027-MAR-006',
+      quote:
+        'La secuencia de ignición fue sorprendentemente suave y los asientos de fibra de carbono absorben la vibración mejor que cualquier primera clase aérea. Ver Valles Marineris desde la cúpula es inolvidable.'
+    },
+    {
+      id: 'ct-2026-lun-031',
+      name: 'Hiroshi Tanaka Endo',
+      role: 'Ingeniero Jefe de Robótica (Jubilado) · Kioto, Japón',
+      rating: 5,
+      tour: 'Expedición Lunar Artemisa Prime',
+      mission: 'MISIÓN CT-2026-LUN-031',
+      quote:
+        'Reservé la expedición como regalo de jubilación y terminó siendo el viaje definitorio de mi vida. Desde el traje confeccionado a medida hasta el menú molecular en ingravidez, todo superó mis expectativas.'
+    }
+  ];
+
+  return {
+    getDestinations: () => ({ ...DESTINATION_FILES }),
+    getDestinationByKey: (key) => DESTINATION_FILES[key] || null,
+    getDestinationSummary: (name) => obtenerInfoDestino(name),
+    getExperiencesCatalog: () => [...EXPERIENCIAS_CATALOGO],
+    getTestimonials: () => [...TESTIMONIALS_CATALOG]
+  };
+})();
+
+/**
+ * 2. Namespace: CosmosTour.FormManager (IIFE)
+ * Encapsula la validación de campos, la persistencia en localStorage
+ * (autoguardado, carrito, backups) y el envío asíncrono a Formspree.
+ */
+window.CosmosTour.FormManager = (() => {
+  'use strict';
+
+  return {
+    endpoint: FORMSPREE_ENDPOINT,
+    storageKeys: {
+      activeDraft: RESERVA_ACTIVA_KEY,
+      convertedPassenger: PASAJERO_CONVERTIDO_KEY,
+      extraExperiences: EXPERIENCIAS_EXTRAS_KEY
+    },
+    validateField: (field) => validateSingleField(field),
+    validateAll: () => validarManifiestoParaEnvio(),
+    saveDraft: () => guardarReservaAutoguardado(),
+    restoreDraft: () => restaurarReservaAutoguardada(),
+    clearAllReservationData: () => reiniciarParaNuevaReserva(),
+    getSelectedExtras: () => leerIdsCarrito(),
+    getExtrasTotalUSD: () => obtenerTotalExperienciasUSD(),
+    submitToFormspree: (payload) => enviarAFormspree(payload),
+    processSubmission: () => procesarEnvioReserva(),
+    init: () => {
+      initFormValidation();
+      initPersistenciaReservas();
+      initCarritoExperiencias();
+      initBackupAutomatico();
+      initBotonReintento();
+      initBotonNuevaReserva();
+    }
+  };
+})();
+
+/**
+ * 3. Namespace: CosmosTour.UIModule (IIFE)
+ * Coordina las interacciones de interfaz: tema oscuro/claro, modales,
+ * cuenta regresiva, carrusel de testimonios, acordeón FAQ y simuladores.
+ */
+window.CosmosTour.UIModule = (() => {
+  'use strict';
+
+  return {
+    applyTheme: (theme) => applyTheme(theme),
+    toggleTheme: () => toggleTheme(),
+    openDossierModal: (destKey, triggerEl) => openDossierModal(destKey, triggerEl),
+    closeDossierModal: () => closeDossierModal(),
+    initCountdown: () => {
+      if (typeof window.initCtCountdown === 'function') {
+        window.initCtCountdown();
+      }
+    },
+    initTestimonials: () => {
+      if (typeof window.initCtTestimonials === 'function') {
+        window.initCtTestimonials();
+      }
+    },
+    initFaq: () => {
+      if (typeof window.initCtFaq === 'function') {
+        window.initCtFaq();
+      }
+    },
+    showToast: (message, type) => showToast(message, type)
+  };
+})();
+
 function safeInit(label, initializer) {
   try {
     initializer();
@@ -4185,7 +4325,7 @@ function safeInit(label, initializer) {
 }
 
 /**
- * Punto de entrada: cachea el DOM e inicializa las 15 funcionalidades.
+ * Punto de entrada: cachea el DOM e inicializa las funcionalidades.
  * Es idempotente: solo la primera llamada efectiva ejecuta los arranques,
  * de modo que un segundo DOMContentLoaded (o una carga tardía del script)
  * nunca duplica listeners.
@@ -4209,9 +4349,9 @@ function init() {
   safeInit('botón reintentar envío', initBotonReintento);
   safeInit('botones de reserva (tarjetas + modal)', initBotonesReserva);
   safeInit('botón registrar otra expedición', initBotonNuevaReserva);
-  safeInit('bloque ct-countdown (cuenta regresiva)', window.initCtCountdown);
-  safeInit('carrusel de testimonios (ct-testimonials)', window.initCtTestimonials);
-  safeInit('preguntas frecuentes (ct-faq)', window.initCtFaq);
+  safeInit('bloque ct-countdown (cuenta regresiva)', window.CosmosTour.UIModule.initCountdown);
+  safeInit('carrusel de testimonios (ct-testimonials)', window.CosmosTour.UIModule.initTestimonials);
+  safeInit('preguntas frecuentes (ct-faq)', window.CosmosTour.UIModule.initFaq);
   safeInit('animaciones de scroll', initScrollAnimations);
   safeInit('contadores del hero', initHeroCounters);
   safeInit('selector de planeta', initPlanetSelector);
