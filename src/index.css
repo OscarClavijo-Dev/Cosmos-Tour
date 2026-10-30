@@ -84,11 +84,6 @@
   --ct-font-title: 'Orbitron', 'Space Grotesk', sans-serif;
   --ct-font-body: 'Inter', 'Plus Jakarta Sans', sans-serif;
 
-  /* Custom properties solicitadas para el componente .ct-countdown */
-  --color-primary: #6366f1;
-  --color-accent: #06b6d4;
-  --font-heading: 'Orbitron', 'Space Grotesk', sans-serif;
-
   /* Colores sólidos fijos (invariantes al tema) */
   --blanco: #ffffff;
   --despegue-acento: #38bdf8;
@@ -5043,205 +5038,121 @@ body.legal-page {
 }
 
 /* ==========================================================================
-   19. BLOQUE ct-countdown — Promoción "¡Oferta de Lanzamiento!" (30 días)
-   Usa --color-primary, --color-accent, --font-heading + efecto glow futurista
+   19. BLOQUE ct-countdown (snippet convención "ct-") — MOBILE-FIRST
+   Solo usa custom properties (--ct-* nuevas + tokens existentes del sistema).
    ========================================================================== */
-.ct-countdown,
 .ct-countdown-block {
   position: relative;
-  padding: 3.5rem 1.25rem;
-  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.18), transparent 70%),
-              radial-gradient(circle at 85% 90%, rgba(6, 182, 212, 0.14), transparent 65%),
-              var(--ct-bg, #0f172a);
-  border-top: 1px solid rgba(6, 182, 212, 0.35);
-  border-bottom: 1px solid rgba(99, 102, 241, 0.35);
-  box-shadow: inset 0 0 40px rgba(6, 182, 212, 0.06);
+  padding: var(--space-15) 1.25rem;
+  background: var(--ct-bg);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
   overflow: hidden;
-  text-align: center;
 }
-
-.ct-countdown::before,
 .ct-countdown-block::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, var(--color-primary), var(--ct-secondary) 55%, var(--color-accent));
-  opacity: 0.08;
+  background: linear-gradient(120deg, var(--ct-primary), var(--ct-secondary) 55%, var(--ct-accent));
+  opacity: 0.1;
   pointer-events: none;
 }
-
 .ct-countdown-inner {
   position: relative;
   z-index: 1;
-  max-width: 960px;
-  margin: 0 auto;
 }
-
-.ct-countdown-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 1.1rem;
-  border-radius: 999px;
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  background: rgba(6, 182, 212, 0.12);
-  border: 1px solid var(--color-accent);
-  box-shadow: 0 0 18px rgba(6, 182, 212, 0.35), inset 0 0 10px rgba(6, 182, 212, 0.15);
-}
-
 .ct-countdown-kicker {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-accent);
-  margin-top: 0.75rem;
+  color: var(--ct-accent);
 }
-
 .ct-countdown-title {
-  margin-top: 0.6rem;
-  font-family: var(--font-heading);
+  margin-top: var(--space-06);
+  font-family: var(--ct-font-title);
   font-weight: 700;
-  font-size: clamp(1.5rem, 4.5vw, 2.5rem);
+  font-size: clamp(1.3rem, 4vw, 2.1rem);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-pure);
-  text-shadow: 0 0 24px rgba(99, 102, 241, 0.55);
+  color: var(--text-main);
 }
-
 .ct-countdown-fecha {
-  margin-top: 0.5rem;
+  margin-top: var(--space-06);
   font-family: var(--ct-font-body);
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
-
 .ct-countdown-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 1.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-06);
+  margin-top: var(--space-1);
 }
-
-.ct-countdown-unit,
-.ct-countdown-box {
-  position: relative;
-  padding: 1.4rem 1rem;
-  background: linear-gradient(160deg, rgba(15, 23, 42, 0.92), rgba(11, 17, 32, 0.96));
-  border: 1px solid var(--color-accent);
-  border-radius: 14px;
+.ct-countdown-unit {
+  padding: var(--space-075) var(--space-06);
+  background: var(--color-space-surface);
+  border: 1px solid var(--ct-text);
+  border-radius: var(--radius-md);
   text-align: center;
-  box-shadow:
-    0 0 22px rgba(6, 182, 212, 0.22),
-    0 0 42px rgba(99, 102, 241, 0.12),
-    inset 0 0 18px rgba(6, 182, 212, 0.1);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
-
-.ct-countdown-unit:hover,
-.ct-countdown-box:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-primary);
-  box-shadow:
-    0 0 28px rgba(6, 182, 212, 0.45),
-    0 0 50px rgba(99, 102, 241, 0.35),
-    inset 0 0 22px rgba(99, 102, 241, 0.2);
-}
-
-.ct-countdown-value,
-.ct-countdown-number {
+.ct-countdown-value {
   display: block;
-  font-family: var(--font-heading);
+  font-family: var(--ct-font-title);
   font-weight: 700;
-  font-size: clamp(2rem, 7vw, 3.4rem);
-  line-height: 1.05;
+  font-size: clamp(1.5rem, 7vw, 3rem);
+  line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--text-pure);
-  text-shadow:
-    0 0 16px var(--color-accent),
-    0 0 32px var(--color-primary);
+  text-shadow: 0 0 18px var(--color-neon-cyan-glow);
 }
-
 .ct-countdown-label {
   display: block;
-  margin-top: 0.55rem;
-  font-family: var(--font-heading);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  margin-top: var(--space-06);
+  font-family: var(--ct-font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--text-muted);
 }
-
-.ct-countdown-controls {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
 .ct-countdown-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1.5rem;
-  padding: 0.85rem 1.75rem;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  display: inline-block;
+  margin-top: var(--space-1);
+  padding: 0.7rem 1.4rem;
+  font-family: var(--ct-font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
   color: var(--blanco);
   text-decoration: none;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, var(--ct-primary), var(--ct-secondary));
   border-radius: var(--radius-md);
-  box-shadow: 0 0 24px rgba(99, 102, 241, 0.45);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
-
 .ct-countdown-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 32px rgba(6, 182, 212, 0.6), 0 10px 26px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 10px 26px var(--ct-primary-glow);
 }
-
 .ct-countdown-cta:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--ct-accent);
   outline-offset: 3px;
 }
 
-@media (min-width: 640px) {
-  .ct-countdown-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.25rem;
-  }
-}
-
+/* Tablet / desktop: más respiración y cifras mayores (mobile-first ↑). */
 @media (min-width: 768px) {
-  .ct-countdown,
   .ct-countdown-block {
-    padding: 4.5rem 2rem;
+    padding: var(--space-15) 2rem;
   }
-  .ct-countdown-unit,
-  .ct-countdown-box {
-    padding: 1.75rem 1.25rem;
+  .ct-countdown-unit {
+    padding: var(--space-1) var(--space-09);
   }
   .ct-countdown-label {
-    font-size: 0.78rem;
+    font-size: 0.74rem;
   }
 }
 
+/* Accesibilidad: respeta la preferencia de movimiento reducido. */
 @media (prefers-reduced-motion: reduce) {
-  .ct-countdown-cta,
-  .ct-countdown-unit,
-  .ct-countdown-box {
+  .ct-countdown-cta {
     transition: none;
   }
 }
