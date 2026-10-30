@@ -26,6 +26,7 @@ function copyStaticSitePlugin() {
         'script.js',
         'app.js',
         'favicon.svg',
+        'vercel.json',
         '.nojekyll'
       ];
 

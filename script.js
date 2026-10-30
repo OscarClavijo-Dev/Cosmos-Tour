@@ -704,6 +704,7 @@ function initFormValidation() {
     }
   });
 
+  DOM.form.dataset.ctFormBound = 'true';
   DOM.form.addEventListener('submit', handleManifestSubmit);
 }
 
@@ -3244,6 +3245,7 @@ function initModalDossier() {
   if (!DOM.modal) {
     return;
   }
+  DOM.modal.dataset.ctModalBound = 'true';
 
   const warpButtons = Array.from(document.querySelectorAll('.btn-warp-action'));
   warpButtons.forEach((button) => {
@@ -3972,6 +3974,7 @@ function initBotonesReserva() {
     }
 
     initialized = true;
+    root.dataset.ctCarouselBound = 'true';
 
     let currentIndex = 0;
     let autoplayTimerId = null;
@@ -4145,6 +4148,7 @@ function initBotonesReserva() {
     }
 
     faqInitialized = true;
+    faqContainer.dataset.ctFaqBound = 'true';
 
     // Event delegation: un único listener de click en el contenedor .ct-faq
     faqContainer.addEventListener('click', (event) => {
