@@ -1,41 +1,1534 @@
 <!doctype html>
+<!-- https://agencia-cosmos-tour-uptc.vercel.app/ -->
+ 
 <html lang="es" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cosmos Tour</title>
-    <meta
-      name="description"
-      content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional."
-    />
+    <title>Cosmos Tour | Turismo Espacial de Lujo</title>
+    <meta name="description" content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional." />
     <meta name="keywords" content="turismo espacial, viajes de lujo, experiencias inmersivas" />
     <meta name="author" content="Oscar Clavijo" />
-    <meta property="og:title" content="Cosmos Tour" />
-    <meta
-      property="og:description"
-      content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional."
-    />
+    <meta property="og:title" content="Cosmos Tour | Turismo Espacial de Lujo" />
+    <meta property="og:description" content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://oscagclavijo-dev.github.io/Cosmos-Tour/" />
+    <meta property="og:image" content="https://oscagclavijo-dev.github.io/Cosmos-Tour/assets/imagenes/hero-universo.jpg" />
+    <meta property="og:image:width" content="1920" />
+    <meta property="og:image:height" content="1160" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Universo cósmico con nebulosas y galaxias, imagen principal de Cosmos Tour" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cosmos Tour | Turismo Espacial de Lujo" />
+    <meta name="twitter:description" content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional." />
     <meta property="og:site_name" content="Cosmos Tour" />
     <meta property="og:locale" content="es_ES" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Cosmos Tour" />
-    <meta
-      name="twitter:description"
-      content="Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional."
-    />
     <meta name="theme-color" content="#030712" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Google Fonts: familias REALMENTE usadas por styles.css
+         (--font-main: Space Grotesk / --font-mono: IBM Plex Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- === OPTIMIZACIÓN 1.1: PRELOAD DE RECURSOS CRÍTICOS (LCP/FCP) === -->
+    <!-- JS con defer: el preload scanner lo descubre sin bloquear el HTML -->
+    <link rel="preload" href="script.js" as="script" />
+    <!-- Fuentes woff2 EXACTAS que sirve Google Fonts (verificadas contra la
+         respuesta real de css2): Space Grotesk/Orbitron/Inter son variables
+         (un archivo cubre todos los pesos). Si Google rota de versión, hay que
+         resincronizar estos href con la nueva respuesta. crossorigin es
+         obligatorio: las fuentes se solicitan en modo CORS. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/orbitron/v35/yMJRMIlzdpvBhQQL_Qq7dy0.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS crítico above-the-fold: render-blocking mínimo (~11KB inline) -->
+    <style>:root{--color-space-deep: #030712;--color-space-surface: #0b1120;--color-space-card: #0f172a;--color-space-darker: #02040a;--color-space-overlay: rgba(3, 7, 18, 0.92);--color-neon-cyan: #06b6d4;--color-neon-cyan-glow: rgba(6, 182, 212, 0.35);--color-blue: #3b82f6;--color-blue-glow: rgba(59, 130, 246, 0.35);--color-gold: #f59e0b;--color-gold-glow: rgba(245, 158, 11, 0.35);--color-emerald: #10b981;--color-rose: #f43f5e;--border-subtle: #1e293b;--border-light: #334155;--border-active: #06b6d4;--border-gold: rgba(245, 158, 11, 0.6);--font-main: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;--font-body: 'Plus Jakarta Sans', var(--font-main);--font-mono: 'IBM Plex Mono', 'Space Mono', monospace;--text-pure: #ffffff;--text-main: #f8fafc;--text-muted: #94a3b8;--text-dim: #7d8ba1;--radius-sm: 4px;--radius-md: 8px;--radius-lg: 12px;--radius-xl: 16px;--transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);--transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{font-family:var(--font-main);background-color:var(--color-space-deep);color:var(--text-main);scroll-behavior:smooth;font-size:1rem;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}h1,h2,h3,h4,.brand-title,.section-title,.card-title,.pkg-title{font-family:var(--font-main);font-weight:700;letter-spacing:-0.025em;color:var(--text-pure);text-wrap:balance}p{color:var(--text-muted);line-height:1.6}.btn,.btn-primary,.btn-secondary{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.8rem 1.6rem;font-family:var(--font-main);font-size:0.875rem;font-weight:600;letter-spacing:0.03em;line-height:1.2;text-decoration:none;text-align:center;white-space:nowrap;cursor:pointer;border:1px solid transparent;border-radius:10px;transition:transform 0.25s ease,box-shadow 0.25s ease,background-color 0.25s ease,border-color 0.25s ease,color 0.25s ease}.btn-primary{background-image:var(--btn-primary-bg);color:var(--btn-primary-fg);border-color:rgba(255,255,255,0.25);box-shadow:var(--btn-primary-shadow)}.btn-primary:hover,.btn-primary:focus-visible{transform:translateY(-2px);box-shadow:var(--btn-primary-shadow-hover)}.btn-primary:active{transform:translateY(0)}.btn-secondary{background-image:var(--btn-secondary-bg);color:var(--btn-secondary-fg);border-color:rgba(255,255,255,0.2);box-shadow:var(--btn-secondary-shadow)}.btn-secondary:hover,.btn-secondary:focus-visible{transform:translateY(-2px);box-shadow:var(--btn-secondary-shadow-hover)}.btn-secondary:active{transform:translateY(0)}.nav-link{font-size:0.875rem;font-weight:500;color:var(--text-muted);text-decoration:none;white-space:nowrap;transition:color var(--transition-fast)}.nav-link:hover{color:var(--text-pure);text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--color-neon-cyan)}.indicator-dot.active{background-color:var(--color-neon-cyan);box-shadow:0 0 8px var(--color-neon-cyan)}.hero-content{display:flex;flex-direction:column}.hero-title{font-size:clamp(1.5rem,5vw,2rem);line-height:1.1;letter-spacing:-0.035em;margin-bottom:1.25rem}.phase-btn.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.filter-tab.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.dossier-btn.active{background-color:rgba(6,182,212,0.15);border-color:var(--color-neon-cyan);color:var(--color-neon-cyan);font-weight:700}.btn-toggle-view.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.stage-select-btn.active{border-color:var(--color-neon-cyan);background-color:rgba(15,23,42,0.95);box-shadow:inset 0 0 12px rgba(6,182,212,0.15)}.opt-filter-btn.active{border-color:var(--color-neon-cyan);background-color:rgba(6,182,212,0.15);color:var(--color-neon-cyan);font-weight:700}.light-tab.active{background-color:var(--color-neon-cyan);color:#020617;font-weight:700}.service-nav-btn.active{background-color:#1e293b;color:var(--text-pure);font-weight:600}.btn-pax.active{background-color:var(--color-neon-cyan);border-color:var(--color-neon-cyan);color:#020617;font-weight:700}body{overflow-x:hidden}img{max-width:100%;height:auto}.hero-title{font-size:clamp(1.5rem,5vw,2rem)}.brand-title,.brand-wordmark{font-size:1.1rem}.nav-links{display:none}@media (min-width:480px){.hero-title{font-size:1.75rem}.brand-title,.brand-wordmark{font-size:1.35rem}.nav-links{display:flex;flex-direction:column;align-items:flex-start;position:absolute;top:100%;left:0;right:0;gap:0.75rem;padding:1rem 1.25rem;background-color:var(--color-space-darker);border-bottom:1px solid var(--border-subtle);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity 0.25s ease,transform 0.25s ease,visibility 0.25s ease}.top-nav:hover .nav-links,.top-nav:focus-within .nav-links{opacity:1;visibility:visible;transform:translateY(0)}}@media (min-width:768px){.nav-links{display:flex;flex-direction:row;align-items:center;position:static;gap:1.4rem;padding:0;background:none;border-bottom:none;opacity:1;visibility:visible;transform:none;transition:none}.hero-title{font-size:2rem}}@media (min-width:1200px){.hero-title{font-size:3.15rem}}@media (prefers-reduced-motion:reduce){*,::before,::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--color-neon-cyan);outline-offset:3px}.skip-link{position:absolute;left:-9999px;top:0;background:var(--color-space-darker);color:var(--text-main);padding:0.75rem 1.25rem;z-index:1000}.skip-link:focus{left:1rem;top:1rem}:root{--bg-primary: var(--color-space-deep);--text-primary: var(--text-main);--color-cyan: var(--color-neon-cyan);--color-border: var(--border-subtle);--color-text-muted: var(--text-muted);--color-text-dim: var(--text-dim);--color-gold-light: #fbbf24}:root[data-theme="light"]{--color-space-deep: #eef3fa;--color-space-surface: #ffffff;--color-space-card: #ffffff;--color-space-darker: #dfe8f4;--color-space-overlay: rgba(255, 255, 255, 0.96);--border-subtle: #c9d8ea;--border-light: #9db4cd;--border-active: #0369a1;--border-gold: rgba(180, 83, 9, 0.55);--text-pure: #0a1a2f;--text-main: #22364d;--text-muted: #46617f;--text-dim: #5b6b80;--color-neon-cyan: #0369a1;--color-neon-cyan-glow: rgba(3, 105, 161, 0.25);--color-blue: #1d4ed8;--color-blue-glow: rgba(29, 78, 216, 0.22);--color-gold: #b45309;--color-gold-glow: rgba(180, 83, 9, 0.25);--color-emerald: #047857;--color-rose: #be123c;--bg-primary: #eef3fa;--text-primary: #0a1a2f;--color-cyan: #0369a1;--color-border: #c9d8ea;--color-text-muted: #46617f;--color-text-dim: #5b6b80;--color-gold-light: #92400e}:root[data-theme="light"] #universe-canvas{opacity:0.14}html,body{transition:background-color 0.3s ease,color 0.3s ease}#universe-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background:radial-gradient(circle at 30% 20%,rgba(59,130,246,0.08),transparent 45%),#030712}.main-wrapper{position:relative;z-index:1;padding-top:var(--nav-h,84px)}.container{width:min(1200px,92%);margin:0 auto}section{position:relative;padding:4rem 0;scroll-margin-top:calc(var(--nav-h,84px) + 12px)}.section-despegue{min-height:calc(100vh - var(--nav-h,84px));display:flex;align-items:center;padding-top:2rem;padding-bottom:3rem}.top-nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:1.1rem 0;background:transparent;transition:background-color 0.3s ease,padding 0.3s ease,box-shadow 0.3s ease}.top-nav.header-sticky{padding:0.6rem 0;background:rgba(10,14,39,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.45)}:root[data-theme="light"] .top-nav.header-sticky{background:rgba(255,255,255,0.95);box-shadow:0 10px 30px rgba(15,23,42,0.12)}.nav-container{width:min(1200px,92%);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1.25rem;flex-wrap:wrap}.nav-links{align-items:center;gap:1.4rem;list-style:none}.nav-links .nav-link{font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap}.nav-actions{display:flex;align-items:center;gap:0.5rem}.hero-telemetry-top,.hero-telemetry-bottom{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}.hero-telemetry-bottom{margin-top:2rem;border-top:1px solid var(--border-subtle);padding-top:1.25rem}.flight-status{display:flex;align-items:center;gap:0.6rem;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}.status-dot{width:0.55rem;height:0.55rem;border-radius:50%;background:#34d399;box-shadow:0 0 10px rgba(52,211,153,0.8);animation:cosmos-pulse 2s infinite}@keyframes cosmos-pulse{0%,100%{opacity:1}50%{opacity:0.35}}.hud-hint{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--text-dim)}.hud-metrics{display:flex;gap:2.5rem;flex-wrap:wrap}.metric-item{display:flex;flex-direction:column;gap:0.2rem}.metric-label{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim)}.metric-value{font-family:var(--font-mono);font-size:clamp(1.15rem,3vw,1.5rem);font-weight:700;color:var(--text-pure)}.metric-unit{font-size:0.75rem;color:var(--color-neon-cyan);margin-left:0.2rem}.scroll-indicator{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-gold);text-decoration:none}.unboxed-kicker{display:flex;gap:0.75rem;flex-wrap:wrap;font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.25rem}.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem}.hero-description{max-width:640px;margin-top:1rem}.segmented-btn{background:transparent;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 1.1rem;border-radius:999px;cursor:pointer;transition:background-color 0.25s ease,color 0.25s ease}.segmented-btn.active{background:var(--color-neon-cyan);color:#030712;font-weight:700}.amenity-filter-btn.active{background:rgba(6,182,212,0.12);border-color:var(--color-neon-cyan);color:var(--color-neon-cyan)}.flight-tab-btn.active{background:rgba(245,158,11,0.12);border-color:var(--color-gold);color:var(--color-gold)}.flight-stage-panel.active{display:block;animation:cosmos-panel-in 0.4s ease}@keyframes cosmos-panel-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes cosmos-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}}@media (max-width:767px){.hud-metrics{gap:1.25rem}.metric-value{font-size:1.2rem}section{padding:3rem 0}}.flight-status-sep{color:var(--color-text-dim)}.btn-cta-lg{padding:0.85rem 2rem}.hud-hint-dot{color:var(--color-cyan)}.hero-universe-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0}.hero-universe-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,7,18,0.86) 0%,rgba(3,7,18,0.55) 42%,rgba(3,7,18,0.9) 100%)}.section-despegue>.container{position:relative;z-index:2}:root[data-theme="light"] .section-despegue{--text-pure: #f8fafc;--text-main: #e6edf7;--text-muted: #b9c6da;--text-dim: #93a4bd;--color-neon-cyan: #38bdf8;--color-neon-cyan-glow: rgba(56, 189, 248, 0.3);--color-gold: #fbbf24;--color-gold-glow: rgba(251, 191, 36, 0.3);--border-subtle: rgba(255, 255, 255, 0.22);--border-light: rgba(255, 255, 255, 0.45);--color-space-card: rgba(6, 12, 28, 0.55);--color-space-darker: rgba(6, 12, 28, 0.72)}.planet-picker{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.5rem}.planet-btn.segmented-btn{display:flex;flex-direction:column;align-items:center;gap:0.4rem;min-width:76px;padding:0.55rem 0.5rem 0.45rem;background:rgba(3,7,18,0.55);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);color:var(--text-muted);cursor:pointer;transition:border-color 0.3s ease,transform 0.3s ease,box-shadow 0.3s ease,background-color 0.3s ease,color 0.3s ease}.planet-btn.segmented-btn img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.25);box-shadow:0 6px 16px rgba(0,0,0,0.5);transition:transform 0.35s ease,border-color 0.35s ease}.planet-btn-name{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em}.planet-btn.segmented-btn:hover{transform:translateY(-5px);border-color:var(--border-light);color:var(--text-pure);background:rgba(6,182,212,0.14)}.planet-btn.segmented-btn:hover img{transform:scale(1.09);border-color:var(--color-neon-cyan)}.planet-btn.segmented-btn.active{border-color:var(--color-neon-cyan);color:var(--text-pure);background:rgba(6,182,212,0.16);box-shadow:0 0 20px var(--color-neon-cyan-glow)}.planet-btn.segmented-btn.active img{border-color:var(--color-neon-cyan);transform:scale(1.06)}.dest-actions .btn-secondary,.dest-actions .btn-primary{flex:1;padding-left:0.75rem;padding-right:0.75rem}@media (max-width:767px){.planet-picker{flex-wrap:nowrap;overflow-x:auto;padding-bottom:0.45rem;scrollbar-width:thin}.planet-btn.segmented-btn{min-width:68px;flex:0 0 auto}}@media (max-width:480px){.planet-btn.segmented-btn{min-width:62px;padding:0.45rem 0.4rem 0.4rem}.planet-btn.segmented-btn img{width:48px;height:48px}}:root{--btn-primary-bg: linear-gradient(135deg, var(--color-neon-cyan) 0%, #22d3ee 100%);--btn-primary-fg: #04202b;--btn-primary-shadow: 0 10px 24px rgba(6, 182, 212, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);--btn-primary-shadow-hover: 0 16px 32px rgba(6, 182, 212, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);--btn-secondary-bg: linear-gradient(135deg, var(--color-gold) 0%, #fbbf24 100%);--btn-secondary-fg: #241503;--btn-secondary-shadow: 0 10px 24px rgba(245, 158, 11, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);--btn-secondary-shadow-hover: 0 16px 32px rgba(245, 158, 11, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45)}:root[data-theme="light"]{--btn-primary-bg: linear-gradient(135deg, #075985 0%, #0369a1 100%);--btn-primary-fg: #ffffff;--btn-primary-shadow: 0 10px 24px rgba(3, 105, 161, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);--btn-primary-shadow-hover: 0 16px 32px rgba(3, 105, 161, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);--btn-secondary-bg: linear-gradient(135deg, #b45309 0%, #92400e 100%);--btn-secondary-fg: #ffffff;--btn-secondary-shadow: 0 10px 24px rgba(146, 64, 14, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);--btn-secondary-shadow-hover: 0 16px 32px rgba(146, 64, 14, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35)}.nav-actions .btn-primary{padding:0.62rem 1.4rem;font-size:0.8125rem;border-radius:999px}/* [CRÍTICO] Lockup de marca: debe pintarse en el primer render para que la
+   medición temprana de --nav-h (script tras </header>) coincida con la altura
+   final de la cabecera y no produzca layout shift (CLS). */.brand-emblem{display:block;flex:0 0 auto;color:var(--text-pure);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1)}.brand-emblem svg{display:block;width:30px;height:30px}.emblem-orbit{fill:none;stroke:currentColor;stroke-width:2;opacity:0.5;transition:opacity 0.35s ease}.emblem-core{fill:var(--color-neon-cyan);animation:cosmos-pulse 2.8s ease-in-out infinite}.emblem-sat{fill:currentColor;filter:drop-shadow(0 0 5px currentColor)}.brand-text{display:flex;flex-direction:column;gap:0.3rem}.brand-name{display:flex;align-items:baseline;gap:0.4em;font-family:var(--font-main);font-size:0.98rem;font-weight:700;line-height:1;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap}.brand-name-tail{font-family:var(--font-mono);font-size:0.86em;font-weight:500;letter-spacing:0.2em;color:var(--color-neon-cyan);transition:text-shadow 0.3s ease}.brand-tag{display:none;font-family:var(--font-mono);font-size:0.56rem;line-height:1;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}.nav-links{list-style:none}.nav-links .nav-link{font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap}.scroll-progress{position:absolute;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--color-neon-cyan),var(--color-gold));transition:width 0.15s linear;z-index:10}@media (min-width:768px){.brand-tag{display:block}.brand-emblem svg{width:34px;height:34px}.brand-name{font-size:1.06rem;letter-spacing:0.14em}}@media (min-width:1200px){.brand-emblem svg{width:36px;height:36px}.brand-name{font-size:1.12rem;letter-spacing:0.16em}.brand-tag{font-size:0.6rem;letter-spacing:0.34em}}/* [CRÍTICO] Botón de tema en cabecera: estático en el HTML y este bloque
+   evita que su tamaño cambie al aplicarse styles.css (wrap del nav-container). */
+.btn-icon{display:inline-flex;align-items:center;gap:0.45rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.1em;padding:0.5rem 0.85rem;border-radius:999px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease,background-color 0.25s ease}.btn-icon:hover{border-color:var(--color-neon-cyan);color:var(--text-pure)}@media (max-width:480px){.btn-icon .theme-label{display:none}}</style>
+
+    <!-- Hoja completa: carga asíncrona (no bloquea el primer pintado) -->
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css" /></noscript>
+
+    <!-- Favicon SVG -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+    <!-- Structured data (Schema.org) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "Cosmos Tour",
+        "description": "Agencia de turismo espacial de alto lujo y experiencias inmersivas. Expediciones orbitales a la Tierra, la Luna, Marte y la Estación Espacial Internacional.",
+        "priceRange": "$$$",
+        "areaServed": ["La Luna", "Marte", "Órbita Terrestre"]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Expediciones espaciales Cosmos Tour",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "TouristTrip",
+              "name": "La Luna — Artemisa Prime",
+              "offers": { "@type": "Offer", "price": "1250000", "priceCurrency": "USD" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "TouristTrip",
+              "name": "Marte — Odisea Valles Marineris",
+              "offers": { "@type": "Offer", "price": "4800000", "priceCurrency": "USD" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": "TouristTrip",
+              "name": "Estación Espacial Internacional — Apex Cupola",
+              "offers": { "@type": "Offer", "price": "750000", "priceCurrency": "USD" }
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Enlace de omisión (skip link): accesible con teclado, oculto visualmente -->
+    <a class="skip-link" href="#ct-hero">Saltar al contenido principal</a>
+    <!-- Lienzo 3D Nativo del Cosmos y Planetas -->
+    <canvas id="universe-canvas" aria-hidden="true"></canvas>
+
+    <!-- Top Bar Navigation (Contrato de 3 Zonas) -->
+    <header class="top-nav">
+      <div class="nav-container">
+        <!-- Zona 1: Lockup de marca (emblema orbital + wordmark + descriptor) -->
+        <a href="#ct-hero" class="brand-wordmark" aria-label="Cosmos Tour — ir al inicio">
+          <span class="brand-emblem" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="34" height="34" focusable="false">
+              <ellipse
+                class="emblem-orbit"
+                cx="24"
+                cy="24"
+                rx="19.5"
+                ry="9.5"
+                transform="rotate(-28 24 24)"
+              />
+              <circle class="emblem-core" cx="24" cy="24" r="7.5" />
+              <circle class="emblem-sat" cx="41.2" cy="14.9" r="3" />
+            </svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-name"
+              ><span class="brand-name-lead">Cosmos</span
+              ><span class="brand-name-tail">Tour</span></span
+            >
+            <span class="brand-tag">Turismo orbital</span>
+          </span>
+        </a>
+
+        <!-- Zona 2: Enlaces de navegación semánticos -->
+        <nav>
+          <ul class="nav-links">
+            <li><a href="#ct-hero" class="nav-link active">El Despegue</a></li>
+            <li><a href="#destinos" class="nav-link">Destinos</a></li>
+            <li><a href="#vuelo" class="nav-link">Experiencia de Vuelo</a></li>
+            <li><a href="#beneficios" class="nav-link">Suites & Lujo</a></li>
+            <li><a href="#registro" class="nav-link">Tripulación</a></li>
+          </ul>
+        </nav>
+
+        <!-- Zona 3: Acciones primarias -->
+        <!-- El botón de tema se sirve en HTML estático (antes: inyectado por
+             script.js tras el parseo) para que la cabecera tenga su geometría
+             definitiva en el primer pintado y no genere CLS. -->
+        <div class="nav-actions">
+          <button
+            type="button"
+            id="theme-toggle"
+            class="btn-icon theme-toggle"
+            aria-label="Cambiar a tema claro"
+            aria-pressed="false"
+          >
+            <span class="theme-icon" aria-hidden="true">🌙</span>
+            <span class="theme-label">MODO OSCURO</span>
+          </button>
+          <a href="#registro" class="btn-primary">Reservar Misión</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- [PERF/CLS] Mide --nav-h ANTES del primer pintado. Sin este script el
+         padding de .main-wrapper cambiaba de 84px a la altura real (p.ej. 129px
+         en móvil) cuando script.js corría tras el FCP: ese salto aportaba
+         0.274 del CLS total. Se duplica aquí deliberadamente (inline, síncrono)
+         porque script.js se carga con defer y llegaría tarde. -->
+    <script>
+      (function () {
+        var h = document.querySelector('.top-nav');
+        if (!h) return;
+        var cs = getComputedStyle(h);
+        var root = getComputedStyle(document.documentElement);
+        var padRaw = (root.getPropertyValue('--nav-pad-y') || '1.1rem').trim();
+        var padNum = parseFloat(padRaw);
+        if (!padNum) return;
+        var fontPx = parseFloat(root.fontSize) || 16;
+        var padPx = padRaw.indexOf('rem') > -1 ? padNum * fontPx : padNum;
+        var curPad = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+        var content = h.getBoundingClientRect().height - curPad;
+        if (content > 0) {
+          document.documentElement.style.setProperty(
+            '--nav-h',
+            Math.ceil(content + padPx * 2) + 'px'
+          );
+        }
+      })();
+    </script>
+
+    <!-- Contenedor Semántico Principal -->
+    <main class="main-wrapper">
+      <!-- ====================================================================
+           SECCIÓN A: EL DESPEGUE (Bienvenida & Explorador Planetario)
+           ==================================================================== -->
+            <!-- ================================================================
+           BLOQUE ct-hero — Hero full-screen · HTML semántico · SIN JavaScript
+           Clases con prefijo "ct-hero" · CTAs enlazan a secciones existentes
+           (#registro usa el scroll suave y se auto-oculta si ya eres convertido)
+           ================================================================ -->
+      <section id="ct-hero" class="ct-hero" aria-labelledby="ct-hero-title">
+        <!-- Decoración: nebulosas + campo de estrellas + orbe (100% CSS, sin imágenes) -->
+        <div class="ct-hero-bg" aria-hidden="true"></div>
+        <div class="ct-hero-orb" aria-hidden="true"></div>
+
+        <div class="ct-hero-content">
+          <p class="ct-hero-kicker">Agencia de Turismo Espacial · Ventana 2026</p>
+
+          <h1 id="ct-hero-title" class="ct-hero-title">Explora el Universo</h1>
+
+          <p class="ct-hero-subtitle">
+            Tours espaciales de alto lujo a la Luna, Marte y la Estación Espacial
+            Internacional. Despega a bordo de nuestra flota privada y vive la
+            experiencia definitiva más allá de la atmósfera terrestre.
+          </p>
+
+          <div class="ct-hero-actions">
+            <a class="ct-hero-cta ct-hero-cta-primary" href="#registro">Reserva tu Viaje</a>
+            <a class="ct-hero-cta ct-hero-cta-secondary" href="#destinos">Conoce Más</a>
+          </div>
+
+          <p class="ct-hero-meta">Despegue: Noviembre 2026 · Solo 24 plazas por ventana</p>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN B: CATÁLOGO DE DESTINOS (La Exploración & Salto Warp)
+           ==================================================================== -->
+      <section id="destinos" class="section-destinos" aria-labelledby="destinos-title">
+        <div class="container">
+          <header class="section-header">
+            <div>
+              <div class="section-kicker">Catálogo de Expediciones · Temporada 2026-2027</div>
+              <h2 id="destinos-title" class="section-title">Rutas Exclusivas del Cosmos</h2>
+            </div>
+            <p class="section-intro">
+              Cada destino cuenta con rigurosos protocolos aeroespaciales y comodidades concebidas para el descanso y la contemplación estelar.
+            </p>
+          </header>
+
+          <div class="destinations-grid">
+            <!-- Tarjeta 1: La Luna -->
+            <article class="destination-card">
+              <div>
+                <div class="dest-meta-top">
+                  <span>384,400 KM</span>
+                  <span class="dest-meta-duration">6 Días Terrestres</span>
+                </div>
+                <h3 class="dest-title">La Luna</h3>
+                <div class="dest-subtitle">Expedición Cis-Lunar Artemisa Prime</div>
+                <p class="dest-desc">
+                  Aterrizaje en el Cráter Shackleton con pernocta en suites presurizadas de titanio translúcido. Experimente caminatas lunares con vista perpetua a la Tierra.
+                </p>
+                <ul class="dest-highlights">
+                  <li>Almuerzo privado en el borde del Polo Sur Lunar</li>
+                  <li>Paseo extravehicular (EVA) en baja gravedad con traje a medida</li>
+                </ul>
+              </div>
+              <div class="dest-footer">
+                <div class="dest-price-row">
+                  <span class="dest-price-label">Inversión por plaza</span>
+                  <span class="dest-price-val">$1,250,000 USD</span>
+                </div>
+                <div class="dest-actions">
+                  <button class="btn-secondary btn-warp-action" data-dest="luna" aria-label="Salto Warp a La Luna">Salto Warp</button>
+                  <button class="btn-primary btn-book-dest" data-dest-name="La Luna" aria-label="Reservar expedición a La Luna">Reservar</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Tarjeta 2: Marte -->
+            <article class="destination-card">
+              <div>
+                <div class="dest-meta-top">
+                  <span>225,000,000 KM</span>
+                  <span class="dest-meta-duration">180 Días de Travesía</span>
+                </div>
+                <h3 class="dest-title">Marte</h3>
+                <div class="dest-subtitle">Odisea Valles Marineris & Oasis Rojo</div>
+                <p class="dest-desc">
+                  La expedición cumbre de la civilización humana. Cruce el espacio interplanetario a bordo de nuestro crucero de ultra-lujo y explore cañones titánicos.
+                </p>
+                <ul class="dest-highlights">
+                  <li>Travesía en crucero con anillo de gravedad centrífuga 1g</li>
+                  <li>Alojamiento en el primer Domo Biosférico Geodésico</li>
+                </ul>
+              </div>
+              <div class="dest-footer">
+                <div class="dest-price-row">
+                  <span class="dest-price-label">Inversión por plaza</span>
+                  <span class="dest-price-val">$4,800,000 USD</span>
+                </div>
+                <div class="dest-actions">
+                  <button class="btn-secondary btn-warp-action" data-dest="marte" aria-label="Salto Warp a Marte">Salto Warp</button>
+                  <button class="btn-primary btn-book-dest" data-dest-name="Marte" aria-label="Reservar expedición a Marte">Reservar</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Tarjeta 3: EEI -->
+            <article class="destination-card">
+              <div>
+                <div class="dest-meta-top">
+                  <span>408 KM (Órbita Baja)</span>
+                  <span class="dest-meta-duration">10 Días en Órbita</span>
+                </div>
+                <h3 class="dest-title">Estación Espacial</h3>
+                <div class="dest-subtitle">Residencia Apex Cupola</div>
+                <p class="dest-desc">
+                  Flote en gravedad cero absoluta mientras contempla 16 amaneceres y atardeceres cada 24 horas con el mirador Cupola reservado en exclusividad.
+                </p>
+                <ul class="dest-highlights">
+                  <li>16 amaneceres diarios observando auroras polares</li>
+                  <li>Entrenamiento acrobático y meditación en microgravedad</li>
+                </ul>
+              </div>
+              <div class="dest-footer">
+                <div class="dest-price-row">
+                  <span class="dest-price-label">Inversión por plaza</span>
+                  <span class="dest-price-val">$750,000 USD</span>
+                </div>
+                <div class="dest-actions">
+                  <button class="btn-secondary btn-warp-action" data-dest="iss" aria-label="Salto Warp a la Estación Espacial Internacional">Salto Warp</button>
+                  <button class="btn-primary btn-book-dest" data-dest-name="Estación Espacial Internacional" aria-label="Reservar expedición a la Estación Espacial Internacional">Reservar</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN C: SIMULACIÓN DE LA EXPERIENCIA DE VUELO (El Viaje)
+           ==================================================================== -->
+      <section id="vuelo" class="section-vuelo" aria-labelledby="vuelo-title">
+        <div class="container">
+          <header class="section-head-center">
+            <div class="section-kicker">Simulador Sensorial · Protocolo de Travesía</div>
+            <h2 id="vuelo-title" class="section-title">La Experiencia de Vuelo</h2>
+            <p class="section-intro section-intro-center">
+              Desde la potencia física de la ignición hasta el silencio absoluto de la microgravedad y la vista panorámica estelar.
+            </p>
+          </header>
+
+          <!-- Pestañas de las 3 Fases de Vuelo -->
+          <div class="flight-tabs">
+            <button class="flight-tab-btn active" data-stage="lanzamiento">1. El Lanzamiento</button>
+            <button class="flight-tab-btn" data-stage="gravedad_cero">2. Gravedad Cero</button>
+            <button class="flight-tab-btn" data-stage="ventana">3. El Mirador Estelar</button>
+          </div>
+
+          <!-- Panel 1: Fase de Lanzamiento -->
+          <div id="stage-lanzamiento" class="flight-stage-panel active">
+            <div class="launch-layout">
+              <div>
+                <div class="throttle-bar-container">
+                  <div class="throttle-bar-label">
+                    <span>EMPUJE DE PROPULSORES DE PLASMA</span>
+                    <span class="throttle-dyn-label">POTENCIA DINÁMICA</span>
+                  </div>
+                  <div class="throttle-track">
+                    <div id="throttle-fill" class="throttle-fill"></div>
+                  </div>
+                </div>
+
+                <div class="launch-gauges">
+                  <div class="gauge-box">
+                    <div class="gauge-title">Velocímetro</div>
+                    <div id="gauge-mach" class="gauge-val">Mach 1.0</div>
+                  </div>
+                  <div class="gauge-box">
+                    <div class="gauge-title">Altitud</div>
+                    <div id="gauge-alt" class="gauge-val gauge-val-cyan">12.4 KM</div>
+                  </div>
+                  <div class="gauge-box">
+                    <div class="gauge-title">Fuerza G</div>
+                    <div id="gauge-g" class="gauge-val gauge-val-gold">1.00 G</div>
+                  </div>
+                  <div class="gauge-box">
+                    <div class="gauge-title">Tiempo T+</div>
+                    <div id="gauge-time" class="gauge-val">0.0 S</div>
+                  </div>
+                </div>
+
+                <p class="launch-desc">
+                  Nuestros asientos presurizados de fibra de carbono absorben la mayor parte de la vibración mecánica,
+                  garantizando un ascenso seguro y confortable hacia la órbita.
+                </p>
+              </div>
+
+              <!-- Estación de Ignición -->
+              <div class="ignition-station">
+                <div class="flame-icon">🚀</div>
+                <h3 class="ignition-title">
+                  Palanca de Propulsión
+                </h3>
+                <p class="ignition-hint">
+                  Pulse para experimentar la aceleración y vibración visual controlada.
+                </p>
+                <button id="btn-ignition-toggle" class="btn-ignition">Iniciar Secuencia</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 2: Fase de Gravedad Cero -->
+          <div id="stage-gravedad_cero" class="flight-stage-panel">
+            <div class="stage-head-row">
+              <h3 class="stage-title">
+                Cámara de Microgravedad (0.0001g)
+              </h3>
+              <span class="telemetry-text stage-hint">
+                Haz clic sobre los objetos para impulsarlos
+              </span>
+            </div>
+
+            <div id="zero-g-arena" class="zero-g-arena">
+              <!-- Elementos de lujo flotantes con física inercial -->
+              <div id="zg-item-1" class="zero-g-item">
+                <span class="zero-g-emoji">🍸</span>
+                <span class="zero-g-label">Copa Molecular</span>
+              </div>
+              <div id="zg-item-2" class="zero-g-item">
+                <span class="zero-g-emoji">🎖️</span>
+                <span class="zero-g-label">Insignia Cosmos</span>
+              </div>
+              <div id="zg-item-3" class="zero-g-item">
+                <span class="zero-g-emoji">🪐</span>
+                <span class="zero-g-label">Esfera Cuántica</span>
+              </div>
+              <div id="zg-item-4" class="zero-g-item">
+                <span class="zero-g-emoji">⏱️</span>
+                <span class="zero-g-label">Cronómetro Titanio</span>
+              </div>
+              <div id="zg-item-5" class="zero-g-item">
+                <span class="zero-g-emoji">🌸</span>
+                <span class="zero-g-label">Flor Hidropónica</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 3: Fase La Ventana (El Mirador) -->
+          <div id="stage-ventana" class="flight-stage-panel">
+            <div class="stage-head-row">
+              <h3 class="stage-title">
+                Ventanal Elíptico de Cuarzo de Zafiro
+              </h3>
+              <span class="telemetry-text stage-hint">
+                Haz clic en un punto de interés para abrir su ficha celeste
+              </span>
+            </div>
+
+            <div id="cupola-window" class="cupola-window">
+              <div id="cupola-sky" class="cupola-sky">
+                <!-- Curvatura del planeta Tierra -->
+                <div class="earth-horizon-arc"></div>
+
+                <!-- Puntos de Interés Estelares (POIs): data-poi-* alimenta la ficha emergente -->
+                <button type="button" class="poi-marker poi-marker--nebula" data-poi="Nebulosa de Orión (M42) - 1,344 años luz" data-poi-img="./assets/imagenes/nebulosa-orion.jpg" data-poi-title="Nebulosa de Orión (M42)" data-poi-meta="1,344 AÑOS LUZ · CUNA ESTELAR" data-poi-story="A 1,344 años luz de la Tierra, M42 es la cuna estelar más cercana: una gigantesca nube de gas donde nacen estrellas aún hoy. Los antiguos la reconocieron como la espada de Orión, y su brillo la hace visible a simple vista incluso desde la ciudad. Desde la cupola de Cosmos Tour, su verdadero color verde-azulado —invisible al ojo humano en tierra— se revela en toda su magnitud.">
+                  <span>★</span>
+                  <span>Nebulosa de Orión (M42)</span>
+                </button>
+
+                <button type="button" class="poi-marker poi-marker--pleiades" data-poi="Cúmulo de las Pléyades - 444 años luz" data-poi-img="./assets/imagenes/pleiades.jpg" data-poi-title="Cúmulo de las Pléyades" data-poi-meta="444 AÑOS LUZ · SIETE HERMANAS" data-poi-story="Conocidas como Las Siete Hermanas o Las Pléyades, estas estrellas jóvenes —de apenas 100 millones de años— brillan a 444 años luz. Marineros de todas las civilizaciones las usaron para orientarse y aparecen en la mitología griega, japonesa y de los pueblos andinos. Su cúmulo azul se dispersará dentro de 250 millones de años: presencie, desde órbita, un instante irrepetible en términos cósmicos.">
+                  <span>✦</span>
+                  <span>Cúmulo de las Pléyades</span>
+                </button>
+
+                <button type="button" class="poi-marker poi-marker--aurora" data-poi="Aurora Australis Terrestre - 110 km altitud" data-poi-img="./assets/imagenes/aurora-australis.jpg" data-poi-title="Aurora Australis" data-poi-meta="110 KM DE ALTITUD · SHOW DE PARTÍCULAS" data-poi-story="A 110 km de altitud, partículas del viento solar chocan contra la magnetosfera terrestre y excitan los átomos de oxígeno, que devuelven esa luz verde y roja característica. Visible solo desde el hemisferio sur, la Australis se despliega sobre la Antártida como una cortina viva. En órbita baja la vea correr a 28,000 km/h sobre el planeta.">
+                  <span>❇</span>
+                  <span>Aurora Australis Terrestre</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN D: PAQUETES DE LUJO Y SERVICIOS A BORDO
+           ==================================================================== -->
+      <section id="beneficios" class="section-servicios" aria-labelledby="beneficios-title">
+        <div class="container">
+          <header class="section-header">
+            <div>
+              <div class="section-kicker">Hospitalidad Sin Fronteras Gravitacionales</div>
+              <h2 id="beneficios-title" class="section-title">Paquetes de Lujo & Vida a Bordo</h2>
+            </div>
+
+            <!-- Filtros de categoría -->
+            <div class="amenity-filters">
+              <button class="amenity-filter-btn active" data-filter="all">Todo</button>
+              <button class="amenity-filter-btn" data-filter="suites">Suites</button>
+              <button class="amenity-filter-btn" data-filter="gastronomia">Gastronomía</button>
+              <button class="amenity-filter-btn" data-filter="observatorio">Mirador</button>
+              <button class="amenity-filter-btn" data-filter="academia">Academia</button>
+            </div>
+          </header>
+
+          <div class="amenities-grid">
+            <!-- Servicio 1: Suites -->
+            <article class="amenity-card" data-category="suites">
+              <div class="amenity-img-wrapper">
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-suite-640.webp 640w, ./assets/imagenes/amenity-suite-1280.webp 1280w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-suite.jpg" alt="Interior de un módulo de la Estación Espacial Internacional con equipos, cables y portas en todas las paredes" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>COSMOS TOUR EXCLUSIVE</span>
+                  <span class="amenity-badge-gold">CLASE SUPERIOR</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Suites Presurizadas "Celestial Sovereign"</h3>
+                  <div class="amenity-subtitle">Titanio pulido y descanso ingrávido</div>
+                  <p class="amenity-desc">
+                    Espacios habitacionales privados presurizados a 1 ATM con control acústico cuántico, aislamiento térmico multiespectral y camas ergonómicas que recrean el descanso más placentero sin puntos de presión.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-suites">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-suites" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Volumen Habitable</span>
+                        <span class="spec-val">42 m³</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Presión Interior</span>
+                        <span class="spec-val">101.3 kPa (1 ATM)</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Nivel Acústico</span>
+                        <span class="spec-val">&lt; 38 dB</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Blindaje Radiación</span>
+                        <span class="spec-val">Polietileno Ultra-Alto Peso</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Servicio 2: Gastronomía -->
+            <article class="amenity-card" data-category="gastronomia">
+              <div class="amenity-img-wrapper">
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-gastronomia-640.webp 640w, ./assets/imagenes/amenity-gastronomia-1280.webp 1280w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-gastronomia.jpg" alt="Raciones de comida espacial envasadas al vacío, cubos de alimento, tijeras y dispensador de agua sobre fondo azul" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>3 ESTRELLAS MICHELIN</span>
+                  <span class="amenity-badge-gold">MARIDAJE CÓSMICO</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Alta Cocina Molecular en Microgravedad</h3>
+                  <div class="amenity-subtitle">Menús gastronómicos adaptados a 0g</div>
+                  <p class="amenity-desc">
+                    En microgravedad, el paladar humano experimenta cambios sensoriales sutiles. Nuestros chefs consultores han formulado una sinfonía culinaria con esferificaciones de caldos cósmicos y copas de tensión capilar.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-gastronomia">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-gastronomia" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Servicio</span>
+                        <span class="spec-val">En suite o salón</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Vajilla</span>
+                        <span class="spec-val">Titanio anodizado</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Conservación</span>
+                        <span class="spec-val">Criopreservación de vapor</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Nutrición</span>
+                        <span class="spec-val">Calibración biométrica</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Servicio 3: Observatorio -->
+            <article class="amenity-card" data-category="observatorio">
+              <div class="amenity-img-wrapper">
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-cupola-640.webp 640w, ./assets/imagenes/amenity-cupola-1279.webp 1279w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-cupola.jpg" alt="Astronauta fotografiándose frente al ventanal circular de la cúpula con la Tierra, océanos y nubes al otro lado" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>VISTA 360° CONTINUA</span>
+                  <span class="amenity-badge-gold">ZAFIRO SINTÉTICO</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Cupola Panorámica 360° & Club Privado</h3>
+                  <div class="amenity-subtitle">El salón social más exclusivo del universo</div>
+                  <p class="amenity-desc">
+                    El centro de encuentro del crucero: una monumental cúpula de observación con vistas ininterrumpidas a la curvatura planetaria, nebulosas distantes y auroras polares, equipada con telescopio espectral.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-observatorio">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-observatorio" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Ángulo de Visión</span>
+                        <span class="spec-val">360° continuo</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Capacidad</span>
+                        <span class="spec-val">Máx. 8 tripulantes</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Óptica</span>
+                        <span class="spec-val">Multicapa atérmica</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Filtro Radiación</span>
+                        <span class="spec-val">99.98% de bloqueo</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Servicio 4: Academia y Trajes -->
+            <article class="amenity-card" data-category="academia">
+              <div class="amenity-img-wrapper">
+                <picture>
+                  <source type="image/webp" srcset="./assets/imagenes/amenity-academia-640.webp 640w, ./assets/imagenes/amenity-academia-1280.webp 1280w" sizes="(max-width: 767px) 92vw, 580px" />
+                  <img src="./assets/imagenes/amenity-academia.jpg" alt="Tres especialistas asisten a un astronauta a colocarse el traje espacial blanco a bordo de la estación" class="amenity-img" width="800" height="450" loading="lazy" decoding="async" />
+                </picture>
+                <div class="amenity-scrim"></div>
+                <div class="amenity-badge-row">
+                  <span>PREPARACIÓN VIP</span>
+                  <span class="amenity-badge-gold">SASTRERÍA BALÍSTICA</span>
+                </div>
+              </div>
+              <div class="amenity-body">
+                <div>
+                  <h3 class="amenity-title">Academia & Trajes de Alta Costura Espacial</h3>
+                  <div class="amenity-subtitle">Instrucción civil y trajes a medida</div>
+                  <p class="amenity-desc">
+                    Antes del despegue, los pasajeros completan 3 días de inmersión en nuestro centro privado. Trajes presurizados confeccionados a medida que combinan seguridad balística con ergonomía de alta sastrería.
+                  </p>
+                </div>
+                <div>
+                  <button class="amenity-accordion-btn" data-target-drawer="drawer-academia">
+                    <span>Ver Especificaciones Técnicas</span>
+                    <span>↕</span>
+                  </button>
+                  <div id="drawer-academia" class="amenity-specs-drawer">
+                    <div class="specs-grid">
+                      <div class="spec-cell">
+                        <span class="spec-name">Duración Pre-Vuelo</span>
+                        <span class="spec-val">3 a 5 días</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Material Traje</span>
+                        <span class="spec-val">Kevlar & Fibra Nomex</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Instructores</span>
+                        <span class="spec-val">Veteranos ESA / NASA</span>
+                      </div>
+                      <div class="spec-cell">
+                        <span class="spec-name">Acompañantes</span>
+                        <span class="spec-val">Hasta 2 en base</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- Tabla Comparativa de Paquetes -->
+          <!-- [AJUSTE MATRIZ] Más respiro vertical, scroll horizontal en móvil y filas
+               interactivas (hover por fila/columna desde script.js) -->
+          <div class="comparison-container">
+            <h3 class="comparison-title">
+              Matriz Comparativa de Paquetes de Viaje
+            </h3>
+            <div class="comparison-scroll">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th scope="col">Beneficio / Servicio</th>
+                  <th scope="col" class="th-apex">Órbita Apex (EEI)</th>
+                  <th scope="col" class="th-artemis">Odisea Artemisa (Luna)</th>
+                  <th scope="col" class="th-sovereign">Sovereign (Marte)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Tipo de Alojamiento</td>
+                  <td>Pod Privado con Ventana</td>
+                  <td class="comparison-hl">Suite Cis-Lunar 42 m³</td>
+                  <td>Stateroom con Domo Biosférico</td>
+                </tr>
+                <tr>
+                  <td>Paseo Extravehicular (EVA)</td>
+                  <td>Simulación Virtual 8K</td>
+                  <td class="comparison-hl">EVA Real en Superficie Lunar</td>
+                  <td>Múltiples Salidas en Cañones</td>
+                </tr>
+                <tr>
+                  <td>Gastronomía Personalizada</td>
+                  <td>Menú 3 Estrellas Michelin</td>
+                  <td class="comparison-hl">Chef Personal + Cava</td>
+                  <td>Laboratorio Culinario & Huerta</td>
+                </tr>
+                <tr>
+                  <td>Enlace con la Tierra</td>
+                  <td>Láser 10 Gbps</td>
+                  <td class="comparison-hl">Enlace Cuántico Continuo</td>
+                  <td>Retransmisión Holográfica</td>
+                </tr>
+                <tr>
+                  <td>Traje Confeccionado</td>
+                  <td>Presión Ligero</td>
+                  <td class="comparison-hl">Superficie Lunar a Medida</td>
+                  <td>Armadura Térmica Blindada</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <p class="comparison-footnote">
+              * Todos los paquetes incluyen seguro interplanetario Lloyd's, traje a medida y enlace cuántico 24/7 con la Tierra.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN E: TESTIMONIOS (Prueba Social & Bitácora de Tripulantes)
+           BLOQUE ct-testimonials — Carrusel deslizante responsive (1 col mobile /
+           3 cols desktop), navegación prev/next + dots y auto-play cada 5s.
+           ==================================================================== -->
+      <section
+        id="testimonios"
+        class="section-testimonios ct-testimonials"
+        aria-labelledby="testimonios-title"
+        data-ct-autoplay="true"
+        data-ct-interval="5000"
+      >
+        <div class="container">
+          <header class="section-header ct-testimonials-header">
+            <div>
+              <div class="section-kicker">Bitácora de Tripulantes Civiles · Prueba Social Verificada</div>
+              <h2 id="testimonios-title" class="section-title">Testimonios de Nuestros Exploradores</h2>
+            </div>
+            <p class="section-intro">
+              Pasajeros que ya completaron una expedición privada describen, en sus propias palabras, la travesía más extraordinaria de sus vidas.
+            </p>
+          </header>
+
+          <!-- Viewport deslizante del carrusel -->
+          <div class="ct-testimonials-viewport" role="region" aria-roledescription="carrusel" aria-label="Experiencias de viajeros espaciales">
+            <div class="ct-testimonials-track testimonials-grid" data-ct-track>
+              <!-- Testimonio 1 -->
+              <article class="ct-testimonial-card testimonial-card" data-ct-slide="0">
+                <header class="ct-testimonial-top">
+                  <div class="ct-testimonial-user">
+                    <img
+                      class="ct-testimonial-avatar"
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='40' cy='40' r='40' fill='url(%23g1)'/%3E%3Ccircle cx='40' cy='31' r='13' fill='%230f172a' fill-opacity='0.35'/%3E%3Cpath d='M18 68c4-12 14-18 22-18s18 6 22 18' fill='%230f172a' fill-opacity='0.35'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700'%3EIF%3C/text%3E%3C/svg%3E"
+                      alt="Avatar de Isabela Fontaine Rivas"
+                      width="56"
+                      height="56"
+                      loading="lazy"
+                    />
+                    <div class="ct-testimonial-meta">
+                      <span class="author-name ct-testimonial-name">Isabela Fontaine Rivas</span>
+                      <span class="author-role ct-testimonial-role">Directora de Arte · Ciudad de México, México</span>
+                    </div>
+                  </div>
+                  <div class="ct-testimonial-stars" role="img" aria-label="Calificación: 5 de 5 estrellas">
+                    <span aria-hidden="true">★★★★★</span>
+                  </div>
+                </header>
+
+                <blockquote class="testimonial-quote ct-testimonial-text">
+                  "El instante en que la Tierra reapareció tras el ventanal de cuarzo de zafiro no se compara con nada que haya vivido. La suite presurizada y el amanecer sobre el cráter Shackleton superaron cada expectativa."
+                </blockquote>
+
+                <footer class="testimonial-footer ct-testimonial-footer">
+                  <span class="ct-testimonial-tour">Tour: Expedición Lunar Artemisa Prime</span>
+                  <span class="mission-tag">MISIÓN CT-2026-LUN-014</span>
+                </footer>
+              </article>
+
+              <!-- Testimonio 2 -->
+              <article class="ct-testimonial-card testimonial-card" data-ct-slide="1">
+                <header class="ct-testimonial-top">
+                  <div class="ct-testimonial-user">
+                    <img
+                      class="ct-testimonial-avatar"
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2306b6d4'/%3E%3Cstop offset='100%25' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='40' cy='40' r='40' fill='url(%23g2)'/%3E%3Ccircle cx='40' cy='31' r='13' fill='%230f172a' fill-opacity='0.35'/%3E%3Cpath d='M18 68c4-12 14-18 22-18s18 6 22 18' fill='%230f172a' fill-opacity='0.35'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700'%3ERM%3C/text%3E%3C/svg%3E"
+                      alt="Avatar de Rafael Augusto Miranda Cardona"
+                      width="56"
+                      height="56"
+                      loading="lazy"
+                    />
+                    <div class="ct-testimonial-meta">
+                      <span class="author-name ct-testimonial-name">Rafael Augusto Miranda Cardona</span>
+                      <span class="author-role ct-testimonial-role">CEO de Fintech Andina · Bogotá, Colombia</span>
+                    </div>
+                  </div>
+                  <div class="ct-testimonial-stars" role="img" aria-label="Calificación: 5 de 5 estrellas">
+                    <span aria-hidden="true">★★★★★</span>
+                  </div>
+                </header>
+
+                <blockquote class="testimonial-quote ct-testimonial-text">
+                  "Diez días en microgravedad reordenan por completo la mente. El equipo médico estuvo presente en cada fase y la Cupola Panorámica convirtió cada órbita en una cena privada frente al planeta."
+                </blockquote>
+
+                <footer class="testimonial-footer ct-testimonial-footer">
+                  <span class="ct-testimonial-tour">Tour: Estación Espacial Apex Cupola</span>
+                  <span class="mission-tag">MISIÓN CT-2026-EEI-087</span>
+                </footer>
+              </article>
+
+              <!-- Testimonio 3 -->
+              <article class="ct-testimonial-card testimonial-card" data-ct-slide="2">
+                <header class="ct-testimonial-top">
+                  <div class="ct-testimonial-user">
+                    <img
+                      class="ct-testimonial-avatar"
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cdefs%3E%3ClinearGradient id='g3' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%238b5cf6'/%3E%3Cstop offset='100%25' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='40' cy='40' r='40' fill='url(%23g3)'/%3E%3Ccircle cx='40' cy='31' r='13' fill='%230f172a' fill-opacity='0.35'/%3E%3Cpath d='M18 68c4-12 14-18 22-18s18 6 22 18' fill='%230f172a' fill-opacity='0.35'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700'%3ECB%3C/text%3E%3C/svg%3E"
+                      alt="Avatar de Claire Bouchard Lefèvre"
+                      width="56"
+                      height="56"
+                      loading="lazy"
+                    />
+                    <div class="ct-testimonial-meta">
+                      <span class="author-name ct-testimonial-name">Claire Bouchard Lefèvre</span>
+                      <span class="author-role ct-testimonial-role">Cirujana Cardiovascular Consultora · Lyon, Francia</span>
+                    </div>
+                  </div>
+                  <div class="ct-testimonial-stars" role="img" aria-label="Calificación: 5 de 5 estrellas">
+                    <span aria-hidden="true">★★★★★</span>
+                  </div>
+                </header>
+
+                <blockquote class="testimonial-quote ct-testimonial-text">
+                  "La secuencia de ignición fue sorprendentemente suave y los asientos de fibra de carbono absorben la vibración mejor que cualquier primera clase aérea. Ver Valles Marineris desde la cúpula es inolvidable."
+                </blockquote>
+
+                <footer class="testimonial-footer ct-testimonial-footer">
+                  <span class="ct-testimonial-tour">Tour: Odisea Marte Valles Marineris</span>
+                  <span class="mission-tag">MISIÓN CT-2027-MAR-006</span>
+                </footer>
+              </article>
+
+              <!-- Testimonio 4 -->
+              <article class="ct-testimonial-card testimonial-card" data-ct-slide="3">
+                <header class="ct-testimonial-top">
+                  <div class="ct-testimonial-user">
+                    <img
+                      class="ct-testimonial-avatar"
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cdefs%3E%3ClinearGradient id='g4' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='40' cy='40' r='40' fill='url(%23g4)'/%3E%3Ccircle cx='40' cy='31' r='13' fill='%230f172a' fill-opacity='0.35'/%3E%3Cpath d='M18 68c4-12 14-18 22-18s18 6 22 18' fill='%230f172a' fill-opacity='0.35'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700'%3EHT%3C/text%3E%3C/svg%3E"
+                      alt="Avatar de Hiroshi Tanaka Endo"
+                      width="56"
+                      height="56"
+                      loading="lazy"
+                    />
+                    <div class="ct-testimonial-meta">
+                      <span class="author-name ct-testimonial-name">Hiroshi Tanaka Endo</span>
+                      <span class="author-role ct-testimonial-role">Ingeniero Jefe de Robótica (Jubilado) · Kioto, Japón</span>
+                    </div>
+                  </div>
+                  <div class="ct-testimonial-stars" role="img" aria-label="Calificación: 5 de 5 estrellas">
+                    <span aria-hidden="true">★★★★★</span>
+                  </div>
+                </header>
+
+                <blockquote class="testimonial-quote ct-testimonial-text">
+                  "Reservé la expedición como regalo de jubilación y terminó siendo el viaje definitorio de mi vida. Desde el traje confeccionado a medida hasta el menú molecular en ingravidez, todo superó mis expectativas."
+                </blockquote>
+
+                <footer class="testimonial-footer ct-testimonial-footer">
+                  <span class="ct-testimonial-tour">Tour: Expedición Lunar Artemisa Prime</span>
+                  <span class="mission-tag">MISIÓN CT-2026-LUN-031</span>
+                </footer>
+              </article>
+            </div>
+          </div>
+
+          <!-- Controles de navegación del carrusel: Anterior / Dots / Siguiente -->
+          <div class="ct-testimonials-controls" aria-label="Controles del carrusel de testimonios">
+            <button
+              type="button"
+              class="ct-testimonials-btn ct-testimonials-btn--prev"
+              data-ct-prev
+              aria-label="Testimonio anterior"
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+
+            <div class="ct-testimonials-dots" role="tablist" aria-label="Seleccionar testimonio" data-ct-dots>
+              <button
+                type="button"
+                class="ct-testimonial-dot active"
+                role="tab"
+                aria-selected="true"
+                aria-label="Ir al testimonio 1"
+                data-ct-dot="0"
+              ></button>
+              <button
+                type="button"
+                class="ct-testimonial-dot"
+                role="tab"
+                aria-selected="false"
+                aria-label="Ir al testimonio 2"
+                data-ct-dot="1"
+              ></button>
+              <button
+                type="button"
+                class="ct-testimonial-dot"
+                role="tab"
+                aria-selected="false"
+                aria-label="Ir al testimonio 3"
+                data-ct-dot="2"
+              ></button>
+              <button
+                type="button"
+                class="ct-testimonial-dot"
+                role="tab"
+                aria-selected="false"
+                aria-label="Ir al testimonio 4"
+                data-ct-dot="3"
+              ></button>
+            </div>
+
+            <button
+              type="button"
+              class="ct-testimonials-btn ct-testimonials-btn--next"
+              data-ct-next
+              aria-label="Siguiente testimonio"
+            >
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           BLOQUE ct-countdown (convención de nombres "ct-") · Cuenta regresiva
+           a la próxima ventana de despegue. Lógica encapsulada en IIFE en
+           script.js (initCtCountdown) · mobile-first · accesible (role=timer).
+           ==================================================================== -->
+      <section
+        id="cuenta-atras"
+        class="ct-countdown-block"
+        aria-labelledby="ct-countdown-title"
+        data-ct-target="2026-11-15T09:00:00"
+      >
+        <div class="ct-countdown-inner container">
+          <div class="ct-countdown-copy">
+            <p class="ct-countdown-kicker">Próxima ventana de despegue</p>
+            <h2 id="ct-countdown-title" class="ct-countdown-title">Cuenta regresiva T-menos</h2>
+            <p class="ct-countdown-fecha" data-ct-estado aria-live="polite">
+              Ventana programada: 15/11/2026 · 09:00 (hora local)
+            </p>
+          </div>
+
+          <div
+            class="ct-countdown-grid"
+            role="timer"
+            aria-label="Cuenta regresiva hasta el despegue del 15 de noviembre de 2026 a las 9:00"
+          >
+            <div class="ct-countdown-unit">
+              <span class="ct-countdown-value" data-ct-unit="dias">00</span>
+              <span class="ct-countdown-label">Días</span>
+            </div>
+            <div class="ct-countdown-unit">
+              <span class="ct-countdown-value" data-ct-unit="horas">00</span>
+              <span class="ct-countdown-label">Horas</span>
+            </div>
+            <div class="ct-countdown-unit">
+              <span class="ct-countdown-value" data-ct-unit="minutos">00</span>
+              <span class="ct-countdown-label">Min</span>
+            </div>
+            <div class="ct-countdown-unit">
+              <span class="ct-countdown-value" data-ct-unit="segundos">00</span>
+              <span class="ct-countdown-label">Seg</span>
+            </div>
+          </div>
+
+          <a class="ct-countdown-cta" href="#registro">Reservar en esta ventana →</a>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECCIÓN F: RESERVA Y CONTACTO (La Hoja de Registro de Tripulación)
+           ==================================================================== -->
+      <section id="registro" class="section-tripulacion" aria-labelledby="registro-title">
+        <div class="container">
+          <header class="section-head-center-narrow">
+            <div class="section-kicker">Despacho Aeroespacial Privado · Manifiesto de Vuelo</div>
+            <h2 id="registro-title" class="section-title">Hoja de Registro de Tripulación</h2>
+            <p class="section-intro section-intro-center">
+              Formalice su ingreso en el selecto padrón de exploradores. Tras validar sus datos, se activará el escaneo biométrico preliminar de autorización.
+            </p>
+          </header>
+
+          <div class="manifest-card">
+            <!-- Sello Superior de Acreditación -->
+            <div class="manifest-top-seal">
+              <div class="manifest-seal-text">
+                COSMOS TOUR CREW ACCREDITATION · PROTOCOLO AST-2026
+              </div>
+              <div class="telemetry-text seal-status-row">
+                ESTADO: <span id="manifest-seal-status" class="seal-status">○ PENDIENTE DE ESCANEO</span>
+              </div>
+            </div>
+
+            <!-- Caja de Escaneo Biométrico Láser -->
+            <div id="biometric-scanner-box" class="biometric-scanner-box">
+              <div class="scan-fingerprint-icon">⚡</div>
+              <div class="telemetry-text biometric-label">
+                ESCANEO BIOMÉTRICO LÁSER & APERTURA DE EXPEDIENTE AEROESPACIAL
+              </div>
+              <div class="scan-progress-track">
+                <div id="scan-progress-bar" class="scan-progress-bar"></div>
+              </div>
+              <div id="scan-progress-text" class="telemetry-text scan-progress-note">
+                Iniciando validación...
+              </div>
+            </div>
+
+            <!-- Tarjeta de Embarque Generada -->
+            <div id="boarding-pass-result" class="boarding-pass-result">
+              <div class="pass-header">
+                <div>
+                  <div class="telemetry-text pass-header-kicker">
+                    TARJETA OFICIAL DE EMBARQUE ESPACIAL
+                  </div>
+                  <h3 id="pass-name" class="pass-name">
+                    Nombre del Pasajero
+                  </h3>
+                  <div id="pass-role-country" class="telemetry-text pass-role">
+                    Comandante Civil · España
+                  </div>
+                </div>
+                <div class="telemetry-text pass-code-col">
+                  <div class="pass-code-label">CÓDIGO DE MISIÓN</div>
+                  <div id="pass-mission-code" class="pass-code-value">
+                    CT-2026-LUN-842
+                  </div>
+                  <div class="pass-cleared">● BIO-CLEARED</div>
+                </div>
+              </div>
+
+              <div class="pass-details-grid">
+                <div>
+                  <span class="pass-field-label">DESTINO</span>
+                  <span id="pass-dest" class="pass-value-strong">La Luna</span>
+                </div>
+                <div>
+                  <span class="pass-field-label">ASIENTO ASIGNADO</span>
+                  <span id="pass-seat" class="pass-value-gold">ORBITAL-04A</span>
+                </div>
+                <div>
+                  <span class="pass-field-label">CATEGORÍA DE SUITE</span>
+                  <span id="pass-suite" class="pass-value">Celestial Sovereign Suite</span>
+                </div>
+                <div>
+                  <span class="pass-field-label">VENTANA DE DESPEGUE</span>
+                  <span id="pass-window" class="pass-value">Noviembre 2026</span>
+                </div>
+              </div>
+
+              <div class="pass-actions">
+                <button id="btn-modify-manifest" class="btn-secondary btn-pass-sm">
+                  Modificar Registro
+                </button>
+                <button id="btn-print-pass" class="btn-primary btn-pass-sm">
+                  Imprimir / Descargar Credencial
+                </button>
+              </div>
+            </div>
+
+            <!-- Notificación discreta de restauración de reserva (la genera script.js) -->
+            <div id="restore-notification" class="restore-notification" role="status" aria-live="polite" hidden></div>
+
+            <!-- Confirmación visual del envío: se muestra mientras Formspree
+                 responde bien (2 s antes de revelar la credencial AST-2026) -->
+            <div id="envio-exito" class="envio-exito" role="status" aria-live="polite" hidden>
+              ✅ ¡Reserva Confirmada! Tu credencial AST-2026 está lista.
+            </div>
+
+            <!-- BLOQUE: CARRITO DE EXPERIENCIAS PREMIUM (REQUERIMIENTO 2)
+                 Cada checkbox persiste su ID en 'cosmostour_experiencias_extras';
+                 el total se recalcula automáticamente desde el catálogo. -->
+            <section class="experiencias-carrito" id="experiencias-carrito" aria-labelledby="carrito-title">
+              <div class="carrito-header">
+                <h3 id="carrito-title" class="carrito-title">🚀 Experiencias Premium a Bordo</h3>
+                <p class="carrito-subtitle">
+                  Añade vivencias exclusivas a tu manifiesto de vuelo
+                </p>
+              </div>
+
+              <div class="carrito-grid" id="carrito-grid">
+                <label class="carrito-item" for="exp-cena-molecular">
+                  <input type="checkbox" id="exp-cena-molecular" class="carrito-check" data-exp-id="cena-molecular" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Cena Molecular con Chef Michelin</span>
+                    <span class="carrito-precio">$15,000 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-cupola-panoramica">
+                  <input type="checkbox" id="exp-cupola-panoramica" class="carrito-check" data-exp-id="cupola-panoramica" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Sesión Privada en Cupola Panorámica</span>
+                    <span class="carrito-precio">$8,500 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-eva-personalizado">
+                  <input type="checkbox" id="exp-eva-personalizado" class="carrito-check" data-exp-id="eva-personalizado" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Entrenamiento EVA Personalizado</span>
+                    <span class="carrito-precio">$22,000 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-fotografia-zero-g">
+                  <input type="checkbox" id="exp-fotografia-zero-g" class="carrito-check" data-exp-id="fotografia-zero-g" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Fotografía Profesional en Gravedad Cero</span>
+                    <span class="carrito-precio">$5,000 USD</span>
+                  </span>
+                </label>
+
+                <label class="carrito-item" for="exp-suite-upgrade">
+                  <input type="checkbox" id="exp-suite-upgrade" class="carrito-check" data-exp-id="suite-upgrade" />
+                  <span class="carrito-info">
+                    <span class="carrito-nombre">Suite Celestial Sovereign Upgrade</span>
+                    <span class="carrito-precio">$50,000 USD</span>
+                  </span>
+                </label>
+              </div>
+
+              <div class="carrito-total">
+                <span id="carrito-count" class="carrito-count">0 experiencias seleccionadas</span>
+                <strong id="carrito-total-monto" class="carrito-total-monto">$0 USD</strong>
+              </div>
+            </section>
+
+            <!-- Formulario de Manifiesto (envío asíncrono a Formspree vía fetch) -->
+            <form id="manifest-form" action="https://formspree.io/f/mjyyolgb" method="POST">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="manifest-name">Nombre Completo del Astronauta *</label>
+                  <input type="text" id="manifest-name" name="nombreCompleto" class="form-input" required placeholder="Ej. Helena Valenzuela Ruiz" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-email">Correo Electrónico Confidencial *</label>
+                  <input type="email" id="manifest-email" name="correoElectronico" class="form-input" required placeholder="h.valenzuela@cosmos-private.com" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-passport">Número de Pasaporte Internacional *</label>
+                  <input type="text" id="manifest-passport" name="numeroPasaporte" class="form-input" required placeholder="P-89240177A" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-destination">Expedición Seleccionada</label>
+                  <select id="manifest-destination" name="expedicionSeleccionada" class="form-select">
+                    <option value="La Luna">La Luna (Expedición Cis-Lunar Artemisa)</option>
+                    <option value="Marte">Marte (Odisea Valles Marineris)</option>
+                    <option value="Estación Espacial Internacional">Estación Espacial Internacional (Apex Cupola)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-suite">Categoría de Suite a Bordo</label>
+                  <select id="manifest-suite" name="categoriaSuite" class="form-select">
+                    <option value="Celestial Sovereign Suite">Celestial Sovereign Suite (42 m³)</option>
+                    <option value="Mirador Cupola Stateroom">Mirador Cupola Stateroom (35 m³)</option>
+                    <option value="Pod Privado de Ingravidez">Pod Privado de Ingravidez (24 m³)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manifest-window">Ventana Temporal de Despegue</label>
+                  <select id="manifest-window" name="ventanaDespegue" class="form-select">
+                    <option value="Octubre 2026">Octubre 2026</option>
+                    <option value="Noviembre 2026">Noviembre 2026</option>
+                    <option value="Marzo 2027">Marzo 2027</option>
+                    <option value="Junio 2027">Junio 2027</option>
+                  </select>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label" for="manifest-role">Rol en el Manifiesto de Vuelo</label>
+                  <select id="manifest-role" name="rolManifiesto" class="form-select">
+                    <option value="Comandante Civil de Travesía">Comandante Civil de Travesía</option>
+                    <option value="Especialista de Observación Astronómica">Especialista de Observación Astronómica</option>
+                    <option value="Pasajero de Placer & Bienestar">Pasajero de Placer & Bienestar</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Checkbox Obligatorio: Términos y Condiciones de Vuelo -->
+              <div class="form-group full-width form-terms-group">
+                <div class="terms-row">
+                  <input
+                    type="checkbox"
+                    id="manifest-terms"
+                    name="terminosAceptados"
+                    required
+                    class="terms-checkbox"
+                  />
+                  <label class="form-label terms-label" for="manifest-terms">
+                    Acepto los términos y condiciones de vuelo
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-footer-row">
+                <span class="telemetry-text form-footnote">
+                  El envío activará el escaneo biométrico seguro de tolerancia de vuelo.
+                </span>
+                <div class="form-footer-actions">
+                  <button type="button" id="btn-cancelar-reserva" class="btn-cancel-reserva" hidden>
+                    Cancelar Reserva
+                  </button>
+                  <button type="button" id="btn-reintentar-envio" class="btn-primary btn-retry-envio" hidden>
+                    Reintentar Envío
+                  </button>
+                  <button type="submit" class="btn-primary btn-cta-lg">
+                    Validar y Emitir Credencial
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Bloque de credencial AST-2026: se muestra en lugar del formulario
+                 cuando existe 'cosmostour_pasajero_convertido' en localStorage -->
+            <div id="credencial-embarque" class="credencial-ast2026" role="status" hidden>
+              <div class="header-credencial">
+                <h2>✈️ TARJETA OFICIAL DE EMBARQUE ESPACIAL</h2>
+                <p class="subtitulo">COSMOS TOUR CREW ACCREDITATION · PROTOCOLO AST-2026</p>
+              </div>
+              <div class="datos-pasajero">
+                <p><strong>ESTADO:</strong> <span class="status">● BIO-CLEARED</span></p>
+                <p><strong>NOMBRE DEL PASAJERO:</strong> <span id="cred-nombre">—</span></p>
+                <p><strong>CÓDIGO DE MISIÓN:</strong> <span id="cred-codigo">—</span></p>
+                <p><strong>DESTINO:</strong> <span id="cred-destino">—</span></p>
+                <p><strong>VENTANA DE DESPEGUE:</strong> <span id="cred-ventana">—</span></p>
+                <p><strong>CATEGORÍA DE SUITE:</strong> <span id="cred-suite">—</span></p>
+                <p><strong>EXPERIENCIAS ADICIONALES:</strong> <span id="cred-experiencias">Ninguna</span></p>
+              </div>
+              <div class="acciones">
+                <button type="button" onclick="descargarCredencial()">📥 Descargar Credencial PDF</button>
+                <button type="button" onclick="contactarConcierge()">📞 Contactar Concierge Espacial</button>
+                <button type="button" id="btn-nueva-reserva" class="btn-cancel-reserva">
+                  Registrar otra expedición
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal Dossier de Navegación Interplanetaria (Salto Warp) -->
+    <div id="dossier-modal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal-box">
+        <button id="modal-close-btn" class="modal-close-btn" aria-label="Cerrar expediente">✕</button>
+
+        <div class="modal-block">
+          <div class="telemetry-text modal-kicker">
+            EXPEDIENTE DE NAVEGACIÓN · DESPEGUE: <span id="modal-departure">Noviembre 2026</span>
+          </div>
+          <h3 id="modal-title" class="modal-title">
+            Destino
+          </h3>
+          <div id="modal-subtitle" class="telemetry-text modal-subtitle">
+            Subtítulo
+          </div>
+        </div>
+
+        <!-- Telemetría en el Modal -->
+        <div class="telemetry-text modal-telemetry-grid">
+          <div>
+            <span class="modal-metric-label">DISTANCIA</span>
+            <span id="modal-dist" class="modal-metric-value">-</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">DURACIÓN</span>
+            <span id="modal-duration" class="modal-metric-value">-</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">GRAVEDAD</span>
+            <span id="modal-gravity" class="modal-metric-value-gold">-</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">TEMPERATURA</span>
+            <span id="modal-temp" class="modal-metric-value">-</span>
+          </div>
+        </div>
+
+        <!-- Listas de Experiencias y Servicios -->
+        <div class="modal-block">
+          <h4 class="telemetry-text modal-section-title">
+            Experiencias y Misiones en Destino
+          </h4>
+          <ul id="modal-highlights" class="dest-highlights"></ul>
+        </div>
+
+        <div class="modal-block-lg">
+          <h4 class="telemetry-text modal-section-title">
+            Servicios Exclusivos a Bordo
+          </h4>
+          <ul id="modal-luxuries" class="dest-highlights"></ul>
+        </div>
+
+        <div class="modal-footer-row">
+          <div>
+            <span class="telemetry-text modal-fare-label">TARIFA ALL-INCLUSIVE</span>
+            <div id="modal-price" class="telemetry-text modal-price">$0</div>
+          </div>
+          <button class="btn-primary btn-book-dest btn-cta-md">
+            Seleccionar Este Destino
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- [AJUSTE HERO] Ficha emergente del cuerpo celeste (se abre desde .planet-btn) -->
+    <div id="planet-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Ficha del cuerpo celeste" aria-hidden="true">
+      <div class="modal-box planet-box">
+        <button id="planet-modal-close" class="modal-close-btn" aria-label="Cerrar ficha planetaria">✕</button>
+        <div class="planet-visual">
+          <!-- Sin src inicial: script.js asigna la imagen al abrir la ficha.
+               Evita descargar 239KB en la carga (el overlay está en el
+               viewport aunque esté oculto, así que loading="lazy" no basta). -->
+          <img id="planet-modal-img" alt="Imagen real del cuerpo celeste seleccionado (NASA)" width="640" height="360" decoding="async" />
+        </div>
+        <div class="modal-block">
+          <div class="telemetry-text modal-kicker">FICHA CELESTE · CATÁLOGO COSMOS TOUR</div>
+          <h3 id="planet-modal-title" class="modal-title">Planeta</h3>
+          <div id="planet-modal-sub" class="telemetry-text modal-subtitle">—</div>
+        </div>
+        <div class="telemetry-text modal-telemetry-grid">
+          <div>
+            <span class="modal-metric-label">DISTANCIA</span>
+            <span id="planet-modal-dist" class="modal-metric-value">—</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">DIÁMETRO</span>
+            <span id="planet-modal-diam" class="modal-metric-value">—</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">GRAVEDAD</span>
+            <span id="planet-modal-grav" class="modal-metric-value-gold">—</span>
+          </div>
+          <div>
+            <span class="modal-metric-label">TEMPERATURA</span>
+            <span id="planet-modal-temp" class="modal-metric-value">—</span>
+          </div>
+        </div>
+        <div class="modal-block">
+          <p id="planet-modal-desc" class="planet-desc">—</p>
+        </div>
+        <div class="modal-footer-row">
+          <div>
+            <span class="telemetry-text modal-fare-label">TRAVESÍA ESTIMADA</span>
+            <div id="planet-modal-viaje" class="telemetry-text modal-price">—</div>
+          </div>
+          <a href="#destinos" class="btn-primary btn-cta-md" id="planet-modal-cta">Ver Rutas Disponibles</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- [AJUSTE MIRADOR] Ficha emergente de los POIs del Mirador Estelar (constelaciones) -->
+    <div id="poi-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Ficha celeste" aria-hidden="true">
+      <div class="modal-box poi-box">
+        <button id="poi-modal-close" class="modal-close-btn" aria-label="Cerrar ficha celeste">✕</button>
+        <div class="poi-visual">
+          <!-- Sin src inicial: se asigna al abrir la ficha (ahorra 65KB). -->
+          <img id="poi-modal-img" alt="Imagen del punto de interés celeste (NASA)" width="640" height="360" decoding="async" />
+        </div>
+        <div class="modal-block">
+          <div class="telemetry-text modal-kicker">ARCHIVO CELESTE · MIRADOR ESTELAR</div>
+          <h3 id="poi-modal-title" class="modal-title">—</h3>
+          <div id="poi-modal-meta" class="telemetry-text modal-subtitle">—</div>
+          <p id="poi-modal-story" class="poi-story">—</p>
+        </div>
+        <div class="modal-footer-row">
+          <span class="telemetry-text modal-fare-label">OBSERVADO DESDE LA CUPOLA · MISIÓN CT-VUELO-03</span>
+          <button type="button" class="btn-secondary btn-cta-md" id="poi-modal-done">Cerrar Archivo</button>
+        </div>
+      </div>
+    </div>
+
+        <!-- [AJUSTE FOOTER] Footer comercial profesional: banda CTA + 4 columnas + legal -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-cta">
+          <div class="footer-cta-copy">
+            <h2 class="footer-cta-title">Tu asiento en la órbita te espera</h2>
+            <p class="footer-cta-text">
+              Cupos limitados por temporada. Reserva una consultoría privada con nuestro
+              equipo de vuelo y diseña tu expedición a medida.
+            </p>
+          </div>
+          <a href="#registro" class="btn-primary btn-cta-lg">Reservar Misión</a>
+        </div>
+
+        <div class="footer-grid">
+          <div class="footer-col footer-col-brand">
+            <span class="brand-wordmark footer-brand-mark">COSMOS TOUR</span>
+            <p class="footer-about">
+              Agencia pionera de turismo espacial de alto lujo. Convertimos la exploración
+              cósmica en una obra de arte viviente.
+            </p>
+            <nav class="footer-socials" aria-label="Redes sociales de Cosmos Tour">
+              <a href="#" aria-label="X (Twitter)" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+              </a>
+              <a href="#" aria-label="Instagram" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.3" fill="currentColor"/></svg>
+              </a>
+              <a href="#" aria-label="YouTube" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg>
+              </a>
+              <a href="#" aria-label="LinkedIn" class="footer-social-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 10.5V17M7 7.6v.01M11 17v-4a2.5 2.5 0 015 0v4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              </a>
+            </nav>
+            <ul class="footer-badges">
+              <li>Miembro de la Asociación de Turismo Espacial</li>
+              <li>Certificación ISO 9001:2015</li>
+              <li>Pago seguro con cifrado AES-256</li>
+            </ul>
+          </div>
+
+          <nav class="footer-col" aria-label="Legal">
+            <div class="section-kicker footer-kicker">Legal y Términos</div>
+            <ul class="footer-links">
+              <li><a href="politica-de-privacidad.html#privacidad">Política de Privacidad</a></li>
+              <li><a href="politica-de-privacidad.html#terminos">Términos y Condiciones de Vuelo</a></li>
+              <li><a href="politica-de-privacidad.html#cookies">Política de Cookies</a></li>
+              <li><a href="politica-de-privacidad.html#seguro">Seguro Interplanetario Lloyd's</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-label="Expediciones">
+            <div class="section-kicker footer-kicker">Expediciones Activas</div>
+            <ul class="footer-links">
+              <li><a href="#destinos">Órbita Baja Terrestre (EEI)</a></li>
+              <li><a href="#destinos">Expedición Cis-Lunar (La Luna)</a></li>
+              <li><a href="#destinos">Odisea Valles Marineris (Marte)</a></li>
+              <li><a href="#vuelo">Simulador de Gravedad Cero</a></li>
+              <li><a href="#testimonios">Bitácora de Tripulantes</a></li>
+            </ul>
+          </nav>
+
+          <div class="footer-col">
+            <div class="section-kicker footer-kicker">Contacto 24/7</div>
+            <ul class="footer-links">
+              <li><a href="mailto:tripulacion@cosmostour.space">tripulacion@cosmostour.space</a></li>
+              <li><a href="tel:+41445550126">+41 44 555 0126</a></li>
+              <li><span>Despacho: Zúrich, Suiza</span></li>
+              <li><span>Despegues: Cabo Cañaveral / Guayana</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-project">Cosmos Tour</div>
+          <div class="footer-legal-row">
+            <a href="politica-de-privacidad.html">Política de Privacidad</a>
+            <span aria-hidden="true">·</span>
+            <span class="footer-year">© 2026</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Enlace a script nativo Vanilla JavaScript -->
+    <script src="script.js" defer></script>
   </body>
 </html>

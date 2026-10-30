@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 /* ==========================================================================
    COSMOS TOUR — HOJA DE ESTILOS PRINCIPAL (VANILLA CSS)
    Paleta: Espacio Profundo (#030712), Neón Cian (#06b6d4), Azul (#3b82f6), Oro (#f59e0b)
@@ -83,6 +81,14 @@
   --ct-secondary-glow: rgba(139, 92, 246, 0.35);
   --ct-font-title: 'Orbitron', 'Space Grotesk', sans-serif;
   --ct-font-body: 'Inter', 'Plus Jakarta Sans', sans-serif;
+
+  /* ===== TOKENS BLOQUE ct-testimonials (mapeados al sistema de diseño) ===== */
+  --color-bg-card: var(--color-space-card);
+  --color-text: var(--text-main);
+  --color-primary: var(--ct-primary);
+  --border-radius-lg: var(--radius-lg);
+  --shadow-md: 0 14px 34px rgba(2, 6, 23, 0.45);
+  --transition-speed: 400ms cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Colores sólidos fijos (invariantes al tema) */
   --blanco: #ffffff;
@@ -5334,3 +5340,240 @@ body.legal-page {
     transform: none;
   }
 }
+
+/* ==========================================================================
+   21. BLOQUE ct-testimonials — Carrusel deslizante de testimonios (convención "ct-")
+   Tokens consumidos:
+   --color-bg-card · --color-text · --color-primary · --border-radius-lg
+   --shadow-md · --transition-speed
+   Responsive: 1 columna en mobile (<768px), 2 en tablet (≥768px), 3 en desktop (≥1024px)
+   ========================================================================== */
+.ct-testimonials {
+  --ct-cards-per-view: 1;
+  --ct-carousel-gap: 1.5rem;
+  position: relative;
+}
+
+.ct-testimonials-viewport {
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--space-3);
+  padding: var(--space-2) 0.25rem 0.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Sobrescribe el grid estático de .testimonials-grid para operar como pista deslizante */
+.ct-testimonials .ct-testimonials-track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--ct-carousel-gap);
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  will-change: transform;
+  transition: transform var(--transition-speed);
+}
+
+.ct-testimonial-card {
+  flex: 0 0 calc(
+    (100% - (var(--ct-cards-per-view) - 1) * var(--ct-carousel-gap)) /
+    var(--ct-cards-per-view)
+  );
+  min-width: 0;
+  background-color: var(--color-bg-card);
+  color: var(--color-text);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-135);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-1);
+  transition:
+    transform var(--transition-speed),
+    border-color var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.ct-testimonial-card:hover,
+.ct-testimonial-card.is-active {
+  border-color: var(--color-primary);
+  box-shadow:
+    var(--shadow-md),
+    0 0 24px var(--ct-primary-glow);
+}
+
+.ct-testimonial-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Cabecera de la tarjeta: avatar + nombre/rol + 5 estrellas */
+.ct-testimonial-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-075);
+  flex-wrap: wrap;
+}
+
+.ct-testimonial-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-075);
+  min-width: 0;
+}
+
+.ct-testimonial-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 14px var(--ct-primary-glow);
+}
+
+.ct-testimonial-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.ct-testimonial-name {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-pure);
+}
+
+.ct-testimonial-role {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.ct-testimonial-stars {
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  color: var(--color-gold);
+  text-shadow: 0 0 12px var(--color-gold-glow);
+  flex-shrink: 0;
+}
+
+.ct-testimonial-text {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.ct-testimonial-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: var(--space-085);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+}
+
+.ct-testimonial-tour {
+  font-family: var(--font-main);
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* Controles de navegación: botones Anterior / Siguiente + Dots */
+.ct-testimonials-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  margin-top: var(--space-15);
+}
+
+.ct-testimonials-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background-color: var(--color-bg-card);
+  color: var(--color-text);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    transform var(--transition-speed),
+    border-color var(--transition-speed),
+    background-color var(--transition-speed),
+    color var(--transition-speed);
+}
+
+.ct-testimonials-btn:hover,
+.ct-testimonials-btn:focus-visible {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--blanco);
+  transform: translateY(-2px);
+}
+
+.ct-testimonials-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.ct-testimonial-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border-light);
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    width var(--transition-speed),
+    background-color var(--transition-speed),
+    border-color var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+.ct-testimonial-dot:hover {
+  border-color: var(--color-primary);
+}
+
+.ct-testimonial-dot.active {
+  width: 1.75rem;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px var(--ct-primary-glow);
+}
+
+/* Tablet: 2 columnas visibles */
+@media (min-width: 768px) {
+  .ct-testimonials {
+    --ct-cards-per-view: 2;
+  }
+}
+
+/* Desktop: 3 columnas visibles (requisito: 1 en mobile, 3 en desktop) */
+@media (min-width: 1024px) {
+  .ct-testimonials {
+    --ct-cards-per-view: 3;
+  }
+}
+
+/* Accesibilidad: movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .ct-testimonials .ct-testimonials-track,
+  .ct-testimonial-card,
+  .ct-testimonials-btn,
+  .ct-testimonial-dot {
+    transition: none;
+  }
+}
+
