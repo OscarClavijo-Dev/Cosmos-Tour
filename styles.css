@@ -8,6 +8,13 @@
 
 /* VARIABLES Y SISTEMA DE DISEÑO */
 :root {
+  /* === Tokens semánticos principales (capa pública) === */
+  --color-fondo: #030712;
+  --color-acento: #06b6d4;
+  --color-texto: #f8fafc;
+  --fuente-principal: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fuente-secundaria: 'Plus Jakarta Sans', var(--fuente-principal);
+
   /* Altura de la cabecera fija: se resincroniza desde script.js (syncNavOffset)
      con la altura real (estado no sticky) para que el contenido nunca quede
      debajo de la cabecera fija. */
@@ -2540,7 +2547,11 @@ body {
   height: 100%;
   display: block;
   z-index: 0;
+<<<<<<< Updated upstream
   background: radial-gradient(circle at 30% 20%, var(--azul-08), transparent 45%),
+=======
+  background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.08), transparent 45%),
+>>>>>>> Stashed changes
     var(--color-fondo);
 }
 .main-wrapper {
@@ -4025,6 +4036,7 @@ section {
    contenido mantenga contraste AAA sobre la fotografía en ambos temas. */
 :root[data-theme="light"] .section-despegue {
   --text-pure: var(--color-texto);
+<<<<<<< Updated upstream
   --text-main: var(--despegue-texto);
   --text-muted: var(--despegue-texto-suave);
   --text-dim: var(--despegue-texto-tenue);
@@ -4036,6 +4048,19 @@ section {
   --border-light: var(--blanco-45);
   --color-space-card: var(--abismo-55);
   --color-space-darker: var(--abismo-72);
+=======
+  --text-main: #e6edf7;
+  --text-muted: #b9c6da;
+  --text-dim: #93a4bd;
+  --color-neon-cyan: #38bdf8;
+  --color-neon-cyan-glow: rgba(56, 189, 248, 0.3);
+  --color-gold: #fbbf24;
+  --color-gold-glow: rgba(251, 191, 36, 0.3);
+  --border-subtle: rgba(255, 255, 255, 0.22);
+  --border-light: rgba(255, 255, 255, 0.45);
+  --color-space-card: rgba(6, 12, 28, 0.55);
+  --color-space-darker: rgba(6, 12, 28, 0.72);
+>>>>>>> Stashed changes
 }
 
 /* --- 15.2 Selector de planetas con IMÁGENES REALES ------------------------ */
