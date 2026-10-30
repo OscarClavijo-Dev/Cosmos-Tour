@@ -24,7 +24,9 @@ function copyStaticSitePlugin() {
         'politica-de-privacidad.html',
         'styles.css',
         'script.js',
-        'favicon.svg'
+        'app.js',
+        'favicon.svg',
+        '.nojekyll'
       ];
 
       for (const file of staticFiles) {
