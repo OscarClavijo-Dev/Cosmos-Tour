@@ -1,5 +1,6 @@
-# Dependencias de node
+# Dependencias de node y compilación
 node_modules/
+dist/
 
 # Archivos de configuración del editor
 .vscode/
