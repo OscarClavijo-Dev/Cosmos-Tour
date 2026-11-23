@@ -358,7 +358,7 @@ El proyecto incluye el archivo `vercel.json` preconfigurado para despliegue est√
 
 **Desarrollado por:**
 - Oscar Clavijo 
-- Lesly Villamizar 
+- Lesly Velandia
 - Sharol Burgos 
 
 **Proyecto acad√©mico:** UPTC FESAD - Electiva de Landing Page e IA  
